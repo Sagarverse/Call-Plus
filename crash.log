@@ -1,0 +1,1059 @@
+--------- beginning of kernel
+03-03 21:19:45.175 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) <1025ms> Tput: 119240(0.116mbps) [13685:18:1593:16][0:0:0:0][0:0:0:0][0:0:0:0] Pending:1/4096 [0:1:0:0][0:0:0:0][0:0:0:0][0:0:0:0] LQ[505282:493969:29737] idle:0 lv:0 th:5 fg:0x9 TxCpu[40419,42890,175009,38963,19598,20594,18052,20434] RxCpu[0,0,0,0,0,0,0,0] TxDp[ST:BS:FO:QM:DP]:0:0:0:0:1500 Tx[SQ:TI:TM:TDD:TDM:TIC:TFP]:0:375959:375959:0:0:8515:375957 MgmtSub[2:0:1:0:0:0:0:0:0:0:0:3:3:10:0:0]
+03-03 21:19:45.175 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) ndevdrp:[0:0:0:0][0:0:0:4] NAPI[974908,0,0,0,0,0,0,0,0,0,0] RxReorder[209:0:0:0] RxPending[0:0:0:0] RfbTrack[0:60:10:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0] drv[RM,IL,RI,PA,PF,DU,DA,RT,RM,RW,RA,RB,DT,NS,IB,HS,LS,DD,ME,BD,NI,DR,TE,PE,CE,DN,FE,DE,IE,TME,CM,FB,ID,FD,NL]:1683437,0,1418372,1418372,0,0,0,1602249,4294971025,1370358,32183,1295,200210,0,0,7,0,7024,0,1945,0,191194,0,0,40,200170,0,0,0,0,42,0,0,0,0
+03-03 21:19:45.175 I/[wlan][6899]wlanLinkQualityMonitor( 6899): (SW4 INFO) Link Quality: Tx(rate:10, total:505282, retry:62091, fail:40705, RTS fail:0, ACK fail:40705), Rx(rate:516, total:493969, dup:7024, error:415743), PER(82), Congestion(idle slot:491729130, diff:26022, AwakeDur:9001848)
+03-03 21:19:45.176 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 0000000015517860, 0000000078da7d5e, cmd=0x85, seq=58
+03-03 21:19:45.176 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 0000000088d09226, 00000000ae7907ff, cmd=0x82, seq=59
+03-03 21:19:45.176 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm pc=490155.655731/0xf042d1f6;490155.655745/0xf042d05c;490155.655754/0xf049e286;490155.655765/0xf049e2de;490155.655774/0xf049a85c;
+03-03 21:19:45.176 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm lp=490155.655731/0xf042d1c8;490155.655745/0x008004a4;490155.655754/0xf049e294;490155.655765/0xf049e320;490155.655774/0xf047ab16;
+03-03 21:19:45.176 I/[wlan][6900]halDumpMsduReportStats( 6900): (HAL INFO) TX_Delay D:[1:5:10:20]=[18:0:0:0:0#0] C:[10:20:50:80]=[1:0:0:0:24#1437] M:[5:10:20:50]=[0:1:0:0:26#892] A:[5:10:20:50]=[0:0:0:0:0#0] F:[10:20:50:80]=[0:0:0:0:2#174] Txfail:2
+03-03 21:19:45.176 I/[wlan][6900]halDumpHifStats( 6900): (HAL INFO) I[0 / 974909 1 0 0 0x0 0x0 0] T[34248 34248 34245 / 375958 375958 375368 375788] R[1618582 / 208726] T_Q:T_R[0:215 0:0 0:0 0:0 0:1 0:0 0:3 0:0]  R_R:R_N[0:0 0:0 0:0 0:0] Msdu:F[8190/8192]P[1]D[0] Tok[11/4096] Rfb[4150/0/0/209/0/0/0/0/4150] txreg[265260] rxreg[1255429]
+03-03 21:19:45.177 I/[wlan][6899]nicRxProcessEventPacket( 6899): (RX INFO) Not static config event: id=0x21, seq=58
+03-03 21:19:45.177 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 0000000015517860, 0000000078da7d5e, cmd=0x85, seq=58
+03-03 21:19:45.177 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 0000000088d09226, 00000000ae7907ff, cmd=0x82, seq=59
+03-03 21:19:45.225 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+--------- beginning of main
+03-03 21:19:46.480 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:46.480 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:45.242 W/[FTS_TS]fts_input_report_b(  581): [B]P0(921, 2201)[p:24,tm:48] DOWN!
+03-03 21:19:46.481 I/mtkpower_client( 1166): ret_hdl:396865
+03-03 21:19:46.481 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:46.481 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:46.481 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396865 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396865
+03-03 21:19:46.481 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:46.481 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:46.481 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:46.481 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:46.481 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:46.482 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:46.482 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:46.483 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:46.483 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:45.280 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:45.280 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:45.307 I/[    C0] [ccci1/dpmf]dpmaif-txq(    0): 0-3(status=0xf)[2048]: 2048-1718413-1759301, 2048-319577-319577, 2048-0-0, 2048-77-77
+03-03 21:19:45.307 I/ccmni1  (13074): to:clr(28089:0)
+03-03 21:19:45.307 I/ccmni1  (13074): ccmni1(0,0), rx=(12311209,13650262852,753093), tx=(4491892,0,0), txq_len=(0,0), tx_drop=(0,0,0), rx_drop=(0,0), tx_busy=(0,0), sta=(0x2,0x80,0x1,0x1)
+03-03 21:19:45.307 I/ccmni2  (13074): to:clr(28089:0)
+03-03 21:19:45.307 I/ccmni2  (13074): ccmni2(1,1), rx=(15410485,17392969851,753093), tx=(5208052,0,0), txq_len=(0,0), tx_drop=(0,0,0), rx_drop=(0,0), tx_busy=(0,0), sta=(0x3,0x81,0x0,0x0)
+03-03 21:19:45.307 I/ccmni3  (13074): to:clr(28089:0)
+03-03 21:19:45.307 I/ccmni3  (13074): ccmni3(1,1), rx=(20921713,25121342061,753093), tx=(6175701,0,0), txq_len=(0,0), tx_drop=(0,0,0), rx_drop=(0,0), tx_busy=(0,0), sta=(0x3,0x81,0x0,0x0)
+03-03 21:19:45.307 I/        (    0): [    C0] [ccci1/dpmf]dpmaif-txq pos: w/r/rel=(210,210,210)(178,178,178)(0,0,0)(154,154,154), tx_busy=4131,0,0,0, last_isr=1bd5a1beed22f,1bd5d8e68bb8f,0,1bd4dbf94f5f0
+03-03 21:19:45.307 I/[    C0] [ccci1/dpmf]dpmaif-rxq0(    0): received:4153510; q_state=1; budget:16383; w/r=(20532,20532)
+03-03 21:19:45.307 I/        (13074): [ccci1/cif]total cnt=206546;rxq0 isr_cnt=5788;rxq1 isr_cnt=33288;rxq2 isr_cnt=0;rxq3 isr_cnt=812;rxq4 isr_cnt=22500;rxq5 isr_cnt=144651;rxq6 isr_cnt=44;rxq7 isr_cnt=3;rxq8 isr_cnt=0;rxq9 isr_cnt=0;rxq10 isr_cnt=0;rxq11 isr_cnt=0;rxq12 isr_cnt=0;rxq13 isr_cnt=0;rxq14 isr_cnt=0;rxq15 isr_cnt=1;rxq16 isr_cnt=0;rxq17 isr_cnt=0;rxq18 isr_cnt=0;rxq19 isr_cnt=0;rxq20 isr_cnt=0;rxq21 isr_cnt=0;rxq22 isr_cnt=0;rxq23 isr_cnt=0;
+03-03 21:19:46.581 I/libPerfCtl( 1041): xgfGetFPS pid:2067 fps:-1
+03-03 21:19:46.581 I/libPerfCtl( 1041): xgfGetFPS pid:2332 fps:-1
+03-03 21:19:46.581 I/libPerfCtl( 1041): xgfGetFPS pid:14908 fps:-1
+03-03 21:19:46.600 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:46.600 I/mtkpower_client( 1166): perf_lock_rel, hdl:396865, tid:1166
+03-03 21:19:46.600 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:46.600 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:46.600 I/libPowerHal( 1047): [perfLockRel] hdl:396865, idx:2
+03-03 21:19:46.601 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:46.601 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:46.601 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:46.601 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:46.601 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:46.602 E/libPowerHal( 1047): [getHintRscSize] hint_id 56 cannot be found in PowerScnTbl
+03-03 21:19:46.602 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:46.602 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:46.602 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:45.402 I/[wlan][6899]roamingFsmProcessEvent( 6899): (ROAMING INFO) ROAMING_EVENT_DISCOVERY Data[22363] RCPI[91(-65)] PER[87] Thr[56(-82)] Reason[1] Time[25171]
+03-03 21:19:45.402 I/[wlan][6899]roamingFsmSendCmd( 6899): (ROAMING INFO) [0](FAIL)->Send(ROAM): Current Time = 489857120
+03-03 21:19:45.402 I/[wlan][6899]roamingFsmRunEventDiscovery( 6899): (ROAMING EVENT) [0] EVENT-ROAMING DISCOVERY: Current Time = 489857120
+03-03 21:19:45.402 I/[wlan][6899]roamingFsmRunEventDiscovery( 6899): (ROAMING INFO) RCPI 91(-65)
+03-03 21:19:45.402 I/[wlan][6899]roamingFsmRunEventDiscovery( 6899): (ROAMING INFO) ucPER 87
+03-03 21:19:45.402 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [DECISION] -> [DISCOVERY]
+03-03 21:19:45.402 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [NORMAL_TR] -> [LOOKING_FOR]
+03-03 21:19:45.402 I/[wlan][6899]aisScanProcessReqCh( 6899): (AIS INFO) [Roaming] Target Scan: Total number of scan channel(s)=1
+03-03 21:19:45.402 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [IDLE] -> [SCANNING]
+03-03 21:19:45.402 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:200:D2F] 1: a86e1b8d5
+03-03 21:19:45.402 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:200:D2F] ScanReqV2: ScanType=1,BSS=0,SSIDType=8,Num=1,Ext=0,ChannelType=4,Num=1,Ext=0,Seq=167,Ver=1,Dw=0,Min=0,Func=(0x3,0x0),D=0,Mac=00:00:**:**:**:00,BSSID=00:00:**:**:**:00,OpT=0,DfsT=0,ChCnt=0 ,Ssid: Reddy@2F,Ch: 7
+03-03 21:19:46.649 I/NearbySharing(18610): Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+03-03 21:19:46.677 W/android.hardware.thermal-service.mediatek( 1046): parseMsg: Get from client TYPE=thermal_hal_notify NAME=SKIN
+03-03 21:19:46.677 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:name.c_str():SKIN
+03-03 21:19:46.677 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:tz notify:SKIN
+03-03 21:19:46.677 I/android.hardware.thermal-service.mediatek( 1046): Wait to accept a connection
+03-03 21:19:46.678 I/android.hardware.thermal-service.mediatek( 1046): Sending notification:  Type: SKIN Name: SKIN CurrentValue: 38.245 ThrottlingStatus: LIGHT
+03-03 21:19:46.678 I/android.hardware.thermal-service.mediatek( 1046): sendThermalChangedCallback
+03-03 21:19:45.443 I/[wlan][6899]qmFlushTimeoutReorderBubble( 6899): (QM INFO) QM:(Bub Timeout) 0:0 Bub(1)[3490]{3490,3745} -> Bub(0)[3490]{3494,3749}
+03-03 21:19:46.709 I/BufferQueueProducer( 1080): [com.example.foxos/com.example.foxos.MainActivity#142838](this:0xb4000075ed9080b8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=117.61 dur=1003.29 max=16.86 min=7.50
+03-03 21:19:45.514 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=1,F=2,P=5364
+03-03 21:19:45.577 I/instant_current(  901): cic_idx:0
+03-03 21:19:46.848 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:46.848 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:45.626 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:500:F2D] scnEventScanDone Version4!size of ScanDone476,ucCompleteChanCount[1],ucCurrentState7, u4ScanDurBcnCnt[1],Seq[167]
+03-03 21:19:45.626 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:500:F2D] 1: aa6e138d5
+03-03 21:19:45.626 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) Country Code = IN, Detected_Channel_Num = 1
+03-03 21:19:45.626 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) Channel  :      7
+03-03 21:19:45.626 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) IdleTime :   3949
+03-03 21:19:45.626 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) MdrdyCnt :     92
+03-03 21:19:45.626 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) BAndPCnt :      1
+03-03 21:19:45.626 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [SCANNING] -> [IDLE]
+03-03 21:19:45.626 I/[wlan][6899]aisFsmRunEventScanDone( 6899): (AIS INFO) ScanDone 167, status(0) native req(167)
+03-03 21:19:45.626 I/[wlan][6899]kalSendUevent( 6899): (INIT INFO) Send UEvent = Scan=Status:NORMAL,DBDC:DISABLE,Time:224,Channel:7 ,Reason:OK
+03-03 21:19:45.627 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] Total:1/19  Reddy@2F_5G;
+03-03 21:19:45.627 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] 2: aa6e138d5a86e1b8d5
+03-03 21:19:45.627 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] Call cfg80211_scan_done (aborted=0)
+03-03 21:19:45.627 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [LOOKING_FOR] -> [SEARCH]
+03-03 21:19:45.627 I/[wlan][6899]apsUpdateEssApList( 6899): (SCN INFO) Find Reddy@2F in 10 BSSes, result 1
+03-03 21:19:45.627 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) ConnectionPolicy = 0, reason = 1
+03-03 21:19:45.627 I/[wlan][6899]scanCalculateTotalScore( 6899): (SCN INFO) a8:6e:**:**:**:d5 cRSSI[-65] Band[2.4G] Score,Total 2402,DE[100], PR[0], SM[300], RSSI[264],BD[0],BL[400],SAA[100], BW[80], SC[50],ST[100],CI[582],IT[426],CU[0,0],PF[0], TPUT[0], DESENSE[0]
+03-03 21:19:45.627 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) Can't roam out, try blocklist
+03-03 21:19:46.869 I/netd    (  987): interfaceGetCfg(wlan0) -> {InterfaceConfigurationParcel{ifName: wlan0, hwAddr: 76:b3:e2:17:a4:7f, ipv4Addr: 192.168.4.9, prefixLength: 24, flags: [up, broadcast, running, multicast]}} <0.31ms>
+03-03 21:19:45.627 I/[wlan][6899]scanCalculateTotalScore( 6899): (SCN INFO) a8:6e:**:**:**:d5 cRSSI[-65] Band[2.4G] Score,Total 2402,DE[100], PR[0], SM[300], RSSI[264],BD[0],BL[400],SAA[100], BW[80], SC[50],ST[100],CI[582],IT[426],CU[0,0],PF[0], TPUT[0], DESENSE[0]
+03-03 21:19:45.628 I/[wlan][6899]scanNeedReplaceCandidate( 6899): (SCN INFO) CandBss in opchnl,add CurBss Score
+03-03 21:19:45.628 I/[wlan][6899]scanNeedReplaceCandidate( 6899): (SCN INFO) CurrBss in opchnl,add CandBss Score
+03-03 21:19:45.628 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) Selected a8:6e:**:**:**:d5, cRSSI[-65] Band[2.4G] Score 2402 when find Reddy@2F, 00:00:**:**:**:00 in 1 BSSes, fix channel 0.
+03-03 21:19:45.628 I/[wlan][6899]apsResetEssApList( 6899): (SCN INFO) BssIndex:0 reset prCurEssLin done
+03-03 21:19:45.628 I/[wlan][6899]aisSearchHandleBadBssDesc( 6899): (ROAMING INFO) fgIsConnected=1, prBssDesc a8:6e:**:**:**:d5, ucBssIndex=0
+03-03 21:19:45.628 I/[wlan][6899]roamingFsmRunEventNewCandidate( 6899): (ROAMING EVENT) [0] EVENT-NEW CANDIDATE: Current Time = 489857348
+03-03 21:19:45.628 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [DISCOVERY] -> [HANDLE_NEW_CANDIDATE]
+03-03 21:19:45.628 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [HANDLE_NEW_CANDIDATE] -> [ROAM]
+03-03 21:19:45.628 I/[wlan][6899]aisFsmRunEventRoamingRoam( 6899): (AIS INFO) [AIS0][0] curr state=SEARCH not allowed roaming
+03-03 21:19:45.628 I/[wlan][6899]aisSearchHandleBadBssDesc( 6899): (AIS INFO) [Roaming] No target found, try to full scan again
+03-03 21:19:45.628 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [SEARCH] -> [LOOKING_FOR]
+03-03 21:19:45.628 I/[wlan][6899]scanSetRequestChannel( 6899): (SCN INFO) channel num(0=>5) 00000000 00000000 00000000 00000000 00000000 00000000 00000100 0000048C 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+03-03 21:19:45.628 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [IDLE] -> [SCANNING]
+03-03 21:19:45.628 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:200:D2F] ScanReqV2: ScanType=1,BSS=0,SSIDType=8,Num=1,Ext=0,ChannelType=4,Num=5,Ext=0,Seq=168,Ver=1,Dw=0,Min=0,Func=(0x3,0x0),D=0,Mac=00:00:**:**:**:00,BSSID=00:00:**:**:**:00,OpT=0,DfsT=0,ChCnt=0 ,Ssid: Reddy@2F,Ch: 2 3 7 10 40
+03-03 21:19:45.632 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=0,F=0,P=5364
+03-03 21:19:45.655 I/[    C1] [wlan][0]statsParseARPInfo(    0): (TX INFO) ARP REQ SRC MAC/IP[76:b3:**:**:**:7f]/[192.***.***.9], TAR MAC/IP[00:00:**:**:**:00]/[192.***.***.1], SeqNo: 127
+03-03 21:19:45.744 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=1,F=2,P=112
+03-03 21:19:45.747 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:47.051 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:47.052 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:45.889 W/[FTS_TS]fts_input_report_b(  581): [B]P0(726, 6)[p:20,tm:32] DOWN!
+03-03 21:19:47.127 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:47.127 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:47.129 I/mtkpower_client( 1166): ret_hdl:396866
+03-03 21:19:47.129 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:47.129 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:47.130 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:47.130 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396866 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396866
+03-03 21:19:47.130 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:47.130 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:47.130 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:47.130 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:47.130 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:47.130 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:47.130 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:47.130 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:47.131 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:47.131 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:45.898 I/        ( 1696): hang_detect HANG_KICK ( 300)
+03-03 21:19:45.898 I/        ( 1696): [Hang_Detect] hang_detect enabled 10
+03-03 21:19:47.154 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:47.154 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:47.168 I/netd    (  987): tetherGetStats() -> {[TetherStatsParcel{iface: ccmni1, rxBytes: 3509550, rxPackets: 43041, txBytes: 3464010, txPackets: 46238, ifIndex: 0}, TetherStatsParcel{iface: ccmni2, rxBytes: 4035077, rxPackets: 51937, txBytes: 7654680, txPackets: 64146, ifIndex: 0}, TetherStatsParcel{iface: ccmni3, rxBytes: 3051754, rxPackets: 38176, txBytes: 3102428, txPackets: 41528, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni1, rxBytes: 368437434, rxPackets: 319516, txBytes: 98443403, txPackets: 140718, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni2, rxBytes: 177232448, rxPackets: 228673, txBytes: 311312455, txPackets: 310211, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni3, rxBytes: 4326832642, rxPackets: 1328562, txBytes: 509179019, txPackets: 977900, ifIndex: 0}, TetherStatsParcel{iface: wlan0, rxBytes: 1782021127, rxPackets: 1894403, txBytes: 2587817868, txPackets: 2362967, ifIndex: 0}]} <1.44ms>
+--------- beginning of system
+03-03 21:19:47.168 I/WindowManager( 1666): Relayout Window{6bf6bb6 u0 NotificationShade}: oldVis=4 newVis=0 focusMayChange = true requestedWidth = 1080 requestedHeight = 2400 outFrames = ClientWindowFrames{frame=[0,0][1080,2400] display=[0,0][1080,2400] parentFrame=[0,0][0,0]} outSurfaceControl = Surface(name=NotificationShade)/@0xe4951a2
+03-03 21:19:47.173 I/SurfaceFlinger( 1080): setDesiredDisplayModeSpecs: calling_process=system_server
+03-03 21:19:47.173 I/SurfaceFlinger( 1080): setDesiredDisplayModeSpecs: policy={defaultModeId=1, allowGroupSwitching=false, primaryRanges={physical=[0.00 Hz, 120.10 Hz], render=[0.00 Hz, 120.00 Hz]}, appRequestRanges={physical=[0.00 Hz, 120.10 Hz], render=[0.00 Hz, 120.00 Hz]} idleScreenConfig=nullptr}
+03-03 21:19:47.177 I/android.hardware.thermal-service.mediatek( 1046): getTemperaturesWithType TemperatureType: 3
+03-03 21:19:47.178 I/BufferQueueProducer( 1080): [Taskbar#122](this:0xb4000075ed86b6c8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=11.67 dur=1370.66 max=1003.55 min=7.62
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=0 tz_data[i].tz_idx[0]=10
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=1 tz_data[i].tz_idx[0]=10
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=2 tz_data[i].tz_idx[0]=7
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=3 tz_data[i].tz_idx[0]=56
+03-03 21:19:47.178 I/android.hardware.thermal-service.mediatek( 1046): fill_temperatures filterType1 name: SKIN type: SKIN throttlingStatus: LIGHT value: 38.245 ret_temps size 0
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=4 tz_data[i].tz_idx[0]=0
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=5 tz_data[i].tz_idx[0]=51
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=6 tz_data[i].tz_idx[0]=-1
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=7 tz_data[i].tz_idx[0]=-1
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=8 tz_data[i].tz_idx[0]=-1
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=9 tz_data[i].tz_idx[0]=10
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=10 tz_data[i].tz_idx[0]=10
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=11 tz_data[i].tz_idx[0]=-1
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=12 tz_data[i].tz_idx[0]=-1
+03-03 21:19:47.178 W/android.hardware.thermal-service.mediatek( 1046): i=13 tz_data[i].tz_idx[0]=10
+03-03 21:19:47.179 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142846, name=Surface(name=8d82e66 StatusBar)/@0x8ccea1a - animation-leash of insets_animation#142846
+03-03 21:19:47.179 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142847, name=Surface(name=5912cfa Taskbar)/@0xccba996 - animation-leash of insets_animation#142847
+03-03 21:19:47.177 W/dataInfoSend( 2594): type=1400 audit(0.0:837668615): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:47.177 W/dataInfoSend( 2594): type=1400 audit(0.0:837668616): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:47.177 W/dataInfoSend( 2594): type=1400 audit(0.0:837668617): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:47.177 W/dataInfoSend( 2594): type=1400 audit(0.0:837668618): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:47.177 W/dataInfoSend( 2594): type=1400 audit(0.0:837668619): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:45.945 W/audit   (17507): audit_lost=836141100 audit_rate_limit=5 audit_backlog_limit=64
+03-03 21:19:45.945 E/audit   (17507): rate limit exceeded
+03-03 21:19:47.188 W/WindowManager( 1666): Changing focus from Window{bdd1d92 u0 com.example.foxos/com.example.foxos.MainActivity} to Window{6bf6bb6 u0 NotificationShade} displayId=0 Callers=com.android.server.wm.RootWindowContainer.updateFocusedWindowLocked:494 com.android.server.wm.WindowManagerService.updateFocusedWindowLocked:6812 com.android.server.wm.WindowManagerService.relayoutWindow:2786 com.android.server.wm.Session.relayout:288 
+03-03 21:19:47.195 I/BufferQueueProducer( 1080): [StatusBar#92](this:0xb4000075ed8577d8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=1.72 dur=1162.41 max=861.12 min=301.29
+03-03 21:19:47.197 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142851, name=Surface(name=5912cfa Taskbar)/@0xccba996 - animation-leash of insets_animation#142851
+03-03 21:19:47.206 W/HWUI    ( 2067): Image decoding logging dropped!
+03-03 21:19:47.206 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142848, name=Surface(name=8d82e66 StatusBar)/@0x8ccea1a - animation-leash of insets_animation#142848
+03-03 21:19:47.207 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142849, name=Surface(name=5912cfa Taskbar)/@0xccba996 - animation-leash of insets_animation#142849
+03-03 21:19:47.208 W/HWUI    ( 2067): Image decoding logging dropped!
+03-03 21:19:47.247 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:47.247 I/mtkpower_client( 1166): perf_lock_rel, hdl:396866, tid:1166
+03-03 21:19:47.248 I/libPowerHal( 1047): [perfLockRel] hdl:396866, idx:2
+03-03 21:19:46.008 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:46.008 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:47.249 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:47.249 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:47.249 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:47.249 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:47.249 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:47.248 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:47.250 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:47.251 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:47.251 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:47.251 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:47.271 I/hwcomposer( 1022): [HWCDisplay] [Display_0 (type:1, mode:2)] fps:117.640457,dur:1003.06,max:16.73,min:5.81  
+03-03 21:19:46.044 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=0,F=0,P=112
+03-03 21:19:46.117 I/instant_current(  901): cic_idx:0
+03-03 21:19:46.154 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=1,F=2,P=108
+03-03 21:19:47.432 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:46.194 W/[FTS_TS]fts_input_report_b(  581): [B]P0(793, 584)[p:28,tm:32] DOWN!
+03-03 21:19:47.432 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:47.435 I/mtkpower_client( 1166): ret_hdl:396867
+03-03 21:19:47.435 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:47.435 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:47.435 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396867 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396867
+03-03 21:19:47.435 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:47.435 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:47.435 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:47.435 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:47.435 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:47.435 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:47.437 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:47.438 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:47.438 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:46.199 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) <1024ms> Tput: 36992(0.036mbps) [3775:9:960:3][0:0:0:0][0:0:0:0][0:0:0:0] Pending:1/4096 [0:1:0:0][0:0:0:0][0:0:0:0][0:0:0:0] LQ[505341:493992:26022] idle:0 lv:0 th:5 fg:0x9 TxCpu[40421,42894,175011,38963,19598,20595,18052,20434] RxCpu[0,0,0,0,0,0,0,0] TxDp[ST:BS:FO:QM:DP]:0:0:0:0:1501 Tx[SQ:TI:TM:TDD:TDM:TIC:TFP]:0:375968:375968:0:0:8520:375966 MgmtSub[2:0:1:0:0:0:0:0:0:0:0:3:3:10:0:0]
+03-03 21:19:46.199 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) ndevdrp:[0:0:0:0][0:0:0:4] NAPI[974927,0,0,0,0,0,0,0,0,0,0] RxReorder[210:0:0:0] RxPending[0:0:0:0] RfbTrack[0:60:10:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0] drv[RM,IL,RI,PA,PF,DU,DA,RT,RM,RW,RA,RB,DT,NS,IB,HS,LS,DD,ME,BD,NI,DR,TE,PE,CE,DN,FE,DE,IE,TME,CM,FB,ID,FD,NL]:1683454,0,1418375,1418375,0,0,0,1602254,4294971025,1370358,32186,1295,200211,0,0,7,0,7025,0,1945,0,191194,0,0,40,200171,0,0,0,0,42,0,0,0,0
+03-03 21:19:46.199 W/asicConnac2xFillCmdTxdInfo( 6899): 12 callbacks suppressed
+03-03 21:19:46.199 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x7E] SEQ[63] SET[1] LEN[376]
+03-03 21:19:46.199 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x85] SEQ[64] SET[0] LEN[92]
+03-03 21:19:46.199 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x82] SEQ[65] SET[0] LEN[76]
+03-03 21:19:46.199 I/[wlan][6899]wlanLinkQualityMonitor( 6899): (SW4 INFO) Link Quality: Tx(rate:10, total:505341, retry:62103, fail:40740, RTS fail:0, ACK fail:40740), Rx(rate:516, total:493992, dup:7025, error:415801), PER(59), Congestion(idle slot:491762372, diff:33242, AwakeDur:9002873)
+03-03 21:19:46.199 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 0000000037841435, 0000000078da7d5e, cmd=0x85, seq=64
+03-03 21:19:46.199 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 00000000b8d8c22e, 00000000ae7907ff, cmd=0x82, seq=65
+03-03 21:19:46.200 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm pc=490156.679340/0xf0497934;490156.679346/0x00905184;490156.679349/0x00905186;490156.679353/0xf044482c;490156.679356/0xf0444846;
+03-03 21:19:46.200 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm lp=490156.679340/0xf0497d28;490156.679346/0x00905186;490156.679349/0xf03a9b5e;490156.679353/0xf04708ac;490156.679356/0xf0444830;
+03-03 21:19:46.200 I/[wlan][6900]halDumpMsduReportStats( 6900): (HAL INFO) TX_Delay D:[1:5:10:20]=[8:0:1:0:0#0] C:[10:20:50:80]=[0:0:0:0:1#76] M:[5:10:20:50]=[0:0:0:0:1#75] A:[5:10:20:50]=[0:0:0:0:0#0] F:[10:20:50:80]=[0:0:0:0:0#0] Txfail:0
+03-03 21:19:46.200 I/[wlan][6900]halDumpHifStats( 6900): (HAL INFO) I[0 / 974928 1 0 0 0x0 0x0 0] T[34254 34254 34251 / 375967 375967 375368 375789] R[1618587 / 208739] T_Q:T_R[0:224 0:0 0:0 0:0 0:1 0:0 0:3 0:0]  R_R:R_N[0:0 0:0 0:0 0:0] Msdu:F[8190/8192]P[1]D[0] Tok[19/4096] Rfb[4149/0/0/210/0/0/0/0/4150] txreg[265268] rxreg[1255446]
+03-03 21:19:46.200 I/[wlan][6899]nicRxProcessEventPacket( 6899): (RX INFO) Not static config event: id=0x21, seq=64
+03-03 21:19:46.200 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 0000000037841435, 0000000078da7d5e, cmd=0x85, seq=64
+03-03 21:19:46.201 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 00000000b8d8c22e, 00000000ae7907ff, cmd=0x82, seq=65
+03-03 21:19:46.219 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(24), skip!
+03-03 21:19:46.219 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(7), skip!
+03-03 21:19:46.219 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(7), skip!
+03-03 21:19:46.244 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:47.490 I/bzxn    (24810): #onStartListening
+03-03 21:19:47.490 I/bzxn    (24810): setActivityLaunchForClick
+03-03 21:19:47.490 I/bzxn    (24810): #getOmnientAudioSearchPermissionCheckActivityIntent
+03-03 21:19:46.269 I/[DISP]mtk_dsi_esd_cmp(  240): expect[0x9f], read[0x9f]
+03-03 21:19:46.272 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:46.276 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:46.280 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:46.281 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:500:F2D] scnEventScanDone Version4!size of ScanDone476,ucCompleteChanCount[5],ucCurrentState7, u4ScanDurBcnCnt[6],Seq[168]
+03-03 21:19:46.281 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:500:F2D] 7: a86e1b8d5f00917ab3a86e1b8d7aa6e188d5a86e1ba18aa6e18a16aa6e19a16
+03-03 21:19:46.281 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) Country Code = IN, Detected_Channel_Num = 5
+03-03 21:19:46.281 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) Channel  :      2     3     7    10    40
+03-03 21:19:46.281 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) IdleTime :   5379  5989  3590  4648  5678
+03-03 21:19:46.281 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) MdrdyCnt :      4    50    82     6     8
+03-03 21:19:46.281 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) BAndPCnt :      0     0     0     1     5
+03-03 21:19:46.281 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [SCANNING] -> [IDLE]
+03-03 21:19:46.281 I/[wlan][6899]aisFsmRunEventScanDone( 6899): (AIS INFO) ScanDone 168, status(0) native req(168)
+03-03 21:19:46.282 I/[wlan][6899]kalSendUevent( 6899): (INIT INFO) Send UEvent = Scan=Status:NORMAL,DBDC:DISABLE,Time:652,Channel:2 3 7 10 40 ,Reason:OK
+03-03 21:19:46.282 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] Total:7/19  Reddy@2F; SLN STAR PG 7; Realme 5 Pro; Reddy@2F_5G_1; Reddy@3F_5G; Reddy@3F_5G_1; Reddy@3F_5G_2;
+03-03 21:19:46.282 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] 7: a86e1b8d5f00917ab3a86e1b8d7aa6e188d5a86e1ba18aa6e18a16aa6e19a16
+03-03 21:19:46.282 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] Call cfg80211_scan_done (aborted=0)
+03-03 21:19:46.282 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [LOOKING_FOR] -> [SEARCH]
+03-03 21:19:46.282 I/[wlan][6899]apsUpdateEssApList( 6899): (SCN INFO) Find Reddy@2F in 11 BSSes, result 1
+03-03 21:19:46.282 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) ConnectionPolicy = 0, reason = 1
+03-03 21:19:46.282 I/[wlan][6899]scanCalculateTotalScore( 6899): (SCN INFO) a8:6e:**:**:**:d5 cRSSI[-67] Band[2.4G] Score,Total 2444,DE[100], PR[0], SM[400], RSSI[248],BD[0],BL[400],SAA[100], BW[80], SC[50],ST[100],CI[582],IT[384],CU[0,0],PF[0], TPUT[0], DESENSE[0]
+03-03 21:19:46.282 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) Can't roam out, try blocklist
+03-03 21:19:46.282 I/[wlan][6899]scanCalculateTotalScore( 6899): (SCN INFO) a8:6e:**:**:**:d5 cRSSI[-67] Band[2.4G] Score,Total 2444,DE[100], PR[0], SM[400], RSSI[248],BD[0],BL[400],SAA[100], BW[80], SC[50],ST[100],CI[582],IT[384],CU[0,0],PF[0], TPUT[0], DESENSE[0]
+03-03 21:19:46.282 I/[wlan][6899]scanNeedReplaceCandidate( 6899): (SCN INFO) CandBss in opchnl,add CurBss Score
+03-03 21:19:46.282 I/[wlan][6899]scanNeedReplaceCandidate( 6899): (SCN INFO) CurrBss in opchnl,add CandBss Score
+03-03 21:19:46.282 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) Selected a8:6e:**:**:**:d5, cRSSI[-67] Band[2.4G] Score 2444 when find Reddy@2F, 00:00:**:**:**:00 in 1 BSSes, fix channel 0.
+03-03 21:19:46.282 I/[wlan][6899]apsResetEssApList( 6899): (SCN INFO) BssIndex:0 reset prCurEssLin done
+03-03 21:19:46.282 I/[wlan][6899]aisSearchHandleBadBssDesc( 6899): (ROAMING INFO) fgIsConnected=1, prBssDesc a8:6e:**:**:**:d5, ucBssIndex=0
+03-03 21:19:46.282 I/[wlan][6899]roamingFsmRunEventNewCandidate( 6899): (ROAMING EVENT) [0] EVENT-NEW CANDIDATE: Current Time = 489858000
+03-03 21:19:46.282 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [ROAM] -> [HANDLE_NEW_CANDIDATE]
+03-03 21:19:46.282 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [HANDLE_NEW_CANDIDATE] -> [ROAM]
+03-03 21:19:46.282 I/[wlan][6899]aisFsmRunEventRoamingRoam( 6899): (AIS INFO) [AIS0][0] curr state=SEARCH not allowed roaming
+03-03 21:19:46.282 I/[wlan][6899]roamingFsmRunEventFail( 6899): (ROAMING STATE) [0] EVENT-ROAMING FAIL: reason 1 Current Time = 489858000
+03-03 21:19:46.282 I/[wlan][6899]roamingFsmSendCmd( 6899): (ROAMING INFO) [0](ROAM)->Send(FAIL): Current Time = 489858000
+03-03 21:19:46.282 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x30] SEQ[66] SET[1] LEN[88]
+03-03 21:19:46.282 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [ROAM] -> [DECISION]
+03-03 21:19:46.282 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [SEARCH] -> [NORMAL_TR]
+03-03 21:19:47.524 I/netd    (  987): interfaceGetCfg(wlan0) -> {InterfaceConfigurationParcel{ifName: wlan0, hwAddr: 76:b3:e2:17:a4:7f, ipv4Addr: 192.168.4.9, prefixLength: 24, flags: [up, broadcast, running, multicast]}} <0.27ms>
+03-03 21:19:46.287 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=0,F=0,P=108
+03-03 21:19:47.551 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:47.551 I/mtkpower_client( 1166): perf_lock_rel, hdl:396867, tid:1166
+03-03 21:19:47.552 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:47.552 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:47.552 I/libPowerHal( 1047): [perfLockRel] hdl:396867, idx:2
+03-03 21:19:47.552 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:47.553 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:47.553 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:47.553 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:47.553 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:47.554 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:47.555 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:47.555 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:46.315 I/[wlan][6899]qmFlushTimeoutReorderBubble( 6899): (QM INFO) QM:(Bub Timeout) 0:0 Bub(1)[3494]{3494,3749} -> Bub(0)[3494]{3496,3751}
+03-03 21:19:47.582 I/libPerfCtl( 1041): xgfGetFPS pid:2067 fps:120
+03-03 21:19:47.582 I/libPerfCtl( 1041): xgfGetFPS pid:2332 fps:-1
+03-03 21:19:47.582 I/libPerfCtl( 1041): xgfGetFPS pid:14908 fps:-1
+03-03 21:19:46.357 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:46.368 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:46.368 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:46.423 I/[    C1] [wlan][0]statsParseARPInfo(    0): (TX INFO) ARP REQ SRC MAC/IP[76:b3:**:**:**:7f]/[192.***.***.9], TAR MAC/IP[00:00:**:**:**:00]/[192.***.***.1], SeqNo: 128
+03-03 21:19:46.423 I/[wlan][6899]nic_txd_v2_compose( 6899): (TX INFO) TX[ARP] WIDX[6] PID[2]
+03-03 21:19:47.678 W/android.hardware.thermal-service.mediatek( 1046): parseMsg: Get from client TYPE=thermal_hal_notify NAME=SKIN
+03-03 21:19:47.678 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:name.c_str():SKIN
+03-03 21:19:47.678 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:tz notify:SKIN
+03-03 21:19:47.678 I/android.hardware.thermal-service.mediatek( 1046): Wait to accept a connection
+03-03 21:19:47.679 I/android.hardware.thermal-service.mediatek( 1046): Sending notification:  Type: SKIN Name: SKIN CurrentValue: 38.245 ThrottlingStatus: LIGHT
+03-03 21:19:47.680 I/android.hardware.thermal-service.mediatek( 1046): sendThermalChangedCallback
+03-03 21:19:46.453 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:47.713 I/BufferQueueProducer( 1080): [com.example.foxos/com.example.foxos.MainActivity#142838](this:0xb4000075ed9080b8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=118.55 dur=1003.82 max=16.00 min=7.44
+03-03 21:19:46.656 I/instant_current(  901): cic_idx:0
+03-03 21:19:46.787 I/[wlan][6899]kalDumpPwrLevel( 6899): (SW4 INFO) Current power level: 0
+03-03 21:19:46.809 I/[wlan][6899]statsParseARPInfo( 6899): (RX INFO) <RX> Arp Rsp From IP: 192.***.***.1 SSN:237
+03-03 21:19:46.810 I/[wlan][6899]wlanPktTxDone( 6899): (TX INFO) TX DONE, Type[ARP] Tag[0x578a2f00] WIDX:PID[6:1] SN[3868] Status[0], SeqNo: 126
+03-03 21:19:48.050 I/netd    (  987): setProcSysNet(4, 2, wlan0, retrans_time_ms, 750) <0.20ms>
+03-03 21:19:48.051 I/netd    (  987): setProcSysNet(4, 2, wlan0, ucast_solicit, 10) <0.15ms>
+03-03 21:19:48.052 I/netd    (  987): setProcSysNet(6, 2, wlan0, retrans_time_ms, 750) <0.25ms>
+03-03 21:19:48.053 I/netd    (  987): setProcSysNet(6, 2, wlan0, ucast_solicit, 10) <0.22ms>
+03-03 21:19:48.113 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:48.114 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:46.876 W/[FTS_TS]fts_input_report_b(  581): [B]P0(844, 1242)[p:26,tm:48] DOWN!
+03-03 21:19:48.115 I/mtkpower_client( 1166): ret_hdl:396868
+03-03 21:19:48.115 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:48.115 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:48.115 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396868 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396868
+03-03 21:19:48.115 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:48.115 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:48.115 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:48.115 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:48.115 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:48.115 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:48.116 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:48.116 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:48.116 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:48.133 W/JobServiceContext( 1666): Sending onNetworkChanged for a job that isn't started. JobStatus{35fde76 androidx.work.systemjobscheduler:u0a372/571 @androidx.work.systemjobscheduler@com.instagram.android/androidx.work.impl.background.systemjob.SystemJobService u=0 s=10372 TIME=-45s982ms:none NET READY}
+03-03 21:19:48.133 W/JobServiceContext( 1666): Sending onNetworkChanged for a job that isn't started. JobStatus{116ec95 androidx.work.systemjobscheduler:u0a372/568 @androidx.work.systemjobscheduler@com.instagram.android/androidx.work.impl.background.systemjob.SystemJobService u=0 s=10372 TIME=-46s126ms:none NET READY}
+03-03 21:19:48.139 I/ActivityManager( 1666): Start proc 15239:com.google.android.apps.youtube.music/u0a169 for service {com.google.android.apps.youtube.music/androidx.work.impl.background.systemjob.SystemJobService}
+03-03 21:19:48.139 I/START_DEBUG( 1666): send START_TIMEOUT message    ProcessRecord :ProcessRecord{1388c6f 15239:com.google.android.apps.youtube.music/u0a169}
+03-03 21:19:48.139 I/ActivityManager( 1666): ProcessObserver broadcast disabled
+03-03 21:19:48.154 I/s.youtube.music(15239): Using CollectorTypeCMC GC.
+03-03 21:19:48.171 I/adbd    (28396): jdwp connection from 15239
+03-03 21:19:48.175 I/START_DEBUG( 1666): send BINDTIMEOUT    ProcessRecord :ProcessRecord{1388c6f 15239:com.google.android.apps.youtube.music/u0a169}
+03-03 21:19:48.175 I/START_DEBUG( 1666): remove START_TIMEOUT finish    ProcessRecord :ProcessRecord{1388c6f 15239:com.google.android.apps.youtube.music/u0a169}
+03-03 21:19:48.181 I/android.hardware.thermal-service.mediatek( 1046): getTemperaturesWithType TemperatureType: 3
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=0 tz_data[i].tz_idx[0]=10
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=1 tz_data[i].tz_idx[0]=10
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=2 tz_data[i].tz_idx[0]=7
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=3 tz_data[i].tz_idx[0]=56
+03-03 21:19:48.181 I/android.hardware.thermal-service.mediatek( 1046): fill_temperatures filterType1 name: SKIN type: SKIN throttlingStatus: LIGHT value: 38.245 ret_temps size 0
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=4 tz_data[i].tz_idx[0]=0
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=5 tz_data[i].tz_idx[0]=51
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=6 tz_data[i].tz_idx[0]=-1
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=7 tz_data[i].tz_idx[0]=-1
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=8 tz_data[i].tz_idx[0]=-1
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=9 tz_data[i].tz_idx[0]=10
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=10 tz_data[i].tz_idx[0]=10
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=11 tz_data[i].tz_idx[0]=-1
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=12 tz_data[i].tz_idx[0]=-1
+03-03 21:19:48.181 W/android.hardware.thermal-service.mediatek( 1046): i=13 tz_data[i].tz_idx[0]=10
+03-03 21:19:48.189 I/netd    (  987): tetherGetStats() -> {[TetherStatsParcel{iface: ccmni1, rxBytes: 3509550, rxPackets: 43041, txBytes: 3464010, txPackets: 46238, ifIndex: 0}, TetherStatsParcel{iface: ccmni2, rxBytes: 4035077, rxPackets: 51937, txBytes: 7654680, txPackets: 64146, ifIndex: 0}, TetherStatsParcel{iface: ccmni3, rxBytes: 3051754, rxPackets: 38176, txBytes: 3102428, txPackets: 41528, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni1, rxBytes: 368437434, rxPackets: 319516, txBytes: 98443403, txPackets: 140718, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni2, rxBytes: 177232448, rxPackets: 228673, txBytes: 311312455, txPackets: 310211, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni3, rxBytes: 4326832642, rxPackets: 1328562, txBytes: 509179019, txPackets: 977900, ifIndex: 0}, TetherStatsParcel{iface: wlan0, rxBytes: 1782021127, rxPackets: 1894403, txBytes: 2587817868, txPackets: 2362967, ifIndex: 0}]} <5.04ms>
+03-03 21:19:48.185 W/dataInfoSend( 2594): type=1400 audit(0.0:837671620): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.185 W/dataInfoSend( 2594): type=1400 audit(0.0:837671621): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.185 W/dataInfoSend( 2594): type=1400 audit(0.0:837671622): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.185 W/dataInfoSend( 2594): type=1400 audit(0.0:837671623): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.185 W/dataInfoSend( 2594): type=1400 audit(0.0:837671624): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.189 I/BufferQueueProducer( 1080): [NotificationShade#142850](this:0xb4000075ed887e68,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=72.76 dur=1003.27 max=393.02 min=7.97
+03-03 21:19:46.952 W/audit   (17507): audit_lost=836144100 audit_rate_limit=5 audit_backlog_limit=64
+03-03 21:19:46.952 E/audit   (17507): rate limit exceeded
+03-03 21:19:46.978 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:46.978 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:48.233 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:48.233 I/mtkpower_client( 1166): perf_lock_rel, hdl:396868, tid:1166
+03-03 21:19:48.233 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:48.233 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:48.234 I/libPowerHal( 1047): [perfLockRel] hdl:396868, idx:2
+03-03 21:19:48.234 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:48.234 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:48.234 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:48.234 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:48.234 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:48.235 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:48.235 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:48.235 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:48.235 E/msys    (11067): E[N mns]_CacheRefreshTimerCallback(454)=>Start active cache refresh DNS resolution
+03-03 21:19:48.235 E/msys    (11067): E[N mns]_CacheRefreshTimerCallback(454)=>Start active cache refresh DNS resolution
+03-03 21:19:48.236 E/msys    (11067): E[N mns]_CacheRefreshTimerCallback(454)=>Start active cache refresh DNS resolution
+03-03 21:19:48.236 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.237 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.238 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.238 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:48.239 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.001 I/[wlan][15256]statsParseUDPInfo(15256): (TX INFO) <TX> DNS: IPID[0xd7ca] TransID[0x303a] SeqNo[129]
+03-03 21:19:47.002 I/[wlan][6899]nic_txd_v2_compose( 6899): (TX INFO) TX[DNS] WIDX[6] PID[3]
+03-03 21:19:47.002 I/[wlan][15257]statsParseUDPInfo(15257): (TX INFO) <TX> DNS: IPID[0x24ef] TransID[0x6e01] SeqNo[130]
+03-03 21:19:48.242 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.005 I/[wlan][15258]statsParseUDPInfo(15258): (TX INFO) <TX> DNS: IPID[0x7e94] TransID[0x2efb] SeqNo[131]
+03-03 21:19:48.236 E/msys    (11067): E[N mns]_CacheRefreshTimerCallback(454)=>Start active cache refresh DNS resolution
+03-03 21:19:48.250 E/msys    (11067): E[N mns]_CacheRefreshTimerCallback(454)=>Start active cache refresh DNS resolution
+03-03 21:19:48.250 E/msys    (11067): E[N mns]_CacheRefreshTimerCallback(454)=>Start active cache refresh DNS resolution
+03-03 21:19:48.251 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.252 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.015 I/[wlan][15260]statsParseUDPInfo(15260): (TX INFO) <TX> DNS: IPID[0x6b8] TransID[0x6a77] SeqNo[132]
+03-03 21:19:48.253 I/NtAudioManager(11067): getStreamVolume streamType :3, pkg :com.instagram.android, index :8
+03-03 21:19:48.253 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.257 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.257 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.260 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:47.019 I/[wlan][6899]statsParseARPInfo( 6899): (RX INFO) <RX> Arp Rsp From IP: 192.***.***.1 SSN:238
+03-03 21:19:48.262 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.265 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.266 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.266 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.267 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.267 E/msys    (11067): E[N MQTT]onConnectError(562)=>Connect Error: folly::AsyncSocketException: AsyncSocketException: connect timed out after 199994ms, type = Timed out
+03-03 21:19:48.267 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.275 I/hwcomposer( 1022): [HWCDisplay] [Display_0 (type:1, mode:2)] fps:118.574509,dur:1003.59,max:17.18,min:6.22  
+03-03 21:19:47.035 I/[wlan][6899]statsParseARPInfo( 6899): (RX INFO) <RX> Arp Rsp From IP: 192.***.***.1 SSN:239
+03-03 21:19:47.035 I/[wlan][6899]wlanPktTxDone( 6899): (TX INFO) TX DONE, Type[ARP] Tag[0x51e6f400] WIDX:PID[6:2] SN[3884] Status[0], SeqNo: 128
+03-03 21:19:48.278 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:48.286 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.311 I/NtAudioManager(11067): getStreamVolume streamType :3, pkg :com.instagram.android, index :8
+03-03 21:19:48.312 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.313 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.313 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.314 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.314 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.334 W/RealtimeClientManager(11067): Channel state: MqttChannelState{mConnectionState=DISCONNECTED, mDisconnectionReason=null, mLastConnectionMs=904882563, mLastDisconnectMs=905336567}
+03-03 21:19:48.334 E/msys    (11067): E[S MSync]_ModularSyncHandleNetworkResponse(1718)=>DB[223] - Encountered a network error (2002: TransientError domain: MNSQUICConnection code: 1 detail: Local error: 0x40000015: 35 seconds timeout)
+03-03 21:19:48.335 E/msys    (11067): E[S MSync]_ModularSyncHandleNetworkErrorResponse(1430)=>DB[223] - handle network error response
+03-03 21:19:48.339 E/MQTTBypassDGWStreamGroupCallbacks.cpp(11067): onStreamGroupError TransientError domain: MNSQUICConnection code: 1 detail: Local error: 0x40000015: 35 seconds timeout
+03-03 21:19:48.340 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:47.099 I/        (30446): [name:spm&][SPM] mcusys was not off
+03-03 21:19:47.099 I/        (30446): [name:spm&] Pending Wakeup Sources: WLAN Timer WLAN timeout disp_crtc0_wakelock
+03-03 21:19:48.341 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.342 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.105 I/[wlan][15264]statsParseUDPInfo(15264): (TX INFO) <TX> DNS: IPID[0xe73b] TransID[0xcd93] SeqNo[133]
+03-03 21:19:48.345 W/ActivityManager( 1666): Background start not allowed: service Intent { act=Orca.START xflg=0x4 cmp=com.instagram.android/com.facebook.rti.pushv2.inapp.InappFbnsService (has extras) } to com.instagram.android/com.facebook.rti.pushv2.inapp.InappFbnsService from pid=11067 uid=10372 pkg=com.instagram.android startFg?=false
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): [AI] Failed to start service due to IllegalStateException on Android O
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): android.app.BackgroundServiceStartNotAllowedException: Not allowed to start service Intent { act=Orca.START xflg=0x4 cmp=com.instagram.android/com.facebook.rti.pushv2.inapp.InappFbnsService (has extras) }: app is in background uid UidRecord{fd7dfd u0a372 TRNB bg:+7m36s675ms idle change:uncachedprocstateprocadj procs:0 seq(4924437,4924437)} caps=-------T
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.app.ContextImpl.startServiceCommon(ContextImpl.java:2048)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.app.ContextImpl.startService(ContextImpl.java:2003)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.content.ContextWrapper.startService(ContextWrapper.java:855)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at X.2nW.A01(Unknown Source:30)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at X.6JD.A01(Unknown Source:12)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at X.2nS.A00(Unknown Source:85)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at X.2nG.DPZ(Unknown Source:283)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at com.instagram.push.FbnsInitBroadcastReceiver.onReceive(Unknown Source:313)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:1883)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(Unknown Source:0)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.os.Handler.handleCallback(Handler.java:995)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.os.Handler.dispatchMessage(Handler.java:103)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.os.Looper.loopOnce(Looper.java:283)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.os.Looper.loop(Looper.java:392)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at android.app.ActivityThread.main(ActivityThread.java:9231)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at java.lang.reflect.Method.invoke(Native Method)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:633)
+03-03 21:19:48.346 W/RtiGracefulSystemMethodHelper(11067): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1026)
+03-03 21:19:48.346 W/MQTTBypassDGWStreamGroupConnection.cpp(11067): Restarting due to reason: StreamError
+03-03 21:19:48.350 W/IrisSyncManager(11067): Iris unsubscribed
+03-03 21:19:48.351 E/SlowAppComponent(11067): 0ms: SystemJobService instantiating…
+03-03 21:19:48.352 E/SlowAppComponent(11067): Main thread was blocked for 57ms in the background starting with SystemJobService
+03-03 21:19:48.353 W/RealtimeClientManager(11067): Channel state: MqttChannelState{mConnectionState=CONNECTING, mDisconnectionReason=null, mLastConnectionMs=904882563, mLastDisconnectMs=905336567}
+03-03 21:19:48.365 I/NtAudioManager(11067): getStreamVolume streamType :3, pkg :com.instagram.android, index :8
+03-03 21:19:48.365 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.365 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.366 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.367 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.370 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.370 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.370 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.372 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.372 I/NetworkScheduler.Stats(18610): (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+03-03 21:19:48.374 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.376 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.377 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.377 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.378 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.378 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.378 I/NtAudioManager(11067): pkg :com.instagram.android, getStreamVolume streamType: 3 too fast, return last index :8
+03-03 21:19:48.386 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.388 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.150 I/[wlan][15270]statsParseUDPInfo(15270): (TX INFO) <TX> DNS: IPID[0xa826] TransID[0x1d97] SeqNo[134]
+03-03 21:19:48.389 I/NetworkScheduler.Stats(18610): (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+03-03 21:19:48.405 W/s.youtube.music(15239): Failed to find entry 'classes.dex': Entry not found
+03-03 21:19:48.408 W/s.youtube.music(15239): Failed to find entry 'classes.dex': Entry not found
+03-03 21:19:47.197 I/instant_current(  901): cic_idx:0
+03-03 21:19:47.208 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) <1008ms> Tput: 184896(0.180mbps) [21373:34:1924:23][0:0:0:0][0:0:0:0][0:0:0:0] Pending:2/4096 [0:2:0:0][0:0:0:0][0:0:0:0][0:0:0:0] LQ[505363:493999:33242] idle:0 lv:0 th:5 fg:0x9 TxCpu[40424,42897,175027,38966,19601,20598,18054,20435] RxCpu[0,0,0,0,0,0,0,0] TxDp[ST:BS:FO:QM:DP]:0:0:0:0:1506 Tx[SQ:TI:TM:TDD:TDM:TIC:TFP]:0:376002:376002:0:0:8526:375999 MgmtSub[2:0:1:0:0:0:0:0:0:0:0:3:3:10:0:0]
+03-03 21:19:47.208 I/[wlan][6900]halDumpMsduReportStats( 6900): (HAL INFO) TX_Delay D:[1:5:10:20]=[34:0:0:0:0#0] C:[10:20:50:80]=[0:0:0:0:24#1025] M:[5:10:20:50]=[0:0:1:1:22#429] A:[5:10:20:50]=[0:0:0:0:0#0] F:[10:20:50:80]=[0:0:0:0:0#0] Txfail:0
+03-03 21:19:47.208 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) ndevdrp:[0:0:0:0][0:0:0:4] NAPI[974979,0,0,0,0,0,0,0,0,0,0] RxReorder[209:0:0:0] RxPending[0:0:0:0] RfbTrack[0:60:10:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0] drv[RM,IL,RI,PA,PF,DU,DA,RT,RM,RW,RA,RB,DT,NS,IB,HS,LS,DD,ME,BD,NI,DR,TE,PE,CE,DN,FE,DE,IE,TME,CM,FB,ID,FD,NL]:1683490,0,1418398,1418398,0,0,0,1602276,4294971025,1370380,32187,1295,200211,0,0,7,0,7025,0,1945,0,191194,0,0,40,200171,0,0,0,0,42,0,0,0,0
+03-03 21:19:47.208 I/[wlan][6900]halDumpHifStats( 6900): (HAL INFO) I[0 / 974979 1 0 1 0x0 0x0 0] T[34255 34255 34255 / 376001 376001 375368 375813] R[1618609 / 208777] T_Q:T_R[0:258 0:0 0:0 0:0 0:1 0:0 0:0 0:0]  R_R:R_N[0:0 0:0 0:0 0:0] Msdu:F[8189/8192]P[1]D[0] Tok[29/4096] Rfb[4150/0/0/209/0/0/0/0/4150] txreg[265296] rxreg[1255498]
+03-03 21:19:48.454 I/DefaultProcessValidator(19302): Validating WorkManager process
+03-03 21:19:48.455 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:48.456 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:48.466 I/s.youtube.music(15239): AssetManager2(0xb40000721195fa18) locale list changing from [] to [en-GB]
+03-03 21:19:48.467 I/DefaultProcessValidator(19302): Processes: NONE, true, com.google.android.apps.messaging, com.google.android.apps.messaging
+03-03 21:19:47.227 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x7E] SEQ[67] SET[1] LEN[376]
+03-03 21:19:47.227 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x85] SEQ[68] SET[0] LEN[92]
+03-03 21:19:47.227 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x82] SEQ[69] SET[0] LEN[76]
+03-03 21:19:47.227 I/[wlan][6899]wlanLinkQualityMonitor( 6899): (SW4 INFO) Link Quality: Tx(rate:10, total:505363, retry:62108, fail:40786, RTS fail:0, ACK fail:40786), Rx(rate:344, total:493999, dup:7025, error:415927), PER(0), Congestion(idle slot:491801933, diff:39561, AwakeDur:9003905)
+03-03 21:19:47.227 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 0000000058b61cb3, 0000000078da7d5e, cmd=0x85, seq=68
+03-03 21:19:47.227 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 000000001a58f5cc, 00000000ae7907ff, cmd=0x82, seq=69
+03-03 21:19:47.227 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm pc=490157.706841/0xf0442892;490157.706843/0xf044116a;490157.706844/0xf0390e9c;490157.706846/0xf0390ed8;490157.706847/0xf0390468;
+03-03 21:19:47.227 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm lp=490157.706841/0xf04410ca;490157.706843/0xf044116e;490157.706844/0xf044101c;490157.706846/0xf0390edc;490157.706847/0xf0390edc;
+03-03 21:19:47.228 I/[wlan][6899]nicRxProcessEventPacket( 6899): (RX INFO) Not static config event: id=0x21, seq=68
+03-03 21:19:47.228 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 0000000058b61cb3, 0000000078da7d5e, cmd=0x85, seq=68
+03-03 21:19:48.471 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:48.479 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:48.493 W/fb4a.InitStatus(11330): Not blocking Provider (2473709)
+03-03 21:19:48.535 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:48.536 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.536 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.228 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 000000001a58f5cc, 00000000ae7907ff, cmd=0x82, seq=69
+03-03 21:19:47.299 I/[wlan][11247]statsParseUDPInfo(11247): (TX INFO) <TX> DNS: IPID[0xc562] TransID[0x510d] SeqNo[135]
+03-03 21:19:48.546 W/ConsentManagerApiServic( 7943): Consent Manager API is not enabled. [CONTEXT service_id=460 ]
+03-03 21:19:48.549 I/GmsCoreXrpcWrapper(18610): (REDACTED) Creating a custom channel provider with trafficStatsTag=%d trafficStatsUid=%d
+03-03 21:19:48.572 I/NtAudioManager(11330): getStreamVolume streamType :1, pkg :com.facebook.katana, index :16
+03-03 21:19:48.579 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:48.579 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:48.580 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396869 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396869
+03-03 21:19:48.580 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:48.580 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:48.580 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:48.580 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:48.580 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:48.580 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:47.341 W/[FTS_TS]fts_input_report_b(  581): [B]P0(841, 1121)[p:29,tm:32] DOWN!
+03-03 21:19:48.580 I/mtkpower_client( 1166): ret_hdl:396869
+03-03 21:19:48.580 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:48.580 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:48.580 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:48.581 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:48.581 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:48.581 I/libPerfCtl( 1041): xgfGetFPS pid:2067 fps:120
+03-03 21:19:48.581 I/libPerfCtl( 1041): xgfGetFPS pid:2332 fps:-1
+03-03 21:19:48.581 I/libPerfCtl( 1041): xgfGetFPS pid:14908 fps:-1
+03-03 21:19:48.583 W/fb4a.InitStatus(11330): Not blocking Service (143438114)
+03-03 21:19:48.584 W/fb4a.InitStatus(11330): Not blocking Service (143438114)
+03-03 21:19:48.585 W/fb4a.InitStatus(11330): Not blocking Service (143438114)
+03-03 21:19:48.586 W/fb4a.InitStatus(11330): Not blocking Service (143438114)
+03-03 21:19:48.609 W/fb4a.InitStatus(11330): Not blocking Provider (2473709)
+03-03 21:19:48.609 I/lowmemorykiller(  502): nr_free_pages: 27486 nr_inactive_file: 105749 nr_active_file: 229490 workingset_refault: 1494235230 pgscan_kswapd: 2507582207 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507170408 base_file_lru: 385829 init_ws_refault: 1493928247 free_swap: 875285 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.609 I/lowmemorykiller(  502): compact_stall: 16315, init_compact_stall: 16312
+03-03 21:19:48.621 I/lowmemorykiller(  502): nr_free_pages: 27599 nr_inactive_file: 105806 nr_active_file: 231086 workingset_refault: 1494236826 pgscan_kswapd: 2507583103 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507582207 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 875249 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.634 I/lowmemorykiller(  502): nr_free_pages: 26213 nr_inactive_file: 105806 nr_active_file: 232454 workingset_refault: 1494238308 pgscan_kswapd: 2507584063 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507583103 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 874548 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.637 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10034 0}
+03-03 21:19:48.642 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.405 I/[wlan][15287]statsParseUDPInfo(15287): (TX INFO) <TX> DNS: IPID[0x7064] TransID[0x96b0] SeqNo[136]
+03-03 21:19:48.645 I/lowmemorykiller(  502): nr_free_pages: 25079 nr_inactive_file: 105806 nr_active_file: 233879 workingset_refault: 1494239676 pgscan_kswapd: 2507585215 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507584063 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 874016 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.657 I/lowmemorykiller(  502): nr_free_pages: 23315 nr_inactive_file: 105806 nr_active_file: 236216 workingset_refault: 1494242013 pgscan_kswapd: 2507586303 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507585215 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 873078 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.660 I/AS.AudioService( 1666): getMode, get current owner's mode
+03-03 21:19:48.660 I/AS.AudioService( 1666): getMode, currentModeHandler is null
+03-03 21:19:48.661 W/ActivityManager( 1666): Background start not allowed: service Intent { xflg=0x4 cmp=com.facebook.katana/com.facebook.mqtt.service.MqttServiceV2 (has extras) } to com.facebook.katana/com.facebook.mqtt.service.MqttServiceV2 from pid=11330 uid=10034 pkg=com.facebook.katana startFg?=false
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): [AI] Failed to start service due to IllegalStateException on Android O
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): android.app.BackgroundServiceStartNotAllowedException: Not allowed to start service Intent { xflg=0x4 cmp=com.facebook.katana/com.facebook.mqtt.service.MqttServiceV2 (has extras) }: app is in background uid UidRecord{f10c4a4 u0a34 TRNB bg:+3m28s527ms idle change:uncachedprocstateprocadj procs:0 seq(4924446,4924445)} caps=-------T
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.app.ContextImpl.startServiceCommon(ContextImpl.java:2048)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.app.ContextImpl.startService(ContextImpl.java:2003)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.content.ContextWrapper.startService(ContextWrapper.java:855)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.0Ko.A00(:26)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.5JD.A00(Unknown Source:60)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.518.A03(Unknown Source:80)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.518.onDeviceActive(Unknown Source:14)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.81z.A01(Unknown Source:175)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.95p.DHw(Unknown Source:267)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.0oK.onReceive(:170)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.1Rn.handleMessage(Unknown Source:76)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.os.Looper.loopOnce(Looper.java:283)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.os.Looper.loop(Looper.java:392)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at android.os.HandlerThread.run(HandlerThread.java:94)
+03-03 21:19:48.662 W/fb4a.RtiGracefulSystemMethodHelper(11330): 	at X.1FF.run(Unknown Source:0)
+03-03 21:19:48.670 I/lowmemorykiller(  502): nr_free_pages: 23039 nr_inactive_file: 105806 nr_active_file: 237128 workingset_refault: 1494242982 pgscan_kswapd: 2507587519 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507586303 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 872554 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.672 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:47.431 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:47.431 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:48.678 W/fb4a.AppInfoCore(11330): [AI] Package not found when getting package info
+03-03 21:19:48.681 W/android.hardware.thermal-service.mediatek( 1046): parseMsg: Get from client TYPE=thermal_hal_notify NAME=SKIN
+03-03 21:19:48.681 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:name.c_str():SKIN
+03-03 21:19:48.681 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:tz notify:SKIN
+03-03 21:19:48.681 I/android.hardware.thermal-service.mediatek( 1046): Wait to accept a connection
+03-03 21:19:48.681 I/android.hardware.thermal-service.mediatek( 1046): Sending notification:  Type: SKIN Name: SKIN CurrentValue: 38.245 ThrottlingStatus: LIGHT
+03-03 21:19:48.681 I/android.hardware.thermal-service.mediatek( 1046): sendThermalChangedCallback
+03-03 21:19:48.682 I/lowmemorykiller(  502): nr_free_pages: 21120 nr_inactive_file: 105863 nr_active_file: 239522 workingset_refault: 1494245376 pgscan_kswapd: 2507588392 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507587519 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 871935 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.693 I/lowmemorykiller(  502): nr_free_pages: 19734 nr_inactive_file: 105791 nr_active_file: 240708 workingset_refault: 1494246516 pgscan_kswapd: 2507588392 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507588392 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 872063 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.697 I/BugleRestore(19302): Returning restoreAnytimeCompatibleRestoreWorkflowSteps [CONTEXT ratelimit_period="10 SECONDS" ]
+03-03 21:19:48.698 E/ActivityThread(11067): Failed to find provider info for com.facebook.wakizashi.provider.LastUsedTimestampProvider
+03-03 21:19:48.699 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:48.699 I/mtkpower_client( 1166): perf_lock_rel, hdl:396869, tid:1166
+03-03 21:19:48.699 I/mtkpower@impl( 1047): [powerd_req] TIMER_MSG_PERF_LOCK_TIMEOUT hdl:396869
+03-03 21:19:48.699 I/libPowerHal( 1047): [perfLockRel] hdl:396869, idx:2
+03-03 21:19:48.699 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:48.699 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:48.699 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:48.699 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:48.699 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:48.699 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:48.699 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:48.700 I/libPowerHal( 1047): [perfLockRel] hdl:396869, idx:-1
+03-03 21:19:48.700 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:48.700 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:48.700 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:48.700 E/ActivityThread(11067): Failed to find provider info for com.facebook.orca.provider.LastUsedTimestampProvider
+03-03 21:19:48.702 E/ActivityThread(11067): Failed to find provider info for com.facebook.lite.provider.LastUsedTimestampProvider
+03-03 21:19:48.705 I/lowmemorykiller(  502): nr_free_pages: 18222 nr_inactive_file: 105119 nr_active_file: 242745 workingset_refault: 1494247827 pgscan_kswapd: 2507588392 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507588392 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 872191 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.716 I/SyncManagerImpl(19302): #sync(). Running Synclets and scheduling next sync.
+03-03 21:19:48.716 I/BufferQueueProducer( 1080): [com.example.foxos/com.example.foxos.MainActivity#142838](this:0xb4000075ed9080b8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=117.62 dur=1003.24 max=16.87 min=7.56
+03-03 21:19:48.718 I/lowmemorykiller(  502): nr_free_pages: 16962 nr_inactive_file: 105008 nr_active_file: 243920 workingset_refault: 1494248881 pgscan_kswapd: 2507588392 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507588392 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 872255 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.728 I/lowmemorykiller(  502): nr_free_pages: 16080 nr_inactive_file: 104481 nr_active_file: 245074 workingset_refault: 1494249508 pgscan_kswapd: 2507588392 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507588392 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 872319 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:47.501 I/mali 13000000.mali(   79): Tiler heap reclaim scan freed pages: 512 (unused: 2048)
+03-03 21:19:48.741 I/lowmemorykiller(  502): nr_free_pages: 19346 nr_inactive_file: 209884 nr_active_file: 140355 workingset_refault: 1494250135 pgscan_kswapd: 2507588392 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507588392 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 872447 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.749 I/SyncManagerImpl(19302): Running synclets: [TemplateFetcherSynclet]
+03-03 21:19:48.758 I/LocationReportUplIntOp(18610): Uploading owner sightings. [CONTEXT service_id=284 ratelimit_period="5 MINUTES" ]
+03-03 21:19:48.758 I/GmsCoreXrpcWrapper(18610): (REDACTED) Returning a channel provider with trafficStatsTag=%d trafficStatsUid=%d
+03-03 21:19:48.759 I/SyncManagerImpl(19302): Starting synclet: TemplateFetcherSynclet
+03-03 21:19:48.764 W/ProcessStats( 1666): Tracking association SourceState{e942250 com.instagram.android/10372 ImpBg #1434767} whose proc state 6 is better than process ProcessState{14da849 com.facebook.katana/10034 pkg=com.facebook.katana} proc state 15 (3 skipped)
+03-03 21:19:48.770 I/SyncManagerImpl(19302): #sync() complete
+03-03 21:19:48.771 I/SyncManagerImpl(19302): Completed sync. Scheduling next wakeup
+03-03 21:19:48.775 I/SyncWorkManagerPeriodic(19302): Scheduling next periodic WorkManager workers
+03-03 21:19:48.777 I/WM-WorkerWrapper(19302): Worker result SUCCESS for Work [ id=42f2cca4-1eb8-4997-a6f6-a313b2172211, tags={ com.google.apps.tiktok.contrib.work.TikTokListenableWorker,com.google.apps.tiktok.sync.impl.workmanager.SyncPeriodicWorker,sync_constraint:none,TikTokWorker#com.google.apps.tiktok.sync.impl.workmanager.SyncPeriodicWorker } ]
+03-03 21:19:48.841 I/lowmemorykiller(  502): nr_free_pages: 59434 nr_inactive_file: 159912 nr_active_file: 152172 workingset_refault: 1494256004 pgscan_kswapd: 2507635432 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507588392 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 873599 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.930 I/SyncWorkManagerPeriodic(19302): Successfully scheduled next periodic workers
+03-03 21:19:48.942 I/lowmemorykiller(  502): nr_free_pages: 78180 nr_inactive_file: 134047 nr_active_file: 158719 workingset_refault: 1494259330 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507635432 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 874047 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:48.973 W/s.youtube.music(15239): ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*1782853586]{PCL[/system/framework/org.apache.http.legacy.jar*4247870504]#PCL[/system/framework/com.android.location.provider.jar*1570284764]#PCL[/system/framework/com.android.media.remotedisplay.jar*487574312]#PCL[/system_ext/framework/androidx.window.extensions.jar*1030441313]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3860983653]} | DLC[];PCL[])
+03-03 21:19:47.737 I/instant_current(  901): cic_idx:0
+03-03 21:19:49.035 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.035 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.041 I/lowmemorykiller(  502): nr_free_pages: 71628 nr_inactive_file: 134104 nr_active_file: 162595 workingset_refault: 1494263206 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 875647 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:49.089 I/FA      (15239): App measurement initialized, version: 155008
+03-03 21:19:49.089 I/FA      (15239): To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+03-03 21:19:49.090 I/FA      (15239): To enable faster debug mode event logging run:
+03-03 21:19:49.090 I/FA      (15239):   adb shell setprop debug.firebase.analytics.app com.google.android.apps.youtube.music
+03-03 21:19:49.090 E/jdja    (18610): *~*~*~ Previous channel {0} was garbage collected without being shut down! ~*~*~*
+03-03 21:19:49.090 E/jdja    (18610):     Make sure to call shutdown()/shutdownNow()
+03-03 21:19:49.090 E/jdja    (18610): java.lang.RuntimeException: ManagedChannel allocation site
+03-03 21:19:49.090 E/jdja    (18610): 	at jdiz.<init>(:com.google.android.gms@260632035@26.06.32 (260400-869789857):21)
+03-03 21:19:49.090 E/jdja    (18610): 	at jdja.<init>(:com.google.android.gms@260632035@26.06.32 (260400-869789857):10)
+03-03 21:19:49.090 E/jdja    (18610): 	at jdiy.a(:com.google.android.gms@260632035@26.06.32 (260400-869789857):296)
+03-03 21:19:49.090 E/jdja    (18610): 	at jcqu.a(:com.google.android.gms@260632035@26.06.32 (260400-869789857):5)
+03-03 21:19:49.090 E/jdja    (18610): 	at cure.h(:com.google.android.gms@260632035@26.06.32 (260400-869789857):150)
+03-03 21:19:49.090 E/jdja    (18610): 	at hcqb.a(:com.google.android.gms@260632035@26.06.32 (260400-869789857):154)
+03-03 21:19:49.090 E/jdja    (18610): 	at gqhv.a(:com.google.android.gms@260632035@26.06.32 (260400-869789857):13)
+03-03 21:19:49.090 E/jdja    (18610): 	at gzeq.a(:com.google.android.gms@260632035@26.06.32 (260400-869789857):3)
+03-03 21:19:49.090 E/jdja    (18610): 	at gzdr.run(:com.google.android.gms@260632035@26.06.32 (260400-869789857):19)
+03-03 21:19:49.090 E/jdja    (18610): 	at gzes.run(:com.google.android.gms@260632035@26.06.32 (260400-869789857):5)
+03-03 21:19:49.090 E/jdja    (18610): 	at bfur.c(:com.google.android.gms@260632035@26.06.32 (260400-869789857):50)
+03-03 21:19:49.090 E/jdja    (18610): 	at bfur.run(:com.google.android.gms@260632035@26.06.32 (260400-869789857):73)
+03-03 21:19:49.090 E/jdja    (18610): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+03-03 21:19:49.090 E/jdja    (18610): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+03-03 21:19:49.090 E/jdja    (18610): 	at bgai.run(:com.google.android.gms@260632035@26.06.32 (260400-869789857):8)
+03-03 21:19:49.090 E/jdja    (18610): 	at java.lang.Thread.run(Thread.java:1564)
+03-03 21:19:49.103 I/.gms.persistent(18610): AssetManager2(0xb400007211997af8) locale list changing from [] to [en-GB]
+03-03 21:19:49.112 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:49.112 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:47.874 W/[FTS_TS]fts_input_report_b(  581): [B]P0(824, 1212)[p:24,tm:32] DOWN!
+03-03 21:19:49.112 I/mtkpower_client( 1166): ret_hdl:396870
+03-03 21:19:49.112 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:49.112 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:49.113 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396870 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396870
+03-03 21:19:49.113 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:49.113 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:49.113 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:49.113 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:49.113 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:49.113 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:49.113 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:49.113 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:49.113 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:47.891 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x81] SEQ[70] SET[0] LEN[64]
+03-03 21:19:47.892 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 00000000d7c978a3, 000000002b4ba591, cmd=0x81, seq=70
+03-03 21:19:47.892 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 00000000d7c978a3, 000000002b4ba591, cmd=0x81, seq=70
+03-03 21:19:47.892 I/[wlan][17258]mtk_cfg80211_get_station(17258): (REQ INFO) link speed=10/344, bw=0/0, rssi=-63, BSSID:[a8:6e:**:**:**:d5], idx=0,TxFail=0, TxTimeOut=0, TxOK=183994, RxOK=701012, FcsErr=0
+03-03 21:19:49.131 I/WifiHAL ( 2020): feature_set=0x8488341a
+03-03 21:19:49.132 I/HalDevMgr( 1666): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+03-03 21:19:49.139 W/JobService(11067): onNetworkChanged() not implemented in androidx.work.impl.background.systemjob.SystemJobService. Must override in a subclass.
+03-03 21:19:49.141 I/lowmemorykiller(  502): nr_free_pages: 62619 nr_inactive_file: 134213 nr_active_file: 167489 workingset_refault: 1494268290 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 876095 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:49.144 W/JobServiceContext( 1666): Sending onNetworkChanged for a job that isn't started. JobStatus{a6d8cb1 androidx.work.systemjobscheduler:u0a169/2749 @androidx.work.systemjobscheduler@com.google.android.apps.youtube.music/androidx.work.impl.background.systemjob.SystemJobService u=0 s=10169 TIME=-55s294ms:none NET READY}
+03-03 21:19:49.171 I/NullBinder(18610): NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+03-03 21:19:49.171 W/.gms.persistent(18610): Large reply transaction of 2113536 bytes, interface descriptor , code 1
+03-03 21:19:49.177 I/BugleRcsEngine(28872): handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference [CONTEXT log_prefix="RcsEngineImpl[DUAL_REG]:[e070ef04-7fc1]>Handler" thread_id=579 ]
+03-03 21:19:49.177 I/BugleRcsEngine(28872): Connected state: [1], networkType: [WIFI] [CONTEXT thread_id=573 ]
+03-03 21:19:49.185 I/android.hardware.thermal-service.mediatek( 1046): getTemperaturesWithType TemperatureType: 3
+03-03 21:19:49.185 W/android.hardware.thermal-service.mediatek( 1046): i=0 tz_data[i].tz_idx[0]=10
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=1 tz_data[i].tz_idx[0]=10
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=2 tz_data[i].tz_idx[0]=7
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=3 tz_data[i].tz_idx[0]=56
+03-03 21:19:49.186 I/android.hardware.thermal-service.mediatek( 1046): fill_temperatures filterType1 name: SKIN type: SKIN throttlingStatus: LIGHT value: 38.245 ret_temps size 0
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=4 tz_data[i].tz_idx[0]=0
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=5 tz_data[i].tz_idx[0]=51
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=6 tz_data[i].tz_idx[0]=-1
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=7 tz_data[i].tz_idx[0]=-1
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=8 tz_data[i].tz_idx[0]=-1
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=9 tz_data[i].tz_idx[0]=10
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=10 tz_data[i].tz_idx[0]=10
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=11 tz_data[i].tz_idx[0]=-1
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=12 tz_data[i].tz_idx[0]=-1
+03-03 21:19:49.186 W/android.hardware.thermal-service.mediatek( 1046): i=13 tz_data[i].tz_idx[0]=10
+03-03 21:19:49.190 W/chromium(15239): [0303/211949.172591:WARNING:net/dns/dns_config_service_android.cc:69] Failed to read DnsConfig.
+03-03 21:19:49.193 I/BufferQueueProducer( 1080): [NotificationShade#142850](this:0xb4000075ed887e68,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=86.69 dur=1003.53 max=284.27 min=7.80
+03-03 21:19:49.189 W/dataInfoSend( 2594): type=1400 audit(0.0:837674625): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:49.193 W/dataInfoSend( 2594): type=1400 audit(0.0:837674626): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:49.193 W/dataInfoSend( 2594): type=1400 audit(0.0:837674627): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:49.193 W/dataInfoSend( 2594): type=1400 audit(0.0:837674628): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:49.193 W/dataInfoSend( 2594): type=1400 audit(0.0:837674629): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:49.199 I/resolv  (  987): GetAddrInfoHandler::run: {482 786914 482 983522 10136 0}
+03-03 21:19:47.959 W/audit   (17507): audit_lost=836147100 audit_rate_limit=5 audit_backlog_limit=64
+03-03 21:19:47.959 E/audit   (17507): rate limit exceeded
+03-03 21:19:49.202 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:47.964 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:47.964 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:47.965 I/[wlan][15321]statsParseUDPInfo(15321): (TX INFO) <TX> DNS: IPID[0xa745] TransID[0xfc52] SeqNo[137]
+03-03 21:19:49.223 W/chromium(15239): [0303/211949.223500:WARNING:net/dns/dns_config_service_android.cc:69] Failed to read DnsConfig.
+03-03 21:19:49.231 E/ashmem  (15239): Pinning is deprecated since Android Q. Please use trim or other methods.
+03-03 21:19:49.232 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:49.232 I/mtkpower_client( 1166): perf_lock_rel, hdl:396870, tid:1166
+03-03 21:19:49.232 I/mtkpower@impl( 1047): [powerd_req] TIMER_MSG_PERF_LOCK_TIMEOUT hdl:396870
+03-03 21:19:49.232 I/libPowerHal( 1047): [perfLockRel] hdl:396870, idx:2
+03-03 21:19:49.232 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:49.232 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:49.232 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:49.232 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:49.232 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:49.232 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:49.232 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:49.233 I/libPowerHal( 1047): [perfLockRel] hdl:396870, idx:-1
+03-03 21:19:49.233 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:49.233 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:49.233 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:49.242 I/lowmemorykiller(  502): nr_free_pages: 56949 nr_inactive_file: 134213 nr_active_file: 171023 workingset_refault: 1494271824 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 877007 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:49.278 I/hwcomposer( 1022): [HWCDisplay] [Display_0 (type:1, mode:2)] fps:119.607208,dur:1003.28,max:9.52,min:7.13  
+03-03 21:19:49.290 I/START_DEBUG( 1666): remove BIND_TIMEOUT finish    ProcessRecord :ProcessRecord{1388c6f 15239:com.google.android.apps.youtube.music/u0a169}
+03-03 21:19:49.292 W/JobServiceContext( 1666): Sending onNetworkChanged for a job that isn't started. JobStatus{a6d8cb1 androidx.work.systemjobscheduler:u0a169/2749 @androidx.work.systemjobscheduler@com.google.android.apps.youtube.music/androidx.work.impl.background.systemjob.SystemJobService u=0 s=10169 TIME=-55s442ms:none NET READY}
+03-03 21:19:49.297 I/netd    (  987): tetherGetStats() -> {[TetherStatsParcel{iface: ccmni1, rxBytes: 3509550, rxPackets: 43041, txBytes: 3464010, txPackets: 46238, ifIndex: 0}, TetherStatsParcel{iface: ccmni2, rxBytes: 4035077, rxPackets: 51937, txBytes: 7654680, txPackets: 64146, ifIndex: 0}, TetherStatsParcel{iface: ccmni3, rxBytes: 3051754, rxPackets: 38176, txBytes: 3102428, txPackets: 41528, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni1, rxBytes: 368437434, rxPackets: 319516, txBytes: 98443403, txPackets: 140718, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni2, rxBytes: 177232448, rxPackets: 228673, txBytes: 311312455, txPackets: 310211, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni3, rxBytes: 4326832642, rxPackets: 1328562, txBytes: 509179019, txPackets: 977900, ifIndex: 0}, TetherStatsParcel{iface: wlan0, rxBytes: 1782021127, rxPackets: 1894403, txBytes: 2587817868, txPackets: 2362967, ifIndex: 0}]} <1.24ms>
+03-03 21:19:49.299 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.299 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.341 W/System  (15239): ClassLoader referenced unknown path: 
+03-03 21:19:49.341 I/lowmemorykiller(  502): nr_free_pages: 53484 nr_inactive_file: 134683 nr_active_file: 171453 workingset_refault: 1494272442 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 879423 total_swap: 1572863 swap_free_percentage: 55%
+03-03 21:19:49.414 I/s.youtube.music(15239): AssetManager2(0xb400007211990758) locale list changing from [] to [en-GB]
+03-03 21:19:49.431 I/AdvertisingIdClient( 7943): shouldSendLog 904457843
+03-03 21:19:49.431 I/AdvertisingIdClient( 7943): GetInfoInternal elapse 7ms
+03-03 21:19:49.442 I/lowmemorykiller(  502): nr_free_pages: 51468 nr_inactive_file: 134862 nr_active_file: 172464 workingset_refault: 1494273731 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 882111 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.473 W/JobInfo (15239): Requested important-while-foreground flag for job2746 is ignored and takes no effect
+03-03 21:19:49.476 W/JobInfo (15239): Requested important-while-foreground flag for job2663 is ignored and takes no effect
+03-03 21:19:49.479 W/JobInfo (15239): Requested important-while-foreground flag for job2747 is ignored and takes no effect
+03-03 21:19:49.480 W/GooglePlayServicesUtil(15239): Google Play services out of date for com.google.android.apps.youtube.music.  Requires 260880000 but found 260632035
+03-03 21:19:49.484 W/JobInfo (15239): Requested important-while-foreground flag for job2748 is ignored and takes no effect
+03-03 21:19:48.247 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) <1039ms> Tput: 179648(0.175mbps) [22190:27:1142:15][0:0:0:0][0:0:0:0][0:0:0:0] Pending:1/4096 [0:1:0:0][0:0:0:0][0:0:0:0][0:0:0:0] LQ[505409:494025:39561] idle:0 lv:0 th:5 fg:0x9 TxCpu[40430,42897,175039,38969,19604,20599,18056,20435] RxCpu[0,0,0,0,0,0,0,0] TxDp[ST:BS:FO:QM:DP]:0:0:0:0:1509 Tx[SQ:TI:TM:TDD:TDM:TIC:TFP]:0:376029:376029:0:0:8535:376027 MgmtSub[2:0:1:0:0:0:0:0:0:0:0:3:3:10:0:0]
+03-03 21:19:48.247 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) ndevdrp:[0:0:0:0][0:0:0:4] NAPI[975002,0,0,0,0,0,0,0,0,0,0] RxReorder[209:0:0:0] RxPending[0:0:0:0] RfbTrack[0:60:10:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0] drv[RM,IL,RI,PA,PF,DU,DA,RT,RM,RW,RA,RB,DT,NS,IB,HS,LS,DD,ME,BD,NI,DR,TE,PE,CE,DN,FE,DE,IE,TME,CM,FB,ID,FD,NL]:1683508,0,1418413,1418413,0,0,0,1602291,4294971025,1370395,32187,1295,200211,0,0,7,0,7025,0,1945,0,191194,0,0,40,200171,0,0,0,0,42,0,0,0,0
+03-03 21:19:48.247 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x7E] SEQ[71] SET[1] LEN[376]
+03-03 21:19:48.247 I/[wlan][6899]asicConnac2xFillCmdTxdInfo( 6899): (TX INFO) TX CMD: ID[0x85] SEQ[72] SET[0] LEN[92]
+03-03 21:19:48.247 I/[wlan][6899]wlanLinkQualityMonitor( 6899): (SW4 INFO) Link Quality: Tx(rate:10, total:505409, retry:62121, fail:40821, RTS fail:0, ACK fail:40821), Rx(rate:344, total:494025, dup:7025, error:416004), PER(76), Congestion(idle slot:491844628, diff:42695, AwakeDur:9004936)
+03-03 21:19:48.247 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 0000000036dcaf95, 0000000078da7d5e, cmd=0x85, seq=72
+03-03 21:19:48.247 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 00000000961cc7d7, 00000000ae7907ff, cmd=0x82, seq=73
+03-03 21:19:48.247 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm pc=490158.726841/0x00902500;490158.726843/0x0090251a;490158.726844/0x00902532;490158.726846/0x00902532;490158.726847/0x00902532;
+03-03 21:19:48.247 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm lp=490158.726841/0x0090249c;490158.726843/0x0090249c;490158.726844/0x0090249c;490158.726846/0x0090249c;490158.726847/0x0090249c;
+03-03 21:19:48.247 I/[wlan][6900]halDumpMsduReportStats( 6900): (HAL INFO) TX_Delay D:[1:5:10:20]=[27:0:0:0:0#0] C:[10:20:50:80]=[0:0:0:0:11#452] M:[5:10:20:50]=[0:2:1:0:8#138] A:[5:10:20:50]=[0:0:0:0:0#0] F:[10:20:50:80]=[0:0:0:0:0#0] Txfail:0
+03-03 21:19:48.247 I/[wlan][6900]halDumpHifStats( 6900): (HAL INFO) I[0 / 975003 1 0 0 0x0 0x0 0] T[34262 34262 34259 / 376029 376028 375368 375824] R[1618624 / 208791] T_Q:T_R[0:285 0:0 0:0 0:0 0:1 0:0 0:3 0:0]  R_R:R_N[0:0 0:0 0:0 0:0] Msdu:F[8189/8192]P[1]D[0] Tok[45/4096] Rfb[4150/0/0/209/0/0/0/0/4150] txreg[265319] rxreg[1255519]
+03-03 21:19:48.248 I/[wlan][6899]nicRxProcessEventPacket( 6899): (RX INFO) Not static config event: id=0x21, seq=72
+03-03 21:19:48.248 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 0000000036dcaf95, 0000000078da7d5e, cmd=0x85, seq=72
+03-03 21:19:48.248 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 00000000961cc7d7, 00000000ae7907ff, cmd=0x82, seq=73
+03-03 21:19:48.277 I/instant_current(  901): cic_idx:0
+03-03 21:19:48.285 I/[DISP]mtk_dsi_esd_cmp(  240): expect[0x0], read[0x0]
+03-03 21:19:49.542 I/lowmemorykiller(  502): nr_free_pages: 48822 nr_inactive_file: 134948 nr_active_file: 173495 workingset_refault: 1494274704 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 883199 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.567 W/SQLiteLog( 7943): (28) double-quoted string literal: "1772380189567"
+03-03 21:19:49.567 W/SQLiteLog( 7943): (28) double-quoted string literal: "1"
+03-03 21:19:49.577 W/JobInfo (15239): Requested important-while-foreground flag for job2749 is ignored and takes no effect
+03-03 21:19:49.581 I/libPerfCtl( 1041): xgfGetFPS pid:2067 fps:120
+03-03 21:19:49.581 I/libPerfCtl( 1041): xgfGetFPS pid:2332 fps:-1
+03-03 21:19:49.581 I/libPerfCtl( 1041): xgfGetFPS pid:14908 fps:-1
+03-03 21:19:49.583 W/JobScheduler( 1666): Job didn't exist in JobStore: a6d8cb1 {androidx.work.systemjobscheduler} #u0a169/2749 @androidx.work.systemjobscheduler@com.google.android.apps.youtube.music/androidx.work.impl.background.systemjob.SystemJobService
+03-03 21:19:49.599 W/QueueRestorationCtlr(15239): Registering controller for EventBus
+03-03 21:19:48.361 I/[wlan][6899]wlanPktTxDone( 6899): (TX INFO) TX DONE, Type[DNS] Tag[0x540cc200] WIDX:PID[6:3] SN[3900] Status[0], SeqNo: 129
+03-03 21:19:48.367 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x960f, TransID 0x303a, SSN:3532
+03-03 21:19:49.604 I/resolv  (  987): res_nsend: used send_dg 321 terrno: 0
+03-03 21:19:49.604 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=321
+03-03 21:19:49.605 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:49.605 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:49.606 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:48.368 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x960f, TransID 0x303a, SSN:3532
+03-03 21:19:48.369 I/[wlan][15401]statsParseUDPInfo(15401): (TX INFO) <TX> DNS: IPID[0x564f] TransID[0x66f0] SeqNo[138]
+03-03 21:19:48.369 I/[wlan][6899]nic_txd_v2_compose( 6899): (TX INFO) TX[DNS] WIDX[6] PID[4]
+03-03 21:19:49.621 I/resolv  (  987): res_nsend: used send_dg 334 terrno: 0
+03-03 21:19:49.621 I/resolv  (  987): res_nsend: used send_dg 319 terrno: 0
+03-03 21:19:49.621 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=319
+03-03 21:19:49.621 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=334
+03-03 21:19:49.623 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:49.623 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:49.623 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:49.624 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:49.624 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:48.383 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x9611, TransID 0x6e01, SSN:3533
+03-03 21:19:48.383 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x9612, TransID 0x2efb, SSN:3534
+03-03 21:19:49.625 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:49.625 I/resolv  (  987): resolv_cache_lookup: FOUND IN CACHE entry=0xb40000789f47a410
+03-03 21:19:49.625 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=321
+03-03 21:19:49.628 W/JobScheduler( 1666): Job didn't exist in JobStore: 3dcd475 {androidx.work.systemjobscheduler} #u0a169/2749 @androidx.work.systemjobscheduler@com.google.android.apps.youtube.music/androidx.work.impl.background.systemjob.SystemJobService
+03-03 21:19:49.630 I/resolv  (  987): res_nsend: used send_dg 337 terrno: 0
+03-03 21:19:49.630 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=337
+03-03 21:19:49.630 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:49.630 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:49.632 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:49.632 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:48.392 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x9613, TransID 0x6a77, SSN:3535
+03-03 21:19:49.632 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:49.632 I/resolv  (  987): resolv_cache_lookup: FOUND IN CACHE entry=0xb40000789f47a410
+03-03 21:19:49.632 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=321
+03-03 21:19:49.633 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:49.634 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:49.634 I/resolv  (  987): GetAddrInfoHandler::run: {482 262626 482 983522 10372 0}
+03-03 21:19:49.636 I/resolv  (  987): res_nmkquery: (QUERY, IN, A)
+03-03 21:19:49.636 I/resolv  (  987): resolv_cache_lookup: Waiting for previous request
+03-03 21:19:49.661 I/NearbySharing(18610): Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+03-03 21:19:49.666 W/WM-Processor(15239): Didn't find WorkSpec for id WorkGenerationalId(workSpecId=17d0a7ce-1310-425e-b76c-3548da686b2f, generation=0)
+03-03 21:19:49.673 W/WM-Processor(15239): Didn't find WorkSpec for id WorkGenerationalId(workSpecId=17d0a7ce-1310-425e-b76c-3548da686b2f, generation=0)
+03-03 21:19:49.681 W/android.hardware.thermal-service.mediatek( 1046): parseMsg: Get from client TYPE=thermal_hal_notify NAME=SKIN
+03-03 21:19:49.681 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:name.c_str():SKIN
+03-03 21:19:49.682 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:tz notify:SKIN
+03-03 21:19:49.682 I/android.hardware.thermal-service.mediatek( 1046): Wait to accept a connection
+03-03 21:19:49.682 I/android.hardware.thermal-service.mediatek( 1046): Sending notification:  Type: SKIN Name: SKIN CurrentValue: 38.466 ThrottlingStatus: LIGHT
+03-03 21:19:49.682 I/android.hardware.thermal-service.mediatek( 1046): sendThermalChangedCallback
+03-03 21:19:49.688 I/lowmemorykiller(  502): nr_free_pages: 43278 nr_inactive_file: 135051 nr_active_file: 175802 workingset_refault: 1494277105 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 335239 init_ws_refault: 1494235230 free_swap: 885887 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.698 I/PlayCommon( 3123): [1367] Successfully uploaded logs.
+03-03 21:19:49.720 I/BufferQueueProducer( 1080): [com.example.foxos/com.example.foxos.MainActivity#142838](this:0xb4000075ed9080b8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=119.59 dur=1003.41 max=8.90 min=7.69
+03-03 21:19:49.735 E/msys    (11067): E[N mns]_OnDiskCacheGetData(632)=>Start post callback cache refresh DNS resolution
+03-03 21:19:49.744 E/s.youtube.music(15239): [perfctl] 15239 15327 FPSGO ver:7
+03-03 21:19:49.744 E/s.youtube.music(15239): [perfctl] 1 1 1 0
+03-03 21:19:49.746 I/resolv  (  987): res_nsend: used send_dg 338 terrno: 0
+03-03 21:19:49.746 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=338
+03-03 21:19:48.509 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x9616, TransID 0xcd93, SSN:3546
+03-03 21:19:49.760 E/msys    (11067): E[N mns]_OnSystemDNSSuccessCallback(340)=>Cache refresh succeeded with system DNS resolver. IP count: 1
+03-03 21:19:49.778 I/SurfaceFactory(15239): [static] sSurfaceFactory = com.mediatek.view.impl.SurfaceFactoryImpl@9510802
+03-03 21:19:49.789 I/lowmemorykiller(  502): nr_free_pages: 41325 nr_inactive_file: 135051 nr_active_file: 176372 workingset_refault: 1494277789 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 887231 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.802 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.802 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.805 I/NearbyDiscovery(17176): (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+03-03 21:19:49.806 I/NearbyDiscovery(18610): (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+03-03 21:19:49.806 I/resolv  (  987): res_nsend: used send_dg 323 terrno: 0
+03-03 21:19:49.807 I/resolv  (  987): doQuery: rcode=0, ancount=2, return value=323
+03-03 21:19:48.569 I/[wlan][6899]statsParseUDPInfo( 6899): (RX INFO) <RX> DNS: IPID 0x9619, TransID 0x1d97, SSN:3552
+03-03 21:19:49.826 W/RealtimeClientManager(11067): Channel state: MqttChannelState{mConnectionState=CONNECTED, mDisconnectionReason=null, mLastConnectionMs=904882563, mLastDisconnectMs=905336567}
+03-03 21:19:49.849 E/YouTubeMusic(15239): Trying to detachMediaView when it wasn't the most recent MediaView Setter
+03-03 21:19:49.889 I/lowmemorykiller(  502): nr_free_pages: 40689 nr_inactive_file: 135051 nr_active_file: 177227 workingset_refault: 1494278644 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 891135 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.974 W/MediaSessionShuffleStat(15239): attempted to update shuffle state but media session was null: 0
+03-03 21:19:49.975 W/LoopStateAdapter(15239): attempted to update repeat mode but media session was null: 0
+03-03 21:19:49.983 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.983 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.991 I/lowmemorykiller(  502): nr_free_pages: 40204 nr_inactive_file: 135226 nr_active_file: 178779 workingset_refault: 1494280082 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892031 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:50.042 W/JobInfo (15239): Requested important-while-foreground flag for job2752 is ignored and takes no effect
+03-03 21:19:48.817 I/instant_current(  901): cic_idx:0
+03-03 21:19:50.090 I/lowmemorykiller(  502): nr_free_pages: 39185 nr_inactive_file: 135454 nr_active_file: 179919 workingset_refault: 1494281336 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892735 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:48.851 I/[wlan][6899]qmFlushTimeoutReorderBubble( 6899): (QM INFO) QM:(Bub Timeout) 0:0 Bub(1)[3558]{3558,3813} -> Bub(0)[3558]{3561,3816}
+03-03 21:19:50.099 W/HWUI    (15239): Image decoding logging dropped!
+03-03 21:19:50.189 I/android.hardware.thermal-service.mediatek( 1046): getTemperaturesWithType TemperatureType: 3
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=0 tz_data[i].tz_idx[0]=10
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=1 tz_data[i].tz_idx[0]=10
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=2 tz_data[i].tz_idx[0]=7
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=3 tz_data[i].tz_idx[0]=56
+03-03 21:19:50.190 I/android.hardware.thermal-service.mediatek( 1046): fill_temperatures filterType1 name: SKIN type: SKIN throttlingStatus: LIGHT value: 38.466 ret_temps size 0
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=4 tz_data[i].tz_idx[0]=0
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=5 tz_data[i].tz_idx[0]=51
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=6 tz_data[i].tz_idx[0]=-1
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=7 tz_data[i].tz_idx[0]=-1
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=8 tz_data[i].tz_idx[0]=-1
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=9 tz_data[i].tz_idx[0]=10
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=10 tz_data[i].tz_idx[0]=10
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=11 tz_data[i].tz_idx[0]=-1
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=12 tz_data[i].tz_idx[0]=-1
+03-03 21:19:50.190 W/android.hardware.thermal-service.mediatek( 1046): i=13 tz_data[i].tz_idx[0]=10
+03-03 21:19:50.191 I/lowmemorykiller(  502): nr_free_pages: 38648 nr_inactive_file: 135687 nr_active_file: 180237 workingset_refault: 1494281820 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892735 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:50.197 I/BufferQueueProducer( 1080): [NotificationShade#142850](this:0xb4000075ed887e68,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=119.53 dur=1003.90 max=8.98 min=7.55
+03-03 21:19:50.201 W/dataInfoSend( 2594): type=1400 audit(0.0:837677640): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:50.201 W/dataInfoSend( 2594): type=1400 audit(0.0:837677641): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.967 W/audit   (17507): audit_lost=836150110 audit_rate_limit=5 audit_backlog_limit=64
+03-03 21:19:50.201 W/dataInfoSend( 2594): type=1400 audit(0.0:837677642): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.967 E/audit   (17507): rate limit exceeded
+03-03 21:19:50.201 W/dataInfoSend( 2594): type=1400 audit(0.0:837677643): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:50.201 W/dataInfoSend( 2594): type=1400 audit(0.0:837677644): avc:  denied  { bpf } for  capability=39  scontext=u:r:bpfloader:s0 tcontext=u:r:bpfloader:s0 tclass=capability2 permissive=0
+03-03 21:19:48.981 I/        (  151): [wdk-c] cpu=7 o_k=7 lbit=0x80 cbit=0xff,7f,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159460603909,15000000] 23 ffffffff s_cpu 7 - 0 0 0 0 0 0 0 0
+03-03 21:19:48.981 I/wdt_dump_cntcv CPU(  151): 7 CNTCV_CTL:1 CNTCV_TVAL:6568 CNTVCT:ab44a8ad4b3 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4af
+03-03 21:19:49.005 I/        (  149): [wdk-c] cpu=5 o_k=5 lbit=0xa0 cbit=0xff,5f,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159484692216,14975923] 23 ffffffff
+03-03 21:19:49.005 I/wdt_dump_cntcv CPU(  149): 5 CNTCV_CTL:1 CNTCV_TVAL:654b CNTVCT:ab44a8ad4d3 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4cf
+03-03 21:19:49.023 I/        (  148): [wdk-c] cpu=4 o_k=4 lbit=0xb0 cbit=0xff,4f,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159502708755,14957903] 23 ffffffff
+03-03 21:19:49.023 I/wdt_dump_cntcv CPU(  148): 4 CNTCV_CTL:1 CNTCV_TVAL:6553 CNTVCT:ab44a8ad4cb SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4c7
+03-03 21:19:49.023 I/        (  150): [wdk-c] cpu=6 o_k=6 lbit=0xf0 cbit=0xff,f,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159502750601,14957856] 23 ffffffff
+03-03 21:19:49.023 I/wdt_dump_cntcv CPU(  150): 6 CNTCV_CTL:1 CNTCV_TVAL:6548 CNTVCT:ab44a8ad4d3 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4cc
+03-03 21:19:49.023 I/        (  146): [wdk-c] cpu=2 o_k=2 lbit=0xf4 cbit=0xff,b,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159502812216,14957788] 23 ffffffff
+03-03 21:19:49.023 I/wdt_dump_cntcv CPU(  146): 2 CNTCV_CTL:1 CNTCV_TVAL:6528 CNTVCT:ab44a8ad4f7 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4f0
+03-03 21:19:49.023 I/        (  145): [wdk-c] cpu=1 o_k=1 lbit=0xf6 cbit=0xff,9,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159502841447,14957759] 23 ffffffff
+03-03 21:19:49.023 I/wdt_dump_cntcv CPU(  145): 1 CNTCV_CTL:1 CNTCV_TVAL:652c CNTVCT:ab44a8ad4f3 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4ec
+03-03 21:19:49.023 I/        (  147): [wdk-c] cpu=3 o_k=3 lbit=0xfe cbit=0xff,1,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159502902370,14957696] 23 ffffffff
+03-03 21:19:49.023 I/wdt_dump_cntcv CPU(  147): 3 CNTCV_CTL:1 CNTCV_TVAL:6041 CNTVCT:ab44a8ad4eb SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4e4
+03-03 21:19:49.023 I/        (  144): [thread:144] 2026-03-03 15:49:50.261215 UTC;android time 2026-03-03 15:49:50.261215
+03-03 21:19:49.026 I/        (  144): [wdk-k] cpu=0 o_k=0 lbit=0xff cbit=0xff,0,7,1,219974153,ff,490073537,11768342,490073602,11768344,[490159503155216,14957444] 23 ffffffff
+03-03 21:19:49.026 I/wdt_dump_cntcv CPU(  144): 0 CNTCV_CTL:1 CNTCV_TVAL:3784 CNTVCT:ab44a8ad4df SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:ab44a8ad4db
+03-03 21:19:50.282 I/hwcomposer( 1022): [HWCDisplay] [Display_0 (type:1, mode:2)] fps:119.475487,dur:1004.39,max:9.32,min:7.43  
+03-03 21:19:50.291 I/lowmemorykiller(  502): nr_free_pages: 38522 nr_inactive_file: 135718 nr_active_file: 180348 workingset_refault: 1494281895 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892799 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:50.314 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:50.315 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:50.316 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396871 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396871
+03-03 21:19:50.316 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:50.316 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:50.316 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:49.077 W/[FTS_TS]fts_input_report_b(  581): [B]P0(684, 1956)[p:25,tm:32] DOWN!
+03-03 21:19:50.316 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:50.316 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:50.316 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:50.318 I/mtkpower_client( 1166): ret_hdl:396871
+03-03 21:19:50.318 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:50.318 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:50.318 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:50.318 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:50.318 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:49.091 I/[wlan][6899]qmFlushTimeoutReorderBubble( 6899): (QM INFO) QM:(Bub Timeout) 0:0 Bub(1)[3561]{3561,3816} -> Bub(0)[3561]{3567,3822}
+03-03 21:19:49.114 I/[wlan][6899]statsParseARPInfo( 6899): (RX INFO) <RX> Arp Req From IP: 192.***.***.1 SSN:4064
+03-03 21:19:49.135 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:49.135 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:49.148 I/[wlan][6899]roamingFsmProcessEvent( 6899): (ROAMING INFO) ROAMING_EVENT_DISCOVERY Data[25690] RCPI[90(-65)] PER[100] Thr[56(-82)] Reason[1] Time[25175]
+03-03 21:19:49.148 I/[wlan][6899]roamingFsmSendCmd( 6899): (ROAMING INFO) [0](FAIL)->Send(ROAM): Current Time = 489860868
+03-03 21:19:49.148 I/[wlan][6899]roamingFsmRunEventDiscovery( 6899): (ROAMING EVENT) [0] EVENT-ROAMING DISCOVERY: Current Time = 489860868
+03-03 21:19:49.148 I/[wlan][6899]roamingFsmRunEventDiscovery( 6899): (ROAMING INFO) RCPI 90(-65)
+03-03 21:19:49.148 I/[wlan][6899]roamingFsmRunEventDiscovery( 6899): (ROAMING INFO) ucPER 100
+03-03 21:19:49.148 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [DECISION] -> [DISCOVERY]
+03-03 21:19:49.148 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [NORMAL_TR] -> [LOOKING_FOR]
+03-03 21:19:49.148 I/[wlan][6899]aisScanProcessReqCh( 6899): (AIS INFO) [Roaming] Target Scan: Total number of scan channel(s)=1
+03-03 21:19:49.148 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [IDLE] -> [SCANNING]
+03-03 21:19:49.148 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:200:D2F] 1: a86e1b8d5
+03-03 21:19:49.148 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:200:D2F] ScanReqV2: ScanType=1,BSS=0,SSIDType=8,Num=1,Ext=0,ChannelType=4,Num=1,Ext=0,Seq=169,Ver=1,Dw=0,Min=0,Func=(0x3,0x0),D=0,Mac=00:00:**:**:**:00,BSSID=00:00:**:**:**:00,OpT=0,DfsT=0,ChCnt=0 ,Ssid: Reddy@2F,Ch: 7
+03-03 21:19:50.392 I/lowmemorykiller(  502): nr_free_pages: 38459 nr_inactive_file: 135729 nr_active_file: 180363 workingset_refault: 1494281907 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892863 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:50.434 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:50.434 I/mtkpower_client( 1166): perf_lock_rel, hdl:396871, tid:1166
+03-03 21:19:50.435 I/libPowerHal( 1047): [perfLockRel] hdl:396871, idx:2
+03-03 21:19:50.435 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:50.435 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:50.436 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:50.436 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:50.436 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:50.436 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:50.436 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:50.438 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:50.438 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:50.440 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:49.246 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) <1000ms> Tput: 335008(0.327mbps) [25628:48:16248:38][0:0:0:0][0:0:0:0][0:0:0:0] Pending:1/4096 [0:1:0:0][0:0:0:0][0:0:0:0][0:0:0:0] LQ[505444:494038:42695] idle:0 lv:0 th:5 fg:0x9 TxCpu[40445,42914,175047,38970,19605,20603,18057,20436] RxCpu[0,0,0,0,0,0,0,0] TxDp[ST:BS:FO:QM:DP]:0:0:0:0:1511 Tx[SQ:TI:TM:TDD:TDM:TIC:TFP]:0:376077:376077:0:0:8543:376075 MgmtSub[2:0:1:0:0:0:0:0:0:0:0:3:3:10:0:0]
+03-03 21:19:49.248 I/[wlan][6900]halDumpMsduReportStats( 6900): (HAL INFO) TX_Delay D:[1:5:10:20]=[47:1:0:0:0#0] C:[10:20:50:80]=[1:0:0:0:19#549] M:[5:10:20:50]=[1:0:0:0:19#130] A:[5:10:20:50]=[0:0:0:0:0#0] F:[10:20:50:80]=[0:0:0:0:0#0] Txfail:0
+03-03 21:19:49.248 I/[wlan][6900]halDumpHifStats( 6900): (HAL INFO) I[0 / 975056 1 0 1 0x0 0x0 0] T[34264 34264 34264 / 376076 376076 375368 375844] R[1618677 / 208815] T_Q:T_R[0:332 0:0 0:0 0:0 0:2 0:0 0:0 0:0]  R_R:R_N[0:0 0:0 0:0 0:0] Msdu:F[8190/8192]P[1]D[0] Tok[73/4096] Rfb[4144/0/6/209/0/0/0/0/4150] txreg[265362] rxreg[1255574]
+03-03 21:19:49.248 I/[wlan][6899]kalPerMonUpdate( 6899): (SW4 INFO) ndevdrp:[0:0:0:0][0:0:0:4] NAPI[975056,0,0,0,0,0,0,0,0,0,0] RxReorder[209:0:0:0] RxPending[0:0:0:0] RfbTrack[0:60:10:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0] drv[RM,IL,RI,PA,PF,DU,DA,RT,RM,RW,RA,RB,DT,NS,IB,HS,LS,DD,ME,BD,NI,DR,TE,PE,CE,DN,FE,DE,IE,TME,CM,FB,ID,FD,NL]:1683565,0,1418454,1418454,0,0,0,1602337,4294971025,1370429,32192,1296,200217,0,0,7,0,7029,0,1945,0,191196,0,0,40,200177,0,0,0,0,42,0,0,0,0
+03-03 21:19:49.251 I/[wlan][6899]wlanLinkQualityMonitor( 6899): (SW4 INFO) Link Quality: Tx(rate:10, total:505444, retry:62127, fail:40846, RTS fail:0, ACK fail:40846), Rx(rate:344, total:494038, dup:7029, error:416166), PER(71), Congestion(idle slot:491880790, diff:36162, AwakeDur:9005957)
+03-03 21:19:49.251 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 000000001b7e220a, 0000000078da7d5e, cmd=0x85, seq=77
+03-03 21:19:49.251 I/[wlan][6900]wlanTxCmdDoneCb( 6900): (TX INFO) Add command: 00000000fc6f9f35, 00000000ae7907ff, cmd=0x82, seq=78
+03-03 21:19:49.252 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm pc=490159.731331/0xf048246c;490159.731339/0xf038c89c;490159.731344/0xf038bffe;490159.731349/0xf0475dfc;490159.731355/0xf0412d98;
+03-03 21:19:49.252 I/[wlan][6900]soc7_0_DumpWfsyscpupcr( 6900): (HAL INFO) wm lp=490159.731331/0xf048247a;490159.731339/0xf038c8d0;490159.731344/0xf038c96a;490159.731349/0xf041276a;490159.731355/0xf0412790;
+03-03 21:19:49.252 I/[wlan][6899]nicRxProcessEventPacket( 6899): (RX INFO) Not static config event: id=0x21, seq=77
+03-03 21:19:49.252 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 000000001b7e220a, 0000000078da7d5e, cmd=0x85, seq=77
+03-03 21:19:50.493 I/lowmemorykiller(  502): nr_free_pages: 38270 nr_inactive_file: 135731 nr_active_file: 180363 workingset_refault: 1494281907 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892927 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.253 I/[wlan][6899]nicGetPendingCmdInfo( 6899): (TX INFO) Get command: 00000000fc6f9f35, 00000000ae7907ff, cmd=0x82, seq=78
+03-03 21:19:49.260 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=1,F=2,P=2972
+03-03 21:19:49.319 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(26), skip!
+03-03 21:19:50.582 I/libPerfCtl( 1041): xgfGetFPS pid:2067 fps:120
+03-03 21:19:50.582 I/libPerfCtl( 1041): xgfGetFPS pid:2332 fps:-1
+03-03 21:19:50.582 I/libPerfCtl( 1041): xgfGetFPS pid:14908 fps:-1
+03-03 21:19:50.593 I/lowmemorykiller(  502): nr_free_pages: 38207 nr_inactive_file: 135727 nr_active_file: 180420 workingset_refault: 1494281964 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892927 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.357 I/instant_current(  901): cic_idx:0
+03-03 21:19:50.602 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:50.602 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:49.372 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:500:F2D] scnEventScanDone Version4!size of ScanDone476,ucCompleteChanCount[1],ucCurrentState7, u4ScanDurBcnCnt[1],Seq[169]
+03-03 21:19:49.373 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:500:F2D] 1: a86e1b8d5
+03-03 21:19:49.373 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) Country Code = IN, Detected_Channel_Num = 1
+03-03 21:19:49.373 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) Channel  :      7
+03-03 21:19:49.373 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) IdleTime :   4658
+03-03 21:19:49.373 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) MdrdyCnt :     41
+03-03 21:19:49.373 I/[wlan][6899]scnFsmDumpScanDoneInfo( 6899): (SCN INFO) BAndPCnt :      1
+03-03 21:19:49.373 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [SCANNING] -> [IDLE]
+03-03 21:19:49.373 I/[wlan][6899]aisFsmRunEventScanDone( 6899): (AIS INFO) ScanDone 169, status(0) native req(169)
+03-03 21:19:49.373 I/[wlan][6899]kalSendUevent( 6899): (INIT INFO) Send UEvent = Scan=Status:NORMAL,DBDC:DISABLE,Time:224,Channel:7 ,Reason:OK
+03-03 21:19:49.374 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] Total:1/19  Reddy@2F;
+03-03 21:19:49.376 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] 1: a86e1b8d5
+03-03 21:19:49.376 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:600:D2K] Call cfg80211_scan_done (aborted=0)
+03-03 21:19:49.376 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [LOOKING_FOR] -> [SEARCH]
+03-03 21:19:49.376 I/[wlan][6899]apsUpdateEssApList( 6899): (SCN INFO) Find Reddy@2F in 11 BSSes, result 1
+03-03 21:19:49.376 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) ConnectionPolicy = 0, reason = 1
+03-03 21:19:49.376 I/[wlan][6899]scanCalculateTotalScore( 6899): (SCN INFO) a8:6e:**:**:**:d5 cRSSI[-60] Band[2.4G] Score,Total 2614,DE[100], PR[0], SM[400], RSSI[304],BD[0],BL[400],SAA[100], BW[80], SC[50],ST[100],CI[582],IT[498],CU[0,0],PF[0], TPUT[0], DESENSE[0]
+03-03 21:19:49.376 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) Can't roam out, try blocklist
+03-03 21:19:49.376 I/[wlan][6899]scanCalculateTotalScore( 6899): (SCN INFO) a8:6e:**:**:**:d5 cRSSI[-60] Band[2.4G] Score,Total 2614,DE[100], PR[0], SM[400], RSSI[304],BD[0],BL[400],SAA[100], BW[80], SC[50],ST[100],CI[582],IT[498],CU[0,0],PF[0], TPUT[0], DESENSE[0]
+03-03 21:19:49.376 I/[wlan][6899]scanNeedReplaceCandidate( 6899): (SCN INFO) CandBss in opchnl,add CurBss Score
+03-03 21:19:49.376 I/[wlan][6899]scanNeedReplaceCandidate( 6899): (SCN INFO) CurrBss in opchnl,add CandBss Score
+03-03 21:19:49.376 I/[wlan][6899]apsSearchBssDescByScore( 6899): (SCN INFO) Selected a8:6e:**:**:**:d5, cRSSI[-60] Band[2.4G] Score 2614 when find Reddy@2F, 00:00:**:**:**:00 in 1 BSSes, fix channel 0.
+03-03 21:19:49.376 I/[wlan][6899]apsResetEssApList( 6899): (SCN INFO) BssIndex:0 reset prCurEssLin done
+03-03 21:19:49.376 I/[wlan][6899]aisSearchHandleBadBssDesc( 6899): (ROAMING INFO) fgIsConnected=1, prBssDesc a8:6e:**:**:**:d5, ucBssIndex=0
+03-03 21:19:49.376 I/[wlan][6899]roamingFsmRunEventNewCandidate( 6899): (ROAMING EVENT) [0] EVENT-NEW CANDIDATE: Current Time = 489861096
+03-03 21:19:49.376 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [DISCOVERY] -> [HANDLE_NEW_CANDIDATE]
+03-03 21:19:49.376 I/[wlan][6899]roamingFsmSteps( 6899): (ROAMING STATE) [ROAMING0] TRANSITION: [HANDLE_NEW_CANDIDATE] -> [ROAM]
+03-03 21:19:49.376 I/[wlan][6899]aisFsmRunEventRoamingRoam( 6899): (AIS INFO) [AIS0][0] curr state=SEARCH not allowed roaming
+03-03 21:19:49.376 I/[wlan][6899]aisSearchHandleBadBssDesc( 6899): (AIS INFO) [Roaming] No target found, try to full scan again
+03-03 21:19:49.376 I/[wlan][6899]aisFsmSteps( 6899): (AIS STATE) [AIS0][0] TRANSITION: [SEARCH] -> [LOOKING_FOR]
+03-03 21:19:49.376 I/[wlan][6899]scanSetRequestChannel( 6899): (SCN WARN) No channel to scan, set to full scan
+03-03 21:19:49.376 I/[wlan][6899]scanSetRequestChannel( 6899): (SCN INFO) channel num(0=>0) 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+03-03 21:19:49.376 I/[wlan][6899]scnFsmSteps( 6899): (SCN STATE) [SCAN]TRANSITION: [IDLE] -> [SCANNING]
+03-03 21:19:49.376 I/[wlan][6899]SCANLOG( 6899): (SCN INFO) [SCN:200:D2F] ScanReqV2: ScanType=1,BSS=0,SSIDType=8,Num=1,Ext=0,ChannelType=0,Num=0,Ext=0,Seq=170,Ver=1,Dw=0,Min=0,Func=(0x3,0x0),D=0,Mac=00:00:**:**:**:00,BSSID=00:00:**:**:**:00,OpT=0,DfsT=0,ChCnt=0 ,Ssid: Reddy@2F
+03-03 21:19:49.378 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=0,F=0,P=2972
+03-03 21:19:50.619 I/netd    (  987): interfaceGetCfg(wlan0) -> {InterfaceConfigurationParcel{ifName: wlan0, hwAddr: 76:b3:e2:17:a4:7f, ipv4Addr: 192.168.4.9, prefixLength: 24, flags: [up, broadcast, running, multicast]}} <0.33ms>
+03-03 21:19:50.682 W/android.hardware.thermal-service.mediatek( 1046): parseMsg: Get from client TYPE=thermal_hal_notify NAME=SKIN
+03-03 21:19:50.683 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:name.c_str():SKIN
+03-03 21:19:50.683 W/android.hardware.thermal-service.mediatek( 1046): parseMsg:tz notify:SKIN
+03-03 21:19:50.683 I/android.hardware.thermal-service.mediatek( 1046): Wait to accept a connection
+03-03 21:19:50.683 I/android.hardware.thermal-service.mediatek( 1046): Sending notification:  Type: SKIN Name: SKIN CurrentValue: 38.466 ThrottlingStatus: LIGHT
+03-03 21:19:50.683 I/android.hardware.thermal-service.mediatek( 1046): sendThermalChangedCallback
+03-03 21:19:50.693 I/lowmemorykiller(  502): nr_free_pages: 37955 nr_inactive_file: 135727 nr_active_file: 180420 workingset_refault: 1494281964 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892991 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:50.696 I/touch_boost( 1166): enable=1, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:50.696 I/mtkpower_client( 1166): perf_lock_acq, hdl:0, dur:120, num:14, pid:1166, tid:1166
+03-03 21:19:50.697 I/mtkpower_client( 1166): ret_hdl:396872
+03-03 21:19:50.697 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:50.697 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:49.457 W/[FTS_TS]fts_input_report_b(  581): [B]P0(719, 1970)[p:22,tm:32] DOWN!
+03-03 21:19:50.698 I/libPowerHal( 1047): [perfLockAcq] idx:2 hdl:396872 hint:-1 pid:1166 tid:1166 duration:120 lock_user:touch_boost => ret_hdl:396872
+03-03 21:19:50.698 I/libPowerHal( 1047): [setClusterFreq] touch_boost set cpufreq[0] min:1800000 max:-1 cpufreq[1] min:900000 max:-1 
+03-03 21:19:50.698 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: 1800000 -1 900000 -1 
+03-03 21:19:50.698 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404100, param:0
+03-03 21:19:50.698 I/libPowerHal( 1047): [PE] touch_boost update cmd:1404300, param:0
+03-03 21:19:50.699 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408100, param:0
+03-03 21:19:50.699 I/libPowerHal( 1047): [PE] touch_boost update cmd:1408300, param:0
+03-03 21:19:50.699 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:50.700 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:50.700 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:50.723 I/BufferQueueProducer( 1080): [com.example.foxos/com.example.foxos.MainActivity#142838](this:0xb4000075ed9080b8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=119.60 dur=1003.37 max=8.98 min=7.58
+03-03 21:19:49.490 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=1,F=2,P=112
+03-03 21:19:50.765 I/BufferQueueProducer( 1080): [Taskbar#122](this:0xb4000075ed86b6c8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=4.74 dur=3587.49 max=3269.91 min=7.99
+03-03 21:19:49.533 W/[FTS_TS]fts_input_report_b(  581): [B]P0 UP!
+03-03 21:19:49.533 W/[FTS_TS]fts_input_report_b(  581): [B]Points All Up!
+03-03 21:19:50.776 I/lowmemorykiller(  502): nr_free_pages: 37577 nr_inactive_file: 135727 nr_active_file: 180648 workingset_refault: 1494282192 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 310853 init_ws_refault: 1494277105 free_swap: 892991 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:49.535 I/[wlan][6899]scanCheckEpigramVhtIE( 6899): (RLM WARN) [Epigram] VHT length is invalid(24), skip!
+03-03 21:19:50.815 I/touch_boost( 1166): enable=0, boost_up=0, boost_down=1, render_deboost=0, active_time=100, duration=120, idleprefer(TA,FG)=(0,0), util(TA,FG)=(0,0), freq(c0,c1,c2)=(1800000,900000,0)
+03-03 21:19:50.816 I/mtkpower_client( 1166): perf_lock_rel, hdl:396872, tid:1166
+03-03 21:19:50.816 I/touch_boost( 1166): set_top_grp_aware
+03-03 21:19:50.816 I/mtkpower_client( 1166): perf_lock_acq, hdl:396858, dur:2000, num:4, pid:1166, tid:1166
+03-03 21:19:50.816 I/libPowerHal( 1047): [perfLockRel] hdl:396872, idx:2
+03-03 21:19:50.816 I/libPowerHal( 1047): [setClusterFreq]  set cpu_ctrl cpufreq: -1 -1 -1 -1 
+03-03 21:19:50.817 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404100 param:0
+03-03 21:19:50.817 I/libPowerHal( 1047): [PD] touch_boost update cmd:1404300 param:0
+03-03 21:19:50.817 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408100 param:0
+03-03 21:19:50.817 I/libPowerHal( 1047): [PD] touch_boost update cmd:1408300 param:0
+03-03 21:19:50.818 I/mtkpower_client( 1166): ret_hdl:396858
+03-03 21:19:50.820 I/libPowerHal( 1047): [perfLockAcq] idx:1 hdl:396858 hint:-1 pid:1166 tid:1166 duration:2000 lock_user:touch_boost => ret_hdl:396858
+03-03 21:19:50.820 I/libPowerHal( 1047): [PU] scn:1, update
+03-03 21:19:50.820 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:50.821 W/BluetoothMetricsLogger( 2804): MetricsLogger isn't initialized
+03-03 21:19:50.824 I/NearbyDiscovery(17176): (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+03-03 21:19:50.825 I/NearbyDiscovery(18610): (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+03-03 21:19:50.877 I/lowmemorykiller(  502): nr_free_pages: 37514 nr_inactive_file: 135727 nr_active_file: 180652 workingset_refault: 1494282196 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 316375 init_ws_refault: 1494282192 free_swap: 892991 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:50.965 W/s.youtube.music(15239): userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+03-03 21:19:50.978 I/lowmemorykiller(  502): nr_free_pages: 37262 nr_inactive_file: 135727 nr_active_file: 180664 workingset_refault: 1494282205 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 316375 init_ws_refault: 1494282192 free_swap: 892991 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:51.025 I/BufferQueueProducer( 1080): [StatusBar#92](this:0xb4000075ed8577d8,id:-1,api:0,p:-1,c:1080) queueBuffer: fps=0.26 dur=3830.01 max=3830.01 min=3830.01
+03-03 21:19:49.810 I/[wlan][6899]qmHandleEventBssAbsencePresence( 6899): (QM INFO) NAF:B=0,A=0,F=0,P=112
+03-03 21:19:51.078 I/lowmemorykiller(  502): nr_free_pages: 37448 nr_inactive_file: 135740 nr_active_file: 180664 workingset_refault: 1494282206 pgscan_kswapd: 2507660328 pgscan_direct: 61341145 pgscan_direct_throttle: 1167 init_pgscan_direct: 61230352 init_pgscan_kswapd: 2507660328 base_file_lru: 316375 init_ws_refault: 1494282192 free_swap: 892991 total_swap: 1572863 swap_free_percentage: 56%
+03-03 21:19:51.080 E/NotifRow( 2067): Magnetic state changed from IDLE to IDLE on a null swiped listener, or the logging key of the listener is null
+03-03 21:19:51.091 W/WindowOnBackDispatcher( 2067): sendCancelIfRunning: isInProgress=false callback=com.android.systemui.back.domain.interactor.BackActionInteractor$callback$2@13fe0d2
+03-03 21:19:51.095 W/WindowManager( 1666): Changing focus from Window{6bf6bb6 u0 NotificationShade} to Window{bdd1d92 u0 com.example.foxos/com.example.foxos.MainActivity} displayId=0 Callers=com.android.server.wm.RootWindowContainer.updateFocusedWindowLocked:494 com.android.server.wm.WindowManagerService.updateFocusedWindowLocked:6812 com.android.server.wm.WindowManagerService.relayoutWindow:2786 com.android.server.wm.Session.relayout:288 
+03-03 21:19:51.099 I/netd    (  987): tetherGetStats() -> {[TetherStatsParcel{iface: ccmni1, rxBytes: 3509550, rxPackets: 43041, txBytes: 3464010, txPackets: 46238, ifIndex: 0}, TetherStatsParcel{iface: ccmni2, rxBytes: 4035077, rxPackets: 51937, txBytes: 7654680, txPackets: 64146, ifIndex: 0}, TetherStatsParcel{iface: ccmni3, rxBytes: 3051754, rxPackets: 38176, txBytes: 3102428, txPackets: 41528, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni1, rxBytes: 368437434, rxPackets: 319516, txBytes: 98443403, txPackets: 140718, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni2, rxBytes: 177232448, rxPackets: 228673, txBytes: 311312455, txPackets: 310211, ifIndex: 0}, TetherStatsParcel{iface: v4-ccmni3, rxBytes: 4326832642, rxPackets: 1328562, txBytes: 509179019, txPackets: 977900, ifIndex: 0}, TetherStatsParcel{iface: wlan0, rxBytes: 1782021127, rxPackets: 1894403, txBytes: 2587817868, txPackets: 2362967, ifIndex: 0}]} <3.90ms>
+03-03 21:19:51.109 I/SurfaceFlinger( 1080): setDesiredDisplayModeSpecs: calling_process=system_server
+03-03 21:19:51.110 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142852, name=Surface(name=8d82e66 StatusBar)/@0x8ccea1a - animation-leash of insets_animation#142852
+03-03 21:19:51.110 I/SurfaceFlinger( 1080): onHandleDestroyed: layerId=142853, name=Surface(name=5912cfa Taskbar)/@0xccba996 - animation-leash of insets_animation#142853

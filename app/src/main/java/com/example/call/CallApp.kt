@@ -1,0 +1,261 @@
+package com.example.call
+
+import android.content.Context
+import android.net.Uri
+import android.os.Bundle
+import android.telecom.TelecomManager
+import android.telecom.Call
+import android.telecom.CallAudioState
+import androidx.compose.animation.*
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import android.content.Intent
+import android.provider.ContactsContract
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.call.ui.theme.*
+import com.example.call.data.*
+import com.example.call.ui.screens.*
+import com.example.call.ui.components.*
+
+@Composable
+fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit = {}) {
+    val context = LocalContext.current
+    val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+    
+    // Repositories
+    val repository = remember { ContactRepository(context) }
+    val voicemailRepository = remember { VoicemailRepository(context) }
+    val blacklistRepository = remember { BlacklistRepository(context) }
+    val notesRepository = remember { NotesRepository(context) }
+    val prefs = remember { context.getSharedPreferences("call_prefs", Context.MODE_PRIVATE) }
+
+    // State
+    var selectedTab by remember { mutableIntStateOf(3) } // Default to Keypad
+    val activeCall by CallManager.activeCall.collectAsState()
+    
+    // Sync current tab to MainActivity for volume button shortcuts
+    LaunchedEffect(selectedTab) {
+        MainActivity.currentTab = selectedTab
+    }
+
+    var contacts by remember { mutableStateOf<List<Contact>>(emptyList()) }
+    var callLogs by remember { mutableStateOf<List<CallRecord>>(emptyList()) }
+    var voicemails by remember { mutableStateOf<List<VoicemailRecord>>(emptyList()) }
+    var favorites by remember { mutableStateOf<List<Contact>>(emptyList()) }
+    var notes by remember { mutableStateOf<List<Note>>(emptyList()) }
+    
+    var selectedContact by remember { mutableStateOf<Contact?>(null) }
+    var isCallMinimized by remember { mutableStateOf(false) }
+    var showSummary by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
+    var shakeEnabled by remember { mutableStateOf(prefs.getBoolean("shake_enabled", false)) }
+
+    // Initial Data Load
+    LaunchedEffect(Unit) {
+        contacts = repository.getContacts()
+        callLogs = repository.getCallLogs()
+        voicemails = voicemailRepository.getVoicemails()
+        notes = notesRepository.getNotes()
+        
+        val savedFavs = prefs.getStringSet("favorites", emptySet()) ?: emptySet()
+        favorites = contacts.filter { savedFavs.contains(it.number) }
+    }
+
+    val toggleFavorite: (Contact) -> Unit = { contact ->
+        favorites = if (favorites.any { it.number == contact.number }) {
+            favorites.filter { it.number != contact.number }
+        } else {
+            favorites + contact
+        }
+        prefs.edit().putStringSet("favorites", favorites.map { it.number }.toSet()).apply()
+    }
+
+    BackHandler(enabled = selectedContact != null || isCallMinimized || showSummary || showSettings) {
+        when {
+            selectedContact != null -> selectedContact = null
+            showSummary -> showSummary = false
+            showSettings -> showSettings = false
+            isCallMinimized -> isCallMinimized = false
+        }
+    }
+
+    Scaffold(
+        bottomBar = {
+            if (activeCall == null || isCallMinimized) {
+                GlassmorphicBottomBar(selectedTab) { selectedTab = it }
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+            // Main content based on tab
+            Crossfade(targetState = selectedTab, label = "") { tab ->
+                when (tab) {
+                    0 -> FavoritesScreen(favorites, onCall = { CallManager.makeCall(context, it) }, onInfoClick = { selectedContact = it })
+                    1 -> RecentsScreen(callLogs, onCall = { CallManager.makeCall(context, it) }, onInfoClick = { num -> 
+                        selectedContact = contacts.findContactFlexible(num) ?: Contact("Unknown", num)
+                    })
+                    2 -> ContactsScreen(
+                        contacts = contacts, 
+                        favorites = favorites,
+                        onSettingsClick = { showSettings = true },
+                        onCall = { CallManager.makeCall(context, it) },
+                        onContactClick = { selectedContact = it },
+                        onToggleFavorite = toggleFavorite
+                    )
+                    3 -> KeypadScreen(contacts, 
+                        onCall = { CallManager.makeCall(context, it) }, 
+                        onCallClick = { showSummary = true }
+                    )
+                    4 -> VoicemailScreen(voicemails, onCall = { CallManager.makeCall(context, it) }, onDelete = { /* Handle delete */ })
+                    5 -> NotesScreen(notes, onSaveNotes = { 
+                        notes = it
+                        notesRepository.saveNotes(it)
+                    })
+                }
+            }
+
+            // Overlays
+            if (selectedContact != null) {
+                val isBlocked = remember(selectedContact) { blacklistRepository.isBlocked(selectedContact!!.number) }
+                ContactDetailScreen(
+                    contact = selectedContact!!,
+                    isFavorite = favorites.any { it.number == selectedContact!!.number },
+                    onToggleFavorite = { toggleFavorite(selectedContact!!) },
+                    onBack = { selectedContact = null },
+                    onCall = { CallManager.makeCall(context, it) },
+                    onMessage = { 
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$it"))
+                        context.startActivity(intent)
+                    },
+                    isBlocked = isBlocked,
+                    onToggleBlock = {
+                        if (isBlocked) blacklistRepository.unblockNumber(selectedContact!!.number)
+                        else blacklistRepository.blockNumber(selectedContact!!.number)
+                        selectedContact = selectedContact // Trigger recompose
+                    }
+                )
+            }
+
+            if (showSummary) {
+                SummaryScreen(callLogs, onBack = { showSummary = false })
+            }
+
+            if (showSettings) {
+                SettingsScreen(
+                    shakeEnabled = shakeEnabled, 
+                    onShakeToggle = {
+                        shakeEnabled = it
+                        prefs.edit().putBoolean("shake_enabled", it).apply()
+                    },
+                    themePreference = themePreference,
+                    onThemeChange = onThemeChange
+                )
+            }
+
+            activeCall?.let { call ->
+                if (!isCallMinimized) {
+                    CallingScreen(call, onMinimize = { isCallMinimized = true })
+                } else {
+                    ActiveCallMinimizedBar(call) { isCallMinimized = false }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ActiveCallMinimizedBar(call: Call, onClick: () -> Unit) {
+    val number = call.details.handle?.schemeSpecificPart ?: "Unknown"
+    val contactGradient = remember(number) { getGradientForContact(number) }
+    val contentColor = adaptiveTextColor(contactGradient.first())
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .clickable { onClick() },
+        color = contactGradient.first().copy(alpha = 0.9f),
+        shadowElevation = 4.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Call, contentDescription = null, tint = contentColor)
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("Return to Call: $number", color = contentColor, fontWeight = FontWeight.Bold)
+            }
+            IconButton(onClick = { call.disconnect() }) {
+                Icon(Icons.Default.Clear, contentDescription = "End", tint = IOSRed)
+            }
+        }
+    }
+}
+
+@Composable
+fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
+    // Shared between bottom bar and drawer if needed
+    val tabs = listOf(
+        Triple("Favorites", Icons.Default.Star, 0),
+        Triple("Recents", Icons.Default.Refresh, 1),
+        Triple("Contacts", Icons.Default.Person, 2),
+        Triple("Keypad", Icons.Default.Call, 3),
+        Triple("Voicemail", Icons.Default.Menu, 4),
+        Triple("Notes", Icons.Default.Edit, 5)
+    )
+
+    Box(modifier = Modifier.fillMaxWidth().height(95.dp)) {
+        // Blur Background Layer
+        Surface(
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+            modifier = Modifier.fillMaxSize().blur(15.dp),
+            shadowElevation = 8.dp
+        ) {}
+
+        // Content Layer (Icons/Text) - Not Blurred
+        Row(
+            modifier = Modifier.fillMaxSize().padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            tabs.forEach { (label, icon, index) ->
+                val isSelected = selectedTab == index
+                Column(
+                    modifier = Modifier.clickable { onTabSelected(index) },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        icon, 
+                        contentDescription = label,
+                        tint = if (isSelected) IOSBlue else IOSGray,
+                        modifier = Modifier.size(26.dp)
+                    )
+                    Text(
+                        label, 
+                        fontSize = 10.sp, 
+                        color = if (isSelected) IOSBlue else IOSGray,
+                        fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
+                    )
+                }
+            }
+        }
+    }
+}

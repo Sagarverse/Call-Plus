@@ -117,19 +117,22 @@ fun AnalyticsCard(label: String, value: String, icon: ImageVector, color: Color,
 
 @Composable
 fun SwipeableActionItem(
+    modifier: Modifier = Modifier,
     onRightSwipe: () -> Unit,
     onLeftSwipe: () -> Unit,
+    onDeleteSwipe: (() -> Unit)? = null, // Optional delete action
     content: @Composable () -> Unit
 ) {
     var offsetX by remember { mutableStateOf(0f) }
     val maxOffset = 300f
     
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 when {
                     offsetX > 50 -> IOSGreen
+                    offsetX < -150 && onDeleteSwipe != null -> IOSRed
                     offsetX < -50 -> IOSBlue
                     else -> Color.Transparent
                 }
@@ -141,7 +144,8 @@ fun SwipeableActionItem(
                 },
                 onDragStopped = {
                     if (offsetX > 200) onRightSwipe()
-                    else if (offsetX < -200) onLeftSwipe()
+                    else if (offsetX < -200 && onDeleteSwipe != null) onDeleteSwipe()
+                    else if (offsetX < -100) onLeftSwipe()
                     offsetX = 0f
                 }
             )
@@ -153,6 +157,8 @@ fun SwipeableActionItem(
         ) {
             if (offsetX > 80) {
                 Text("Call", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            } else if (offsetX < -150 && onDeleteSwipe != null) {
+                Text("Delete", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             } else if (offsetX < -80) {
                 Text("Message", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }

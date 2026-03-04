@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Black background -->
+    <item android:drawable="@android:color/black" />
+    <!-- Centered "Sagar Call" text via bitmap placeholder — actual text rendered in SplashActivity -->
+</layer-list>

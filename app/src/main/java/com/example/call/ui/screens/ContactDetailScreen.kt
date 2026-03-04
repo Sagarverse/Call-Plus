@@ -35,6 +35,7 @@ fun ContactDetailScreen(
     isBlocked: Boolean = false,
     onToggleBlock: () -> Unit = {}
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     Scaffold(
         topBar = {
             Row(
@@ -49,10 +50,40 @@ fun ContactDetailScreen(
                     modifier = Modifier.clickable { onBack() }
                 )
                 Text(
-                    "Edit", 
-                    color = IOSBlue, 
-                    fontSize = 17.sp, 
-                    modifier = Modifier.clickable { onEdit() }
+                    "Edit",
+                    color = IOSBlue,
+                    fontSize = 17.sp,
+                    modifier = Modifier.clickable {
+                        // Open system contact editor
+                        val lookupUri = android.net.Uri.withAppendedPath(
+                            android.provider.ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                            android.net.Uri.encode(contact.number)
+                        )
+                        val cursor = context.contentResolver.query(
+                            lookupUri,
+                            arrayOf(android.provider.ContactsContract.PhoneLookup.LOOKUP_KEY),
+                            null, null, null
+                        )
+                        val lookupKey = cursor?.use {
+                            if (it.moveToFirst()) it.getString(0) else null
+                        }
+                        val editIntent = if (lookupKey != null) {
+                            android.content.Intent(android.content.Intent.ACTION_EDIT).apply {
+                                data = android.net.Uri.withAppendedPath(
+                                    android.provider.ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey
+                                )
+                                putExtra("finishActivityOnSaveCompleted", true)
+                                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                        } else {
+                            android.content.Intent(android.content.Intent.ACTION_INSERT_OR_EDIT).apply {
+                                type = android.provider.ContactsContract.Contacts.CONTENT_ITEM_TYPE
+                                putExtra(android.provider.ContactsContract.Intents.Insert.PHONE, contact.number)
+                                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                        }
+                        try { context.startActivity(editIntent) } catch (_: Exception) {}
+                    }
                 )
             }
         },
@@ -86,8 +117,19 @@ fun ContactDetailScreen(
             ) {
                 ContactActionItem(Icons.Default.Email, "message", onClick = { onMessage(contact.number) })
                 ContactActionItem(Icons.Default.Call, "call", onClick = { onCall(contact.number) })
-                ContactActionItem(Icons.Default.Face, "video", enabled = false)
-                ContactActionItem(Icons.Default.Email, "mail", enabled = false)
+                ContactActionItem(Icons.Default.Videocam, "video", onClick = {
+                    // Open Google Meet or Duo with the contact's number
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW,
+                        android.net.Uri.parse("https://meet.google.com/"))
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    try { context.startActivity(intent) } catch (_: Exception) {}
+                })
+                ContactActionItem(Icons.Default.Email, "mail", onClick = {
+                    val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO,
+                        android.net.Uri.parse("mailto:"))
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    try { context.startActivity(android.content.Intent.createChooser(intent, "Send Email")) } catch (_: Exception) {}
+                })
             }
             
             Spacer(modifier = Modifier.height(24.dp))

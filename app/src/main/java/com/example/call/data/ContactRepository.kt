@@ -27,6 +27,7 @@ fun List<Contact>.findContactFlexible(number: String): Contact? {
 }
 
 data class CallRecord(
+    val id: Long,
     val name: String, 
     val number: String, 
     val type: String, 
@@ -92,14 +93,16 @@ class ContactRepository(private val context: Context) {
                 CallLog.Calls.DATE + " DESC"
             )
             cursor?.use {
+                val idIndex = it.getColumnIndex(CallLog.Calls._ID)
                 val nameIndex = it.getColumnIndex(CallLog.Calls.CACHED_NAME)
                 val numberIndex = it.getColumnIndex(CallLog.Calls.NUMBER)
                 val dateIndex = it.getColumnIndex(CallLog.Calls.DATE)
                 val typeIndex = it.getColumnIndex(CallLog.Calls.TYPE)
                 val durationIndex = it.getColumnIndex(CallLog.Calls.DURATION)
                 
-                if (numberIndex != -1 && dateIndex != -1 && typeIndex != -1) {
+                if (idIndex != -1 && numberIndex != -1 && dateIndex != -1 && typeIndex != -1) {
                     while (it.moveToNext()) {
+                        val id = it.getLong(idIndex)
                         val name = if (nameIndex != -1) it.getString(nameIndex) ?: it.getString(numberIndex) ?: "Unknown" else it.getString(numberIndex) ?: "Unknown"
                         val number = it.getString(numberIndex) ?: ""
                         val date = it.getLong(dateIndex)
@@ -110,18 +113,40 @@ class ContactRepository(private val context: Context) {
                             else -> "Other"
                         }
                         val duration = if (durationIndex != -1) it.getInt(durationIndex) else 0
-                        records.add(CallRecord(name, number, type, formatTime(date), duration, date))
+                        records.add(CallRecord(id, name, number, type, formatTime(date), duration, date))
                     }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        records.take(20)
+        records // Removed the .take(20) limit to show all call history
     }
 
     private fun formatTime(timestamp: Long): String {
         val sdf = java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
         return sdf.format(java.util.Date(timestamp))
+    }
+
+    suspend fun deleteCallLog(id: Long) = withContext(Dispatchers.IO) {
+        try {
+            val selection = "${CallLog.Calls._ID} = ?"
+            val selectionArgs = arrayOf(id.toString())
+            context.contentResolver.delete(CallLog.Calls.CONTENT_URI, selection, selectionArgs)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun deleteCallLogs(ids: List<Long>) = withContext(Dispatchers.IO) {
+        if (ids.isEmpty()) return@withContext
+        try {
+            val placeholders = ids.joinToString(",") { "?" }
+            val selection = "${CallLog.Calls._ID} IN ($placeholders)"
+            val selectionArgs = ids.map { it.toString() }.toTypedArray()
+            context.contentResolver.delete(CallLog.Calls.CONTENT_URI, selection, selectionArgs)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

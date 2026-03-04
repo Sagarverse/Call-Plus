@@ -14,10 +14,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Gesture
+import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,6 +41,9 @@ import com.example.call.data.findContactFlexible
 import com.example.call.ui.theme.*
 import com.example.call.ui.components.CameraScannerView
 import com.example.call.ui.components.SagarCallBanner
+import com.google.mlkit.vision.digitalink.*
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.common.model.RemoteModelManager
 import java.util.Locale
 
 @Composable
@@ -93,6 +99,51 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
         }
     }
 
+    var isDrawingMode by remember { mutableStateOf(false) }
+    var modelDownloaded by remember { mutableStateOf(false) }
+    var inkBuilder by remember { mutableStateOf(Ink.builder()) }
+    var strokeBuilder = remember { Ink.Stroke.builder() }
+    var currentStrokes by remember { mutableStateOf(listOf<List<androidx.compose.ui.geometry.Offset>>()) }
+    var currentStrokePoints by remember { mutableStateOf(listOf<androidx.compose.ui.geometry.Offset>()) }
+    
+    val model = remember {
+        val options = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
+        options?.let { DigitalInkRecognitionModel.builder(it).build() }
+    }
+
+    val recognizer = remember(modelDownloaded) {
+        if (modelDownloaded && model != null) {
+            DigitalInkRecognition.getClient(DigitalInkRecognizerOptions.builder(model).build())
+        } else null
+    }
+
+    LaunchedEffect(isDrawingMode) {
+        if (isDrawingMode && model != null && !modelDownloaded) {
+            val modelManager = RemoteModelManager.getInstance()
+            modelManager.isModelDownloaded(model).addOnSuccessListener { downloaded: Boolean ->
+                if (downloaded) {
+                    modelDownloaded = true
+                } else {
+                    android.widget.Toast.makeText(context, "Downloading handwriting model...", android.widget.Toast.LENGTH_SHORT).show()
+                    modelManager.download(model, DownloadConditions.Builder().build())
+                        .addOnSuccessListener {
+                            modelDownloaded = true
+                            android.widget.Toast.makeText(context, "Handwriting ready!", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            android.widget.Toast.makeText(context, "Failed to download model", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            recognizer?.close()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -117,11 +168,25 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                IconButton(
-                    onClick = { cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) },
-                    modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    Icon(Icons.Default.CameraAlt, contentDescription = "Scan Number", tint = IOSBlue, modifier = Modifier.size(28.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = { isDrawingMode = !isDrawingMode },
+                        modifier = Modifier.padding(end = 4.dp)
+                    ) {
+                        Icon(
+                            if (isDrawingMode) Icons.Default.EditOff else Icons.Default.Gesture, 
+                            contentDescription = "Drawing Mode", 
+                            tint = if (isDrawingMode) IOSGreen else IOSBlue, 
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    
+                    IconButton(
+                        onClick = { cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Icon(Icons.Default.CameraAlt, contentDescription = "Scan Number", tint = IOSBlue, modifier = Modifier.size(28.dp))
+                    }
                 }
             }
             
@@ -200,23 +265,108 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                 listOf("*" to "", "0" to "+", "#" to "")
             )
 
-            keys.forEach { row ->
-                Row {
-                    row.forEach { (digit, letters) ->
-                        KeypadButton(
-                            digit = digit, 
-                            letters = letters, 
-                            onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                phoneNumber += digit
-                            },
-                            onLongClick = {
-                                if (digit == "1") {
-                                    onCall("*86")
-                                } else if (digit == "0") {
-                                    phoneNumber += "+"
+            Box(modifier = Modifier.padding(vertical = 8.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    keys.forEach { row ->
+                        Row {
+                            row.forEach { (digit, letters) ->
+                                KeypadButton(
+                                    digit = digit, 
+                                    letters = letters, 
+                                    onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        phoneNumber += digit
+                                    },
+                                    onLongClick = {
+                                        if (digit == "1") {
+                                            onCall("*86")
+                                        } else if (digit == "0") {
+                                            phoneNumber += "+"
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (isDrawingMode) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(Color.Black.copy(alpha = 0.05f))
+                            .pointerInput(recognizer) {
+                                if (recognizer == null || !modelDownloaded) return@pointerInput
+                                awaitPointerEventScope {
+                                    while (true) {
+                                        val event = awaitPointerEvent()
+                                        val position = event.changes.first().position
+                                        
+                                        when (event.type) {
+                                            androidx.compose.ui.input.pointer.PointerEventType.Press -> {
+                                                strokeBuilder = Ink.Stroke.builder()
+                                                strokeBuilder.addPoint(Ink.Point.create(position.x, position.y))
+                                                currentStrokePoints = listOf(position)
+                                            }
+                                            androidx.compose.ui.input.pointer.PointerEventType.Move -> {
+                                                strokeBuilder.addPoint(Ink.Point.create(position.x, position.y))
+                                                currentStrokePoints = currentStrokePoints + position
+                                            }
+                                            androidx.compose.ui.input.pointer.PointerEventType.Release -> {
+                                                inkBuilder.addStroke(strokeBuilder.build())
+                                                currentStrokes = currentStrokes + listOf(currentStrokePoints)
+                                                currentStrokePoints = emptyList()
+                                                val ink = inkBuilder.build()
+                                                recognizer?.recognize(ink)
+                                                    ?.addOnSuccessListener { result ->
+                                                        val topResult = result.candidates.firstOrNull()?.text
+                                                        if (topResult != null && topResult.any { it.isDigit() || it == '*' || it == '#' }) {
+                                                            phoneNumber += topResult.filter { it.isDigit() || it == '*' || it == '#' }.take(1)
+                                                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                                        }
+                                                        inkBuilder = Ink.builder()
+                                                        currentStrokes = emptyList()
+                                                    }
+                                                    ?.addOnFailureListener {
+                                                        inkBuilder = Ink.builder()
+                                                        currentStrokes = emptyList()
+                                                    }
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                    ) {
+                        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                            // Draw completed strokes
+                            currentStrokes.forEach { stroke ->
+                                if (stroke.size > 1) {
+                                    val path = androidx.compose.ui.graphics.Path().apply {
+                                        moveTo(stroke[0].x, stroke[0].y)
+                                        for (i in 1 until stroke.size) {
+                                            lineTo(stroke[i].x, stroke[i].y)
+                                        }
+                                    }
+                                    drawPath(path, color = IOSBlue, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4.dp.toPx()))
+                                }
+                            }
+                            // Draw current stroke
+                            if (currentStrokePoints.size > 1) {
+                                val path = androidx.compose.ui.graphics.Path().apply {
+                                    moveTo(currentStrokePoints[0].x, currentStrokePoints[0].y)
+                                    for (i in 1 until currentStrokePoints.size) {
+                                        lineTo(currentStrokePoints[i].x, currentStrokePoints[i].y)
+                                    }
+                                }
+                                drawPath(path, color = IOSBlue, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4.dp.toPx()))
+                            }
+                        }
+
+                        Text(
+                            "Draw numbers here",
+                            modifier = Modifier.align(Alignment.Center),
+                            color = IOSGray.copy(alpha = 0.5f),
+                            fontSize = 14.sp
                         )
                     }
                 }
@@ -293,16 +443,29 @@ fun KeypadButton(digit: String, letters: String, onClick: () -> Unit, onLongClic
                     onLongPress = { onLongClick() }
                 )
             },
-        shape = CircleShape,
-        color = if (isDark) IOSButtonDark else IOSButtonLight
+        shape = RoundedCornerShape(24.dp),
+        color = if (isDark) IOSButtonDark else IOSButtonLight,
+        shadowElevation = 2.dp
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(digit, fontSize = 34.sp, fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                digit, 
+                fontSize = 32.sp, 
+                fontWeight = FontWeight.Medium, 
+                color = MaterialTheme.colorScheme.onSurface,
+                fontFamily = FontFamily.SansSerif
+            )
             if (letters.isNotEmpty()) {
-                Text(letters, fontSize = 10.sp, fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), letterSpacing = 2.sp)
+                Text(
+                    letters, 
+                    fontSize = 11.sp, 
+                    fontWeight = FontWeight.Normal, 
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), 
+                    letterSpacing = 1.sp
+                )
             }
         }
     }

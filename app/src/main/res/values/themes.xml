@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Base theme for the app (no action bar) -->
     <style name="Theme.Call" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Splash screen theme: pure black background, no icon flash -->
+    <style name="Theme.Call.Splash" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
 </resources>

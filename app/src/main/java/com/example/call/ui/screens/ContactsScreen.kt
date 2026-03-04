@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -102,6 +103,9 @@ fun ContactsScreen(
                 items(filteredContacts) { contact ->
                     val isFavorite = favorites.any { it.number == contact.number }
                     SwipeableActionItem(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 6.dp)
+                            .clip(RoundedCornerShape(16.dp)),
                         onRightSwipe = { onCall(contact.number) },
                         onLeftSwipe = { 
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
@@ -110,8 +114,37 @@ fun ContactsScreen(
                         content = {
                             ListItem(
                                 modifier = Modifier.clickable { onContactClick(contact) },
-                                headlineContent = { Text(contact.name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold) },
-                                supportingContent = { Text(contact.number, color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                                headlineContent = { 
+                                    Text(
+                                        text = contact.name, 
+                                        color = MaterialTheme.colorScheme.onSurface, 
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 17.sp
+                                    ) 
+                                },
+                                supportingContent = { 
+                                    Text(
+                                        text = contact.number, 
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontSize = 14.sp
+                                    ) 
+                                },
+                                leadingContent = {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(44.dp)
+                                            .clip(androidx.compose.foundation.shape.CircleShape)
+                                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = contact.name.firstOrNull()?.toString()?.uppercase() ?: "?",
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 20.sp,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                },
                                 trailingContent = {
                                     IconButton(onClick = { onToggleFavorite(contact) }) {
                                         Icon(
@@ -121,12 +154,16 @@ fun ContactsScreen(
                                         )
                                     }
                                 },
-                                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
+                                colors = ListItemDefaults.colors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    headlineColor = MaterialTheme.colorScheme.onSurface,
+                                    supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             )
                         }
                     )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f))
                 }
+                item { Spacer(modifier = Modifier.height(100.dp)) } // Edge-to-edge padding
             }
         }
         }

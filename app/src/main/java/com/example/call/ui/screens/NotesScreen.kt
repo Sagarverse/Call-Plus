@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,7 +28,8 @@ import com.example.call.ui.theme.*
 @Composable
 fun NotesScreen(
     notes: List<Note>,
-    onSaveNotes: (List<Note>) -> Unit
+    onSaveNotes: (List<Note>) -> Unit,
+    onBack: () -> Unit = {}
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var noteText by remember { mutableStateOf("") }
@@ -52,7 +54,16 @@ fun NotesScreen(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                SagarCallBanner(modifier = Modifier.align(Alignment.End))
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
+                    }
+                    SagarCallBanner(modifier = Modifier)
+                }
                 Text(
                     "Notes", 
                     fontSize = 34.sp, 

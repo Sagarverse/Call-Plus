@@ -1,8 +1,6 @@
 package com.example.call
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.telecom.Call
 import android.telecom.CallAudioState
@@ -46,41 +44,49 @@ object CallManager {
         _audioState.value = audioState
     }
 
+    /**
+     * Make a call using this app only — never redirects to the system or Google dialer.
+     *
+     * If the app is not yet the default dialer, we still attempt placeCall() which requires
+     * CALL_PHONE permission. The user is expected to grant default-dialer role for full control.
+     * We never fall back to ACTION_DIAL/ACTION_CALL which would open external dialers.
+     */
     fun makeCall(context: Context, number: String) {
-        val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-        val isDefaultDialer = context.packageName == telecomManager.defaultDialerPackage
-        
-        // Remove any non-numeric characters except +
+        if (number.isBlank()) {
+            Toast.makeText(context, "Enter a number to call", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Strip non-numeric except leading +
         val cleanNumber = number.replace(Regex("[^0-9+]"), "")
-        val uri = Uri.fromParts("tel", cleanNumber, null)
-        
-        Log.d("CallManager", "Attempting call to $cleanNumber. Default Dialer: $isDefaultDialer")
+        if (cleanNumber.isEmpty()) {
+            Toast.makeText(context, "Invalid phone number", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+
+        if (context.checkSelfPermission(android.Manifest.permission.CALL_PHONE)
+            != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            Toast.makeText(context, "Phone permission required to make calls", Toast.LENGTH_LONG).show()
+            Log.w("CallManager", "CALL_PHONE permission not granted")
+            return
+        }
+
+        val uri = android.net.Uri.fromParts("tel", cleanNumber, null)
+        Log.d("CallManager", "Placing call to $cleanNumber")
 
         try {
-            if (context.checkSelfPermission(android.Manifest.permission.CALL_PHONE) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                if (isDefaultDialer) {
-                    // Direct placement if we are the default app
-                    telecomManager.placeCall(uri, Bundle())
-                } else {
-                    // Standard intent if we aren't default yet
-                    val intent = Intent(Intent.ACTION_CALL, uri).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    context.startActivity(intent)
-                }
-            } else {
-                Toast.makeText(context, "Call permission denied", Toast.LENGTH_SHORT).show()
-                val intent = Intent(Intent.ACTION_DIAL, uri).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                context.startActivity(intent)
-            }
+            // placeCall works whether or not we are the default dialer,
+            // as long as CALL_PHONE is granted. This keeps everything in-app.
+            telecomManager.placeCall(uri, Bundle())
+        } catch (e: SecurityException) {
+            Log.e("CallManager", "SecurityException placing call — CALL_PHONE denied at runtime", e)
+            Toast.makeText(context, "Call permission denied", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Log.e("CallManager", "Error making call", e)
-            val intent = Intent(Intent.ACTION_DIAL, uri).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            context.startActivity(intent)
+            Log.e("CallManager", "Error placing call", e)
+            Toast.makeText(context, "Failed to place call: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
     }
 }

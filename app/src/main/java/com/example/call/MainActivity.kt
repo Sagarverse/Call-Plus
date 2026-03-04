@@ -10,34 +10,34 @@ import android.os.Bundle
 import android.telecom.TelecomManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
-import android.hardware.SensorManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import androidx.core.content.ContextCompat
 import com.example.call.ui.theme.CallTheme
-import com.example.call.util.ShakeDetector
 import android.util.Log
 import android.view.KeyEvent
 import com.example.call.data.ContactRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
 
 class MainActivity : ComponentActivity() {
     private var lastVolumeUpTime = 0L
     private var lastVolumeDownTime = 0L
     private val DOUBLE_PRESS_INTERVAL = 500L
-    
+
     companion object {
         var currentTab = 3 // Default to Keypad
+        private const val TAG = "MainActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
         requestDefaultDialer()
 
         setContent {
@@ -49,23 +49,32 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.CALL_PHONE,
                     Manifest.permission.READ_CONTACTS,
                     Manifest.permission.READ_CALL_LOG,
+                    Manifest.permission.WRITE_CALL_LOG,
                     Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.MANAGE_OWN_CALLS,
                     Manifest.permission.SEND_SMS
                 )
-                
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     permissions.add("com.android.voicemail.permission.READ_VOICEMAIL")
                     permissions.add("com.android.voicemail.permission.ADD_VOICEMAIL")
                 }
-                
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     permissions.add(Manifest.permission.POST_NOTIFICATIONS)
                 }
 
+                // READ_EXTERNAL_STORAGE only needed before Android 10 for call recordings
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+
                 val launcher = rememberLauncherForActivityResult(
                     ActivityResultContracts.RequestMultiplePermissions()
-                ) { _ -> }
+                ) { results ->
+                    Log.d(TAG, "Permissions result: $results")
+                }
 
                 LaunchedEffect(Unit) {
                     val permissionsToRequest = permissions.filter {
@@ -84,25 +93,39 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Called when the app is already running and a new Intent arrives (singleTop launch mode).
+     * This is how we receive the signal from CustomInCallService when an incoming call arrives
+     * while the app is already open / in the background.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        Log.d(TAG, "onNewIntent: ${intent.action}")
+        // The app's Compose state (activeCall) is driven by CallManager flows,
+        // so nothing extra is needed here — the incoming call notification from
+        // CustomInCallService will have already updated CallManager before we get called.
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (currentTab == 3 && event.action == KeyEvent.ACTION_DOWN) {
             val now = System.currentTimeMillis()
             when (event.keyCode) {
                 KeyEvent.KEYCODE_VOLUME_UP -> {
                     if (now - lastVolumeUpTime < DOUBLE_PRESS_INTERVAL) {
-                        Log.d("MainActivity", "Double press detected: Volume UP")
+                        Log.d(TAG, "Double press: Volume UP -> call last outgoing")
                         handleVolumeAction(isUp = true)
                         lastVolumeUpTime = 0
-                        return true // Consume event
+                        return true
                     }
                     lastVolumeUpTime = now
                 }
                 KeyEvent.KEYCODE_VOLUME_DOWN -> {
                     if (now - lastVolumeDownTime < DOUBLE_PRESS_INTERVAL) {
-                        Log.d("MainActivity", "Double press detected: Volume DOWN")
+                        Log.d(TAG, "Double press: Volume DOWN -> call last missed")
                         handleVolumeAction(isUp = false)
                         lastVolumeDownTime = 0
-                        return true // Consume event
+                        return true
                     }
                     lastVolumeDownTime = now
                 }
@@ -113,7 +136,7 @@ class MainActivity : ComponentActivity() {
 
     private fun handleVolumeAction(isUp: Boolean) {
         val repository = ContactRepository(this)
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val logs = repository.getCallLogs()
                 if (isUp) {
@@ -126,26 +149,29 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "Failed to get logs for shortcut", e)
+                Log.e(TAG, "Failed to get logs for shortcut", e)
             }
         }
     }
-    
 
     private fun requestDefaultDialer() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val roleManager = getSystemService(RoleManager::class.java)
-            if (roleManager != null && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {
-                val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER)
-                startActivityForResult(intent, 123)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val roleManager = getSystemService(RoleManager::class.java)
+                if (roleManager != null && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {
+                    val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER)
+                    startActivityForResult(intent, 123)
+                }
+            } else {
+                val telecomManager = getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+                if (packageName != telecomManager.defaultDialerPackage) {
+                    val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
+                        .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
+                    startActivity(intent)
+                }
             }
-        } else {
-            val telecomManager = getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-            if (packageName != telecomManager.defaultDialerPackage) {
-                val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
-                    .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
-                startActivity(intent)
-            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error requesting default dialer", e)
         }
     }
 }

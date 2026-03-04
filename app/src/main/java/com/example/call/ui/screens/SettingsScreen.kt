@@ -50,11 +50,21 @@ fun SettingsScreen(
             color = MaterialTheme.colorScheme.surface
         ) {
             Column {
-                SettingsItem("Privacy Policy", Icons.Default.Lock)
+                SettingsItem("Privacy Policy", Icons.Default.Lock, onClick = {
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW,
+                        android.net.Uri.parse("https://example.com/privacy"))
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    try { context.startActivity(intent) } catch (_: Exception) {}
+                })
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
-                SettingsItem("App Version", Icons.Default.Info, "1.0.0 (Release Candidate)")
+                SettingsItem("App Version", Icons.Default.Info, "1.0.0")
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
-                SettingsItem("Developer Mode", Icons.Default.Build)
+                SettingsItem("Rate the App", Icons.Default.Star, onClick = {
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW,
+                        android.net.Uri.parse("market://details?id=${context.packageName}"))
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    try { context.startActivity(intent) } catch (_: Exception) {}
+                })
             }
         }
 
@@ -110,26 +120,32 @@ fun SettingsScreen(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
                 
                 SettingsItem(
-                    title = "Call Recordings", 
-                    icon = Icons.Default.List,
+                    title = "Call Recordings",
+                    icon = Icons.Default.FiberManualRecord,
                     onClick = {
-                        val directory = File(context.getExternalFilesDir(null), "recordings")
-                        if (!directory.exists()) directory.mkdirs()
-                        
-                        // Open file manager to the recordings directory if possible
-                        val intent = Intent(Intent.ACTION_VIEW).apply {
-                            setDataAndType(Uri.fromFile(directory), "*/*")
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        // Open the app-specific CallRecordings directory
+                        val dir = context.getExternalFilesDir("CallRecordings")
+                        if (dir != null && !dir.exists()) dir.mkdirs()
+                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                            setDataAndType(
+                                androidx.core.content.FileProvider.getUriForFile(
+                                    context,
+                                    "${context.packageName}.provider",
+                                    dir ?: context.filesDir
+                                ),
+                                "resource/folder"
+                            )
+                            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
                         try {
                             context.startActivity(intent)
-                        } catch (e: Exception) {
-                            // Fallback if no app can handle the direct file URI
-                            val genericIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                                type = "*/*"
-                                addCategory(Intent.CATEGORY_OPENABLE)
-                            }
-                            context.startActivity(Intent.createChooser(genericIntent, "Open Recordings Folder"))
+                        } catch (_: Exception) {
+                            android.widget.Toast.makeText(
+                                context,
+                                "Recordings saved to: ${context.getExternalFilesDir("CallRecordings")?.absolutePath}",
+                                android.widget.Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 )

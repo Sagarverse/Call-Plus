@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import androidx.compose.ui.unit.sp
 import com.example.call.ui.theme.*
 import com.example.call.data.*
@@ -64,7 +63,6 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
     var isCallMinimized by remember { mutableStateOf(false) }
     var showSummary by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
-    var showNotes by remember { mutableStateOf(false) }
     var shakeEnabled by remember { mutableStateOf(prefs.getBoolean("shake_enabled", false)) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -98,12 +96,11 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
         prefs.edit().putStringSet("favorites", favorites.map { it.number }.toSet()).apply()
     }
 
-    BackHandler(enabled = selectedContact != null || isCallMinimized || showSummary || showSettings || showNotes) {
+    BackHandler(enabled = selectedContact != null || isCallMinimized || showSummary || showSettings) {
         when {
             selectedContact != null -> selectedContact = null
             showSummary -> showSummary = false
             showSettings -> showSettings = false
-            showNotes -> showNotes = false
             isCallMinimized -> isCallMinimized = false
         }
     }
@@ -117,7 +114,6 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                     selectedContact = null
                     showSummary = false
                     showSettings = false
-                    showNotes = false
                 }
             }
         },
@@ -134,12 +130,6 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                         onDelete = { id ->
                             coroutineScope.launch {
                                 repository.deleteCallLog(id)
-                                callLogs = repository.getCallLogs()
-                            }
-                        },
-                        onDeleteMultiple = { ids ->
-                            coroutineScope.launch {
-                                repository.deleteCallLogs(ids)
                                 callLogs = repository.getCallLogs()
                             }
                         },
@@ -160,18 +150,17 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                         onCallClick = { showSummary = true }
                     )
                     4 -> VoicemailScreen(
-                        voicemails = voicemails,
-                        notes = notes,
+                        voicemails,
                         onCall = { CallManager.makeCall(context, it) },
-                        onDeleteVoicemail = { id ->
+                        onDelete = { id ->
                             voicemailRepository.deleteLocalVoicemail(id)
                             voicemails = voicemailRepository.getVoicemails()
-                        },
-                        onSaveNotes = { 
-                            notes = it
-                            notesRepository.saveNotes(it)
                         }
                     )
+                    5 -> NotesScreen(notes, onSaveNotes = { 
+                        notes = it
+                        notesRepository.saveNotes(it)
+                    })
                 }
             }
 
@@ -260,34 +249,27 @@ fun ActiveCallMinimizedBar(call: Call, onClick: () -> Unit) {
 
 @Composable
 fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    // Utility order
+    // Shared between bottom bar and drawer if needed
     val tabs = listOf(
         Triple("Favorites", Icons.Default.Star, 0),
         Triple("Recents", Icons.Default.Refresh, 1),
         Triple("Contacts", Icons.Default.Person, 2),
         Triple("Keypad", Icons.Default.Call, 3),
-        Triple("Voicemail", Icons.Default.Menu, 4)
+        Triple("Voicemail", Icons.Default.Menu, 4),
+        Triple("Notes", Icons.Default.Edit, 5)
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(16.dp) // Floating dock padding
-            .clip(androidx.compose.foundation.shape.RoundedCornerShape(32.dp))
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().height(95.dp)) {
         // Blur Background Layer
         Surface(
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-            modifier = Modifier.matchParentSize().blur(24.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+            modifier = Modifier.fillMaxSize().blur(15.dp),
             shadowElevation = 8.dp
         ) {}
 
         // Content Layer (Icons/Text) - Not Blurred
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
+            modifier = Modifier.fillMaxSize().padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

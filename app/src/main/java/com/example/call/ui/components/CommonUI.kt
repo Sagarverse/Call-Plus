@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
 import com.example.call.ui.theme.*
 import kotlin.math.roundToInt
 
@@ -50,6 +52,84 @@ fun DetailTextItem(text: String, color: Color = IOSBlue, onClick: () -> Unit = {
             .clickable { onClick() }
             .padding(16.dp)
     )
+}
+
+@Composable
+fun GlassmorphicContainer(
+    modifier: Modifier = Modifier,
+    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(32.dp),
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(modifier = modifier.clip(shape)) {
+        // High Blur Layer
+        Surface(
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            modifier = Modifier
+                .matchParentSize()
+                .blur(40.dp),
+        ) {}
+        
+        // Edge Highlight / Border
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.2f),
+                            Color.White.copy(alpha = 0.05f),
+                            Color.Transparent,
+                            Color.White.copy(alpha = 0.05f)
+                        )
+                    )
+                )
+        )
+        
+        // Internal Content Padding and rendering
+        Box(modifier = Modifier.padding(1.dp)) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun VisionToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Box(
+        modifier = Modifier
+            .width(52.dp)
+            .height(32.dp)
+            .clip(CircleShape)
+            .background(if (checked) VisionPrimary else MaterialTheme.colorScheme.surfaceVariant)
+            .clickable { onCheckedChange(!checked) }
+            .padding(4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .align(if (checked) Alignment.CenterEnd else Alignment.CenterStart)
+                .clip(CircleShape)
+                .background(Color.White)
+        )
+    }
+}
+
+@Composable
+fun VisionGauge(value: Float, color: Color = VisionPrimary) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(100.dp)) {
+        CircularProgressIndicator(
+            progress = value,
+            modifier = Modifier.size(80.dp),
+            color = color,
+            strokeWidth = 8.dp,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+        Text(
+            text = "${(value * 100).toInt()}%",
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
+    }
 }
 
 @Composable
@@ -87,12 +167,7 @@ fun CallActionButton(
 
 @Composable
 fun AnalyticsCard(label: String, value: String, icon: ImageVector, color: Color, compact: Boolean = false) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
+    GlassmorphicContainer {
         Row(
             modifier = Modifier.padding(if (compact) 12.dp else 20.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -101,7 +176,7 @@ fun AnalyticsCard(label: String, value: String, icon: ImageVector, color: Color,
                 modifier = Modifier
                     .size(if (compact) 40.dp else 48.dp)
                     .clip(CircleShape)
-                    .background(color.copy(alpha = 0.1f)),
+                    .background(color.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(if (compact) 20.dp else 24.dp))

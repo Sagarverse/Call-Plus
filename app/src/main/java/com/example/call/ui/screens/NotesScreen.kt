@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.call.data.Contact
 import com.example.call.data.Note
 import com.example.call.ui.components.CenterText
 import com.example.call.ui.components.SagarCallBanner
@@ -28,6 +29,7 @@ import com.example.call.ui.theme.*
 @Composable
 fun NotesScreen(
     notes: List<Note>,
+    contacts: List<Contact>,
     onSaveNotes: (List<Note>) -> Unit,
     onBack: () -> Unit = {}
 ) {
@@ -82,6 +84,7 @@ fun NotesScreen(
                         items(sortedNotes) { note ->
                             NoteItem(
                                 note = note,
+                                contacts = contacts,
                                 onEdit = { 
                                     editingNote = it
                                     noteText = it.content
@@ -142,10 +145,16 @@ fun NotesScreen(
 @Composable
 fun NoteItem(
     note: Note,
+    contacts: List<Contact>,
     onEdit: (Note) -> Unit,
     onDelete: (Long) -> Unit,
     onPinToggle: (Long) -> Unit
 ) {
+    val contact = remember(note.contactNumber, contacts) {
+        note.contactNumber?.let { num ->
+            contacts.find { it.number == num || num.endsWith(it.number) || it.number.endsWith(num) }
+        }
+    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -167,6 +176,15 @@ fun NoteItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
+                if (contact != null || note.contactNumber != null) {
+                    Text(
+                        text = contact?.name ?: note.contactNumber ?: "",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = IOSBlue,
+                        modifier = Modifier.padding(bottom = 2.dp)
+                    )
+                }
                 Text(
                     note.content,
                     fontSize = 17.sp,

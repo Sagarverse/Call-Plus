@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.call.data.VoicemailRecord
 import com.example.call.data.Note
+import com.example.call.data.Contact
 import com.example.call.ui.components.SagarCallBanner
 import com.example.call.ui.theme.*
 import kotlinx.coroutines.delay
@@ -37,6 +38,7 @@ import androidx.compose.foundation.combinedClickable
 fun VoicemailScreen(
     voicemails: List<VoicemailRecord>,
     notes: List<Note>,
+    contacts: List<Contact>,
     onCall: (String) -> Unit,
     onDeleteVoicemail: (Long) -> Unit,
     onSaveNotes: (List<Note>) -> Unit
@@ -46,6 +48,7 @@ fun VoicemailScreen(
     var noteText by remember { mutableStateOf("") }
     var editingNote by remember { mutableStateOf<Note?>(null) }
     var currentPlayingId by remember { mutableStateOf<Long?>(null) }
+    var isEditing by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -57,10 +60,10 @@ fun VoicemailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Edit",
+                    if (isEditing) "Done" else "Edit",
                     color = IOSBlue,
                     fontSize = 18.sp,
-                    modifier = Modifier.clickable {}
+                    modifier = Modifier.clickable { isEditing = !isEditing }
                 )
                 Text(
                     "Dual View",
@@ -93,6 +96,7 @@ fun VoicemailScreen(
                                     VoicemailItem(
                                         entry = entry, 
                                         isActive = currentPlayingId == entry.id,
+                                        isEditing = isEditing,
                                         onPlayStateChange = { playing ->
                                             currentPlayingId = if (playing) entry.id else null
                                         },
@@ -146,6 +150,7 @@ fun VoicemailScreen(
                                 items(sortedNotes) { note ->
                                     NoteItem(
                                         note = note,
+                                        contacts = contacts,
                                         onEdit = { 
                                             editingNote = it
                                             noteText = it.content
@@ -209,6 +214,7 @@ fun VoicemailScreen(
 fun VoicemailItem(
     entry: VoicemailRecord,
     isActive: Boolean,
+    isEditing: Boolean = false,
     onPlayStateChange: (Boolean) -> Unit,
     onCall: (String) -> Unit,
     onDeleteVoicemail: (Long) -> Unit
@@ -279,6 +285,12 @@ fun VoicemailItem(
     ) {
         // ── Header row ────────────────────────────────────────────────────────
         Row(verticalAlignment = Alignment.CenterVertically) {
+            if (isEditing) {
+                IconButton(onClick = { onDeleteVoicemail(entry.id) }, modifier = Modifier.size(32.dp)) {
+                    Icon(Icons.Default.RemoveCircle, contentDescription = "Delete", tint = IOSRed)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             // Avatar circle
             Box(
                 modifier = Modifier

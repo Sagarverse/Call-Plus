@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
@@ -33,42 +34,55 @@ fun FavoritesScreen(
     onInfoClick: (Contact) -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            SagarCallBanner(modifier = Modifier.align(Alignment.End))
-        Text("Favorites", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(16.dp))
+        Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp)) {
+            SagarCallBanner(modifier = Modifier.align(Alignment.End), color = MaterialTheme.colorScheme.onSurface)
+        Text("Favorites", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp))
         if (favorites.isEmpty()) {
             CenterText("No Favorites")
         } else {
             val context = LocalContext.current
             LazyColumn {
                 items(favorites) { contact ->
-                    SwipeableActionItem(
-                        onRightSwipe = { onCall(contact.number) },
-                        onLeftSwipe = { 
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
-                            context.startActivity(intent)
-                        },
-                        content = {
-                            ListItem(
-                                modifier = Modifier.clickable { onCall(contact.number) },
-                                headlineContent = { Text(contact.name, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface) },
-                                supportingContent = { Text(contact.number, color = MaterialTheme.colorScheme.onSurfaceVariant) },
-                                leadingContent = {
-                                    Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(IOSGray.copy(alpha = 0.1f)), contentAlignment = Alignment.Center) {
-                                        Text(contact.name.take(1), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                                    }
-                                },
-                                trailingContent = {
-                                    IconButton(onClick = { onInfoClick(contact) }) {
-                                        Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                    }
-                                },
-                                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
-                            )
-                        }
-                    )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f))
+                    com.example.call.ui.components.GlassmorphicContainer(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 6.dp),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp)
+                    ) {
+                        SwipeableActionItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onRightSwipe = { onCall(contact.number) },
+                            onLeftSwipe = { 
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
+                                context.startActivity(intent)
+                            },
+                            content = {
+                                ListItem(
+                                    modifier = Modifier.clickable { onCall(contact.number) },
+                                    headlineContent = { Text(contact.name, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, fontSize = 17.sp) },
+                                    supportingContent = { Text(contact.number, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp) },
+                                    leadingContent = {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(44.dp)
+                                                .clip(androidx.compose.foundation.shape.CircleShape)
+                                                .background(MaterialTheme.colorScheme.surface), 
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(contact.name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = VisionPrimary, fontSize = 18.sp)
+                                        }
+                                    },
+                                    trailingContent = {
+                                        IconButton(onClick = { onInfoClick(contact) }) {
+                                            Icon(Icons.Default.Info, contentDescription = null, tint = VisionPrimary.copy(alpha = 0.6f))
+                                        }
+                                    },
+                                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                                )
+                            }
+                        )
+                    }
                 }
+                item { Spacer(modifier = Modifier.height(140.dp)) }
             }
         }
         }

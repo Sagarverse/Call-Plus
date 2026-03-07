@@ -4,7 +4,13 @@ import android.content.Context
 import android.provider.CallLog
 import android.provider.ContactsContract
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 
 data class Contact(
     val name: String, 
@@ -33,13 +39,23 @@ data class CallRecord(
     val type: String, 
     val time: String, 
     val duration: Int = 0, 
-    val timestamp: Long = 0L
+    val timestamp: Long = 0L,
+    val simId: String? = null,
+    val simLabel: String? = null
 )
 
 class ContactRepository(private val context: Context) {
 
-    suspend fun getContacts(): List<Contact> = withContext(Dispatchers.IO) {
-        val contacts = mutableListOf<Contact>()
+    private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
+    val contacts: StateFlow<List<Contact>> = _contacts.asStateFlow()
+
+    private val _callLogs = MutableStateFlow<List<CallRecord>>(emptyList())
+    val callLogs: StateFlow<List<CallRecord>> = _callLogs.asStateFlow()
+
+    private val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as android.telephony.SubscriptionManager
+
+    suspend fun refreshContacts() = withContext(Dispatchers.IO) {
+        val contactsList = mutableListOf<Contact>()
         try {
             val cursor = context.contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -58,14 +74,14 @@ class ContactRepository(private val context: Context) {
                         val lookup = if (lookupIndex != -1) it.getString(lookupIndex) else null
                         val name = it.getString(nameIndex) ?: "Unknown"
                         val number = it.getString(numberIndex) ?: ""
-                        contacts.add(Contact(name, number, id, lookup, generateT9Name(name)))
+                        contactsList.add(Contact(name, number, id, lookup, generateT9Name(name)))
                     }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        contacts.distinctBy { it.name }
+        _contacts.value = contactsList.distinctBy { it.name }
     }
 
     private fun generateT9Name(name: String): String {
@@ -84,8 +100,23 @@ class ContactRepository(private val context: Context) {
         }.filterNotNull().joinToString("")
     }
 
-    suspend fun getCallLogs(): List<CallRecord> = withContext(Dispatchers.IO) {
+    suspend fun refreshCallLogs() = withContext(Dispatchers.IO) {
         val records = mutableListOf<CallRecord>()
+        val simMap = mutableMapOf<String, String>()
+        
+        try {
+            if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                val activeSubscriptions = subscriptionManager.activeSubscriptionInfoList
+                activeSubscriptions?.forEach { info ->
+                    val id = info.subscriptionId.toString()
+                    val label = info.displayName.toString()
+                    simMap[id] = label
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         try {
             val cursor = context.contentResolver.query(
                 CallLog.Calls.CONTENT_URI,
@@ -99,6 +130,7 @@ class ContactRepository(private val context: Context) {
                 val dateIndex = it.getColumnIndex(CallLog.Calls.DATE)
                 val typeIndex = it.getColumnIndex(CallLog.Calls.TYPE)
                 val durationIndex = it.getColumnIndex(CallLog.Calls.DURATION)
+                val accountIdIndex = it.getColumnIndex(CallLog.Calls.PHONE_ACCOUNT_ID)
                 
                 if (idIndex != -1 && numberIndex != -1 && dateIndex != -1 && typeIndex != -1) {
                     while (it.moveToNext()) {
@@ -113,19 +145,22 @@ class ContactRepository(private val context: Context) {
                             else -> "Other"
                         }
                         val duration = if (durationIndex != -1) it.getInt(durationIndex) else 0
-                        records.add(CallRecord(id, name, number, type, formatTime(date), duration, date))
+                        val simId = if (accountIdIndex != -1) it.getString(accountIdIndex) else null
+                        val simLabel = if (simId != null) simMap[simId] ?: "SIM $simId" else null
+
+                        records.add(CallRecord(id, name, number, type, formatTime(date), duration, date, simId, simLabel))
                     }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        records // Removed the .take(20) limit to show all call history
+        _callLogs.value = records
     }
 
     private fun formatTime(timestamp: Long): String {
-        val sdf = java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
-        return sdf.format(java.util.Date(timestamp))
+        val sdf = SimpleDateFormat("h:mm a", Locale.getDefault())
+        return sdf.format(Date(timestamp))
     }
 
     suspend fun deleteCallLog(id: Long) = withContext(Dispatchers.IO) {
@@ -133,6 +168,7 @@ class ContactRepository(private val context: Context) {
             val selection = "${CallLog.Calls._ID} = ?"
             val selectionArgs = arrayOf(id.toString())
             context.contentResolver.delete(CallLog.Calls.CONTENT_URI, selection, selectionArgs)
+            refreshCallLogs()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -145,6 +181,7 @@ class ContactRepository(private val context: Context) {
             val selection = "${CallLog.Calls._ID} IN ($placeholders)"
             val selectionArgs = ids.map { it.toString() }.toTypedArray()
             context.contentResolver.delete(CallLog.Calls.CONTENT_URI, selection, selectionArgs)
+            refreshCallLogs()
         } catch (e: Exception) {
             e.printStackTrace()
         }

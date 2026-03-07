@@ -28,7 +28,11 @@ class MainActivity : ComponentActivity() {
     private var lastVolumeUpTime = 0L
     private var lastVolumeDownTime = 0L
     private val DOUBLE_PRESS_INTERVAL = 500L
-
+    
+    // Modern Activity Result API
+    private val dialerRoleLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Log.d(TAG, "Dialer role request result: ${result.resultCode}")
+    }
     companion object {
         var currentTab = 3 // Default to Keypad
         private const val TAG = "MainActivity"
@@ -45,6 +49,7 @@ class MainActivity : ComponentActivity() {
             var themePreference by remember { mutableStateOf(prefs.getString("theme_preference", "System") ?: "System") }
 
             CallTheme(themePreference = themePreference) {
+                @android.annotation.SuppressLint("InlinedApi")
                 val permissions = mutableListOf(
                     Manifest.permission.CALL_PHONE,
                     Manifest.permission.READ_CONTACTS,
@@ -107,6 +112,7 @@ class MainActivity : ComponentActivity() {
         // CustomInCallService will have already updated CallManager before we get called.
     }
 
+    @android.annotation.SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (currentTab == 3 && event.action == KeyEvent.ACTION_DOWN) {
             val now = System.currentTimeMillis()
@@ -138,7 +144,9 @@ class MainActivity : ComponentActivity() {
         val repository = ContactRepository(this)
         lifecycleScope.launch {
             try {
-                val logs = repository.getCallLogs()
+                // Ensure logs are fresh
+                repository.refreshCallLogs()
+                val logs = repository.callLogs.value
                 if (isUp) {
                     logs.find { it.type == "Outgoing" }?.let {
                         CallManager.makeCall(this@MainActivity, it.number)
@@ -160,7 +168,7 @@ class MainActivity : ComponentActivity() {
                 val roleManager = getSystemService(RoleManager::class.java)
                 if (roleManager != null && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {
                     val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER)
-                    startActivityForResult(intent, 123)
+                    dialerRoleLauncher.launch(intent)
                 }
             } else {
                 val telecomManager = getSystemService(Context.TELECOM_SERVICE) as TelecomManager

@@ -89,6 +89,7 @@ class CustomInCallService : InCallService() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 // For modern Android, we can just set to silent/vibrate or use TelecomManager silenceRinger
                 // telecomManager.silenceRinger() is easiest if we have the reference
+                @Suppress("MissingPermission")
                 (getSystemService(Context.TELECOM_SERVICE) as? android.telecom.TelecomManager)?.silenceRinger()
             } else {
                 audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT

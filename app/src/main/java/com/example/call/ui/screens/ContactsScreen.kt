@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -28,6 +29,7 @@ import com.example.call.ui.components.CenterText
 import com.example.call.ui.components.SagarCallBanner
 import com.example.call.ui.components.SwipeableActionItem
 import com.example.call.ui.theme.*
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
 @Composable
 fun ContactsScreen(
@@ -38,6 +40,7 @@ fun ContactsScreen(
     onContactClick: (Contact) -> Unit = {},
     onToggleFavorite: (Contact) -> Unit = {}
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     var searchQuery by remember { mutableStateOf("") }
     val filteredContacts = remember(searchQuery, contacts) {
         if (searchQuery.isEmpty()) contacts
@@ -45,43 +48,43 @@ fun ContactsScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            SagarCallBanner(modifier = Modifier.align(Alignment.End))
+        Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp)) {
+            SagarCallBanner(modifier = Modifier.align(Alignment.End), color = MaterialTheme.colorScheme.onSurface)
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Contacts", fontSize = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text("Contacts", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             IconButton(onClick = onSettingsClick) {
-                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.primary)
+                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VisionPrimary)
             }
         }
 
-        // iOS Style Search Bar
+        // Vision Search Bar
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            shape = RoundedCornerShape(10.dp)
+                .padding(horizontal = 24.dp, vertical = 8.dp),
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(20.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
             ) {
                 Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
                 Box(modifier = Modifier.weight(1f)) {
                     if (searchQuery.isEmpty()) {
-                        Text("Search", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 17.sp)
+                        Text("SEARCH CONTACTS", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.sp)
                     }
                     androidx.compose.foundation.text.BasicTextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp, color = MaterialTheme.colorScheme.onSurface),
                         modifier = Modifier.fillMaxWidth(),
-                        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary)
+                        cursorBrush = androidx.compose.ui.graphics.SolidColor(VisionPrimary)
                     )
                 }
                 if (searchQuery.isNotEmpty()) {
@@ -102,68 +105,79 @@ fun ContactsScreen(
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(filteredContacts) { contact ->
                     val isFavorite = favorites.any { it.number == contact.number }
-                    SwipeableActionItem(
+                    com.example.call.ui.components.GlassmorphicContainer(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 6.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        onRightSwipe = { onCall(contact.number) },
-                        onLeftSwipe = { 
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
-                            context.startActivity(intent)
-                        },
-                        content = {
-                            ListItem(
-                                modifier = Modifier.clickable { onContactClick(contact) },
-                                headlineContent = { 
-                                    Text(
-                                        text = contact.name, 
-                                        color = MaterialTheme.colorScheme.onSurface, 
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 17.sp
-                                    ) 
-                                },
-                                supportingContent = { 
-                                    Text(
-                                        text = contact.number, 
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontSize = 14.sp
-                                    ) 
-                                },
-                                leadingContent = {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(44.dp)
-                                            .clip(androidx.compose.foundation.shape.CircleShape)
-                                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
+                            .padding(horizontal = 24.dp, vertical = 6.dp),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        SwipeableActionItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onRightSwipe = { 
+                                keyboardController?.hide()
+                                onCall(contact.number) 
+                            },
+                            onLeftSwipe = { 
+                                keyboardController?.hide()
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
+                                context.startActivity(intent)
+                            },
+                            content = {
+                                ListItem(
+                                    modifier = Modifier.clickable { 
+                                        keyboardController?.hide()
+                                        onContactClick(contact) 
+                                    },
+                                    headlineContent = { 
                                         Text(
-                                            text = contact.name.firstOrNull()?.toString()?.uppercase() ?: "?",
+                                            text = contact.name, 
+                                            color = MaterialTheme.colorScheme.onSurface, 
                                             fontWeight = FontWeight.Bold,
-                                            fontSize = 20.sp,
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                    }
-                                },
-                                trailingContent = {
-                                    IconButton(onClick = { onToggleFavorite(contact) }) {
-                                        Icon(
-                                            Icons.Default.Star,
-                                            contentDescription = "Favorite",
-                                            tint = if (isFavorite) Color(0xFFFFCC00) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                                        )
-                                    }
-                                },
-                                colors = ListItemDefaults.colors(
-                                    containerColor = MaterialTheme.colorScheme.surface,
-                                    headlineColor = MaterialTheme.colorScheme.onSurface,
-                                    supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                            fontSize = 17.sp
+                                        ) 
+                                    },
+                                    supportingContent = { 
+                                        Text(
+                                            text = contact.number, 
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontSize = 14.sp
+                                        ) 
+                                    },
+                                    leadingContent = {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(44.dp)
+                                                .clip(androidx.compose.foundation.shape.CircleShape)
+                                                .background(MaterialTheme.colorScheme.surface),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = contact.name.firstOrNull()?.toString()?.uppercase() ?: "?",
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 20.sp,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+                                    },
+                                    trailingContent = {
+                                        IconButton(onClick = { onToggleFavorite(contact) }) {
+                                            Icon(
+                                                Icons.Default.Star,
+                                                contentDescription = "Favorite",
+                                                tint = if (isFavorite) VisionPrimary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                                            )
+                                        }
+                                    },
+                                    colors = ListItemDefaults.colors(
+                                        containerColor = Color.Transparent,
+                                        headlineColor = MaterialTheme.colorScheme.onSurface,
+                                        supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 )
-                            )
-                        }
-                    )
+                            }
+                        )
+                    }
                 }
-                item { Spacer(modifier = Modifier.height(100.dp)) } // Edge-to-edge padding
+                item { Spacer(modifier = Modifier.height(140.dp)) }
             }
         }
         }

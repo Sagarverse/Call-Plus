@@ -15,8 +15,9 @@ import org.json.JSONObject
 class LocalVoicemailStorage(private val context: Context) {
 
     private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val dispatcher = kotlinx.coroutines.Dispatchers.IO
 
-    fun saveVoicemail(record: LocalVoicemailRecord) {
+    suspend fun saveVoicemail(record: LocalVoicemailRecord) = kotlinx.coroutines.withContext(dispatcher) {
         val all = loadAll().toMutableList()
         // Replace if same id, otherwise prepend (newest first)
         val idx = all.indexOfFirst { it.id == record.id }
@@ -24,9 +25,9 @@ class LocalVoicemailStorage(private val context: Context) {
         prefs.edit { putString(KEY_LIST, serializeAll(all)) }
     }
 
-    fun loadAll(): List<LocalVoicemailRecord> {
-        val json = prefs.getString(KEY_LIST, null) ?: return emptyList()
-        return try {
+    suspend fun loadAll(): List<LocalVoicemailRecord> = kotlinx.coroutines.withContext(dispatcher) {
+        val json = prefs.getString(KEY_LIST, null) ?: return@withContext emptyList()
+        try {
             val arr = JSONArray(json)
             (0 until arr.length()).map { deserialize(arr.getJSONObject(it)) }
         } catch (e: Exception) {
@@ -34,12 +35,12 @@ class LocalVoicemailStorage(private val context: Context) {
         }
     }
 
-    fun deleteById(id: Long) {
+    suspend fun deleteById(id: Long) = kotlinx.coroutines.withContext(dispatcher) {
         val updated = loadAll().filter { it.id != id }
         prefs.edit { putString(KEY_LIST, serializeAll(updated)) }
     }
 
-    fun updateTranscript(id: Long, transcript: String) {
+    suspend fun updateTranscript(id: Long, transcript: String) = kotlinx.coroutines.withContext(dispatcher) {
         val all = loadAll().toMutableList()
         val idx = all.indexOfFirst { it.id == id }
         if (idx >= 0) {

@@ -4,6 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.provider.VoicemailContract
 import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 
 data class VoicemailRecord(
     val id: Long,
@@ -19,22 +24,26 @@ data class VoicemailRecord(
 class VoicemailRepository(private val context: Context) {
 
     private val localStorage = LocalVoicemailStorage(context)
+    private val _voicemails = MutableStateFlow<List<VoicemailRecord>>(emptyList())
+    val voicemails: StateFlow<List<VoicemailRecord>> = _voicemails.asStateFlow()
 
-    fun getVoicemails(): List<VoicemailRecord> {
+    suspend fun refresh() = withContext(Dispatchers.IO) {
         // Merge: our local recordings (always available) + carrier VVM (if supported)
         val local = localStorage.loadAll().map { it.toVoicemailRecord() }
         val carrier = getCarrierVoicemails()
         // Deduplicate by id — local takes priority; sort newest first
-        return (local + carrier)
+        val merged = (local + carrier)
             .distinctBy { it.id }
             .sortedByDescending { it.date }
+        _voicemails.value = merged
     }
 
-    fun deleteLocalVoicemail(id: Long) {
+    suspend fun deleteLocalVoicemail(id: Long) {
         localStorage.deleteById(id)
+        refresh()
     }
 
-    private fun getCarrierVoicemails(): List<VoicemailRecord> {
+    private suspend fun getCarrierVoicemails(): List<VoicemailRecord> = withContext(Dispatchers.IO) {
         val voicemails = mutableListOf<VoicemailRecord>()
         val uri = VoicemailContract.Voicemails.CONTENT_URI
         val projection = arrayOf(
@@ -54,21 +63,23 @@ class VoicemailRepository(private val context: Context) {
                 val dateIdx = it.getColumnIndex(VoicemailContract.Voicemails.DATE)
                 val durIdx = it.getColumnIndex(VoicemailContract.Voicemails.DURATION)
                 while (it.moveToNext()) {
-                    voicemails.add(
-                        VoicemailRecord(
-                            id = it.getLong(idIdx),
-                            number = it.getString(numIdx) ?: "Unknown",
-                            name = "Voicemail",
-                            date = it.getLong(dateIdx),
-                            duration = it.getInt(durIdx),
-                            uri = null
+                    if (idIdx != -1 && numIdx != -1 && dateIdx != -1 && durIdx != -1) {
+                        voicemails.add(
+                            VoicemailRecord(
+                                id = it.getLong(idIdx),
+                                number = it.getString(numIdx) ?: "Unknown",
+                                name = "Voicemail",
+                                date = it.getLong(dateIdx),
+                                duration = it.getInt(durIdx),
+                                uri = null
+                            )
                         )
-                    )
+                    }
                 }
             }
         } catch (e: Exception) {
             Log.e("VoicemailRepository", "Carrier query failed: ${e.message}")
         }
-        return voicemails
+        voicemails
     }
 }

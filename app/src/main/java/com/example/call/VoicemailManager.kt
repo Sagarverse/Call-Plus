@@ -18,6 +18,10 @@ import com.example.call.data.LocalVoicemailStorage
 import com.example.call.data.findContactFlexible
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -102,7 +106,9 @@ class VoicemailManager(private val context: Context) {
             Log.d(TAG, "Voicemail recording started: $currentFilePath")
 
             // Create a placeholder record immediately (so it shows in the tab ASAP)
-            saveRecord(durationSeconds = 0, transcript = "Recording...")
+            coroutineScope.launch {
+                saveRecord(durationSeconds = 0, transcript = "Recording...")
+            }
 
             // Start transcription on main thread (SpeechRecognizer requirement)
             mainHandler.post { startTranscription() }
@@ -138,8 +144,10 @@ class VoicemailManager(private val context: Context) {
             speechRecognizer = null
 
             // Save finalized record
-            saveRecord(durationSec, _transcript.value.trimEnd())
-            Log.d(TAG, "Voicemail saved — duration=${durationSec}s path=$currentFilePath")
+            coroutineScope.launch {
+                saveRecord(durationSec, _transcript.value.trimEnd())
+                Log.d(TAG, "Voicemail saved — duration=${durationSec}s path=$currentFilePath")
+            }
         }
     }
 
@@ -172,7 +180,9 @@ class VoicemailManager(private val context: Context) {
                     if (!matches.isNullOrEmpty()) {
                         _transcript.value = (_transcript.value.trimEnd() + " " + matches[0]).trim()
                         // Update stored transcript in real-time
-                        localStorage.updateTranscript(recordId, _transcript.value)
+                        coroutineScope.launch {
+                            localStorage.updateTranscript(recordId, _transcript.value)
+                        }
                     }
                     if (mediaRecorder != null) restartListening()
                 }
@@ -212,9 +222,11 @@ class VoicemailManager(private val context: Context) {
         mainHandler.postDelayed({ listenOnce() }, 300)
     }
 
+    private val coroutineScope = kotlinx.coroutines.CoroutineScope(Dispatchers.IO + kotlinx.coroutines.SupervisorJob())
+
     // ─── Private: Storage ─────────────────────────────────────────────────────
 
-    private fun saveRecord(durationSeconds: Int, transcript: String) {
+    private suspend fun saveRecord(durationSeconds: Int, transcript: String) {
         // Try to resolve contact name from number
         val contactName: String = try {
             val repo = ContactRepository(context)

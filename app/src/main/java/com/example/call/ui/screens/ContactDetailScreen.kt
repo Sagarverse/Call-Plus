@@ -159,10 +159,7 @@ fun ContactDetailScreen(
                 ContactActionItem(Icons.Default.Email, "message", onClick = { onMessage(contact.number) })
                 ContactActionItem(Icons.Default.Call, "call", onClick = { onCall(contact.number) })
                 ContactActionItem(Icons.Default.Videocam, "video", onClick = {
-                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW,
-                        android.net.Uri.parse("https://meet.google.com/"))
-                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                    try { context.startActivity(intent) } catch (_: Exception) {}
+                    com.example.call.CallManager.makeCall(context, contact.number, isVideo = true)
                 })
                 ContactActionItem(Icons.Default.Email, "mail", onClick = {
                     val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO,

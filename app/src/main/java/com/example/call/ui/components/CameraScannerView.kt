@@ -144,8 +144,8 @@ fun CameraScannerView(
                                                         if (blockCenterX >= leftBound && blockCenterX <= rightBound &&
                                                             blockCenterY >= topBound && blockCenterY <= bottomBound) {
                                                             
-                                                            val clean = block.text.replace(Regex("[^0-9+]"), "")
-                                                            if (clean.length >= 7) {
+                                                            val clean = block.text.replace(Regex("[^0-9+*#]"), "")
+                                                            if (clean.length >= 5) {
                                                                 onResult(clean)
                                                                 break // Break on first valid number found inside box
                                                             }

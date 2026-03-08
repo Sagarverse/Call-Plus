@@ -1,17 +1,29 @@
 package com.example.call.ui.screens
 
-import android.content.Context
-import android.content.Intent
-import android.provider.ContactsContract
-import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectDragGestures
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import android.content.Context
+import android.content.Intent
+import android.provider.ContactsContract
+import android.speech.RecognizerIntent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,10 +33,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.EditOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Gesture
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,10 +73,15 @@ import com.example.call.CallManager
 import com.example.call.ui.theme.*
 import com.example.call.ui.components.CameraScannerView
 import com.example.call.ui.components.SagarCallBanner
-import com.google.mlkit.vision.digitalink.*
+import com.google.mlkit.vision.digitalink.DigitalInkRecognition
+import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModel
+import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
+import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
+import com.google.mlkit.vision.digitalink.Ink
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import java.util.Locale
+
 
 @Composable
 fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick: () -> Unit) {
@@ -131,6 +163,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
     var strokeBuilder = remember { Ink.Stroke.builder() }
     var currentStrokes by remember { mutableStateOf(listOf<List<androidx.compose.ui.geometry.Offset>>()) }
     var currentStrokePoints by remember { mutableStateOf(listOf<androidx.compose.ui.geometry.Offset>()) }
+    var lastStrokeTime by remember { mutableLongStateOf(0L) }
     
     val model = remember {
         val options = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
@@ -165,47 +198,72 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
     }
 
     DisposableEffect(Unit) {
-        onDispose {
-            recognizer?.close()
-        }
+        onDispose { }
     }
 
+    LaunchedEffect(lastStrokeTime) {
+        if (lastStrokeTime > 0) {
+            delay(250) // exceedingly fast 250ms recognition
+            if (recognizer != null && currentStrokes.isNotEmpty()) {
+                val inkToProcess = inkBuilder.build()
+                // Clear immediately so user can draw next digit without waiting for model
+                inkBuilder = Ink.builder()
+                currentStrokes = emptyList()
+                currentStrokePoints = emptyList()
+
+                recognizer.recognize(inkToProcess).addOnSuccessListener { result ->
+                    val recognizedText = result.candidates.firstOrNull()?.text ?: ""
+                    val digits = recognizedText.replace(Regex("[^0-9*#+]"), "")
+                    if (digits.isNotEmpty()) {
+                        phoneNumber += digits
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    }
+                }
+            } else if (recognizer == null) {
+                // If model isn't downloaded, just clear
+                inkBuilder = Ink.builder()
+                currentStrokes = emptyList()
+                currentStrokePoints = emptyList()
+            }
+        }
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 24.dp), // Minimal bottom padding, pill has its own
+            .padding(bottom = 80.dp), // Reduced height of bottom bar
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom // Push keypad down
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // Top Section (Flexible space)
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(8.dp))
             
-            // Header
+            // iOS Style Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SagarCallBanner(
-                    modifier = Modifier.clickable { onCallClick() },
+                    modifier = Modifier.padding(start = 8.dp).clickable { onCallClick() },
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) }) {
-                        Icon(Icons.Default.CameraAlt, contentDescription = "Scan Number", tint = VisionPrimary, modifier = Modifier.size(26.dp))
-                    }
+                IconButton(
+                    onClick = { cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) },
+                    modifier = Modifier.padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Default.CameraAlt, contentDescription = "Scan Number", tint = IOSBlue, modifier = Modifier.size(28.dp))
                 }
             }
             
-            // Suggestions
-            Box(modifier = Modifier.height(80.dp).fillMaxWidth().padding(horizontal = 24.dp)) {
+            Spacer(modifier = Modifier.height(2.dp))
+            
+            // Contact Suggestions - Optimized height
+            Box(modifier = Modifier.height(80.dp).fillMaxWidth().padding(horizontal = 16.dp)) {
                 LazyRow(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -214,15 +272,12 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                     items(suggestions) { contact ->
                         Column(
                             modifier = Modifier
-                                .width(64.dp)
-                                .clickable { 
-                                    keyboardController?.hide()
-                                    phoneNumber = contact.number
-                                },
+                                .width(70.dp)
+                                .clickable { onCall(contact.number) },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Box(
-                                modifier = Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surface),
+                                modifier = Modifier.size(50.dp).clip(CircleShape).background(IOSGray.copy(alpha = 0.15f)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(contact.name.take(1), fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurface)
@@ -231,7 +286,9 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                                 contact.name, 
                                 fontSize = 11.sp, 
                                 maxLines = 1, 
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                modifier = Modifier.padding(top = 4.dp),
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -241,118 +298,81 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
             val numberContact = remember(phoneNumber, contacts) { contacts.findContactFlexible(phoneNumber) }
             val name = if (phoneNumber.isNotEmpty()) (numberContact?.name ?: "") else ""
 
-            Spacer(modifier = Modifier.weight(1f)) // Push the number down just above the keypad
-                // Backspace
-                Box(
-                    modifier = Modifier
-                        .width(60.dp)
-                        .padding(end = 8.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    if (phoneNumber.isNotEmpty()) {
-                        IconButton(
-                            onClick = { phoneNumber = phoneNumber.dropLast(1) },
-                            modifier = Modifier.pointerInput(Unit) {
-                                detectTapGestures(
-                                    onLongPress = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        phoneNumber = ""
-                                    },
-                                    onTap = { phoneNumber = phoneNumber.dropLast(1) }
-                                )
-                            }
-                        ) {
-                            Icon(Icons.Default.Clear, contentDescription = "Delete", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(28.dp))
-                        }
-                    }
-                }
-
-                // Call Button
-                Surface(
-                    modifier = Modifier
-                        .size(56.dp),
-                    shape = CircleShape,
-                    color = com.example.call.ui.theme.IOSGreen,
-                    onClick = {
-                        if (phoneNumber.isNotEmpty()) {
-                            keyboardController?.hide()
-                            CallManager.makeCall(context, phoneNumber, selectedSim)
-                        }
-                    }
-                ) {
-                    Icon(Icons.Default.Call, contentDescription = "Call", tint = Color.White, modifier = Modifier.size(24.dp))
-                }
-
-                // Video Call Button
-                Surface(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .padding(start = 8.dp),
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primary,
-                    onClick = {
-                        if (phoneNumber.isNotEmpty()) {
-                            keyboardController?.hide()
-                            CallManager.makeCall(context, phoneNumber, selectedSim, isVideo = true)
-                        }
-                    }
-                ) {
-                    Icon(Icons.Default.Videocam, contentDescription = "Video Call", tint = Color.White, modifier = Modifier.size(24.dp))
-                }
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                if (!modelDownloaded) "Downloading handwriting model..." else name,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                modifier = Modifier.padding(bottom = 2.dp).height(20.dp)
+            )
+            // Horizontal scroll for long phone numbers
+            Row(
                 modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .pointerInput(recognizer) {
-                        if (recognizer == null || !modelDownloaded) return@pointerInput
-                        awaitPointerEventScope {
-                            while (true) {
-                                val event = awaitPointerEvent(androidx.compose.ui.input.pointer.PointerEventPass.Initial)
-                                val position = event.changes.first().position
-                                
-                                when (event.type) {
-                                    androidx.compose.ui.input.pointer.PointerEventType.Press -> {
-                                        strokeBuilder = Ink.Stroke.builder()
-                                        strokeBuilder.addPoint(Ink.Point.create(position.x, position.y))
-                                        currentStrokePoints = listOf(position)
-                                    }
-                                    androidx.compose.ui.input.pointer.PointerEventType.Move -> {
-                                        strokeBuilder.addPoint(Ink.Point.create(position.x, position.y))
-                                        currentStrokePoints = currentStrokePoints + position
-                                    }
-                                    androidx.compose.ui.input.pointer.PointerEventType.Release -> {
-                                        // Ignore single taps (they will be handled by KeypadButtons)
-                                        if (currentStrokePoints.size > 2) {
-                                            inkBuilder.addStroke(strokeBuilder.build())
-                                            currentStrokes = currentStrokes + listOf(currentStrokePoints)
-                                            currentStrokePoints = emptyList()
-                                            val ink = inkBuilder.build()
-                                            recognizer?.recognize(ink)
-                                                ?.addOnSuccessListener { result ->
-                                                    val topResult = result.candidates.firstOrNull()?.text
-                                                    if (topResult != null) {
-                                                        val recognizedChar = topResult.firstOrNull { it.isDigit() || it == '*' || it == '#' || it.lowercaseChar() == 'o' }
-                                                        if (recognizedChar != null) {
-                                                            val digitToAdd = if (recognizedChar.lowercaseChar() == 'o') '0' else recognizedChar
-                                                            phoneNumber += digitToAdd
-                                                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                                        }
-                                                    }
-                                                    inkBuilder = Ink.builder()
-                                                    currentStrokes = emptyList()
-                                                }
-                                                ?.addOnFailureListener {
-                                                    inkBuilder = Ink.builder()
-                                                    currentStrokes = emptyList()
-                                                }
-                                        } else {
-                                            currentStrokePoints = emptyList()
-                                        }
-                                    }
-                                }
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, bottom = 4.dp)
+                    .height(45.dp)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    phoneNumber,
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    softWrap = false
+                )
+            }
+            if (phoneNumber.isNotEmpty() && name.isEmpty()) {
+                Text("Add Number", color = IOSBlue, modifier = Modifier.clickable { 
+                    val intent = Intent(Intent.ACTION_INSERT_OR_EDIT).apply {
+                        type = ContactsContract.Contacts.CONTENT_ITEM_TYPE
+                        putExtra(ContactsContract.Intents.Insert.PHONE, phoneNumber)
+                    }
+                    context.startActivity(intent)
+                })
+            } else {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        }
+
+        // Keys Section
+        if (true) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset ->
+                                strokeBuilder = Ink.Stroke.builder()
+                                strokeBuilder.addPoint(Ink.Point.create(offset.x, offset.y))
+                                currentStrokePoints = listOf(offset)
+                            },
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                strokeBuilder.addPoint(Ink.Point.create(change.position.x, change.position.y))
+                                currentStrokePoints = currentStrokePoints + change.position
+                            },
+                            onDragEnd = {
+                                inkBuilder.addStroke(strokeBuilder.build())
+                                currentStrokes = currentStrokes + listOf(currentStrokePoints)
+                                currentStrokePoints = emptyList()
+                                lastStrokeTime = System.currentTimeMillis()
                             }
-                        }
+                        )
                     }
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
+                    val keys = listOf(
+                        listOf("1" to "", "2" to "A B C", "3" to "D E F"),
+                        listOf("4" to "G H I", "5" to "J K L", "6" to "M N O"),
+                        listOf("7" to "P Q R S", "8" to "T U V", "9" to "W X Y Z"),
+                        listOf("*" to "", "0" to "+", "#" to "")
+                    )
+    
                     keys.forEach { row ->
                         Row {
                             row.forEach { (digit, letters) ->
@@ -374,104 +394,76 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                             }
                         }
                     }
-                }
-
-                // Hybrid Drawing Overlay: Always active over the keypad
-                androidx.compose.foundation.Canvas(modifier = Modifier.matchParentSize()) {
-                        // Draw completed strokes
-                        currentStrokes.forEach { stroke ->
-                            if (stroke.size > 1) {
-                                val path = androidx.compose.ui.graphics.Path().apply {
-                                    moveTo(stroke[0].x, stroke[0].y)
-                                    for (i in 1 until stroke.size) {
-                                        lineTo(stroke[i].x, stroke[i].y)
-                                    }
-                                }
-                                drawPath(path, color = VisionPrimary, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4.dp.toPx()))
-                            }
-                        }
-                        // Draw current stroke
-                        if (currentStrokePoints.size > 1) {
-                            val path = androidx.compose.ui.graphics.Path().apply {
-                                moveTo(currentStrokePoints[0].x, currentStrokePoints[0].y)
-                                for (i in 1 until currentStrokePoints.size) {
-                                    lineTo(currentStrokePoints[i].x, currentStrokePoints[i].y)
-                                }
-                            }
-                            drawPath(path, color = VisionPrimary, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4.dp.toPx()))
-                        }
-                    }
-                }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // SIM Selector
-            if (simCards.size > 1) {
-                Surface(
-                    onClick = { selectedSimIndex = (selectedSimIndex + 1) % simCards.size },
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
+    
+                    Spacer(modifier = Modifier.height(8.dp))
+    
+                    // Call Button and Delete
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), 
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.Call, contentDescription = null, tint = VisionPrimary, modifier = Modifier.size(14.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = (selectedSim?.id ?: "SIM ${selectedSimIndex + 1}").uppercase(),
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        Surface(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onTap = { if (phoneNumber.isNotEmpty()) onCall(phoneNumber) },
+                                        onLongPress = { 
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            val speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                                                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                                                putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                                                putExtra(RecognizerIntent.EXTRA_PROMPT, "Say 'Call [Name]'")
+                                            }
+                                            try {
+                                                speechLauncher.launch(speechIntent)
+                                            } catch (e: Exception) {}
+                                        }
+                                    )
+                                },
+                            shape = CircleShape,
+                            color = IOSGreen
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(Icons.Default.Call, contentDescription = "Call", tint = Color.White, modifier = Modifier.size(36.dp))
+                            }
+                        }
+                        
+                        if (phoneNumber.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 160.dp) // Adjusted for smaller call button
+                                    .size(72.dp)
+                                    .pointerInput(Unit) {
+                                        detectTapGestures(
+                                            onTap = { phoneNumber = phoneNumber.dropLast(1) },
+                                            onLongPress = { 
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                phoneNumber = "" 
+                                            }
+                                        )
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Clear, contentDescription = "Delete", tint = IOSGray, modifier = Modifier.size(40.dp))
+                            }
+                        }
                     }
                 }
-            }
-
-            // Call Button and Delete
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp, top = 8.dp), 
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.width(80.dp))
                 
-                Surface(
-                    modifier = Modifier
-                        .size(80.dp),
-                    shape = CircleShape,
-                    color = com.example.call.ui.theme.IOSGreen,
-                    onClick = {
-                        if (phoneNumber.isNotEmpty()) {
-                            keyboardController?.hide()
-                            CallManager.makeCall(context, phoneNumber, selectedSim)
+                // Canvas layer overlaid on top for handwriting
+                val brightBlue = Color(0xFF00A8FF)
+                androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                    val paintMode = androidx.compose.ui.graphics.StrokeCap.Round
+                    // Draw previous strokes
+                    for (stroke in currentStrokes) {
+                        for (i in 0 until stroke.size - 1) {
+                            drawLine(color = brightBlue, start = stroke[i], end = stroke[i + 1], strokeWidth = 20f, cap = paintMode)
                         }
                     }
-                ) {       Icon(Icons.Default.Call, contentDescription = "Call", tint = Color.White, modifier = Modifier.size(36.dp))
-                    }
-                
-                Box(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .padding(start = 16.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    if (phoneNumber.isNotEmpty()) {
-                        IconButton(
-                            onClick = { phoneNumber = phoneNumber.dropLast(1) },
-                            modifier = Modifier.pointerInput(Unit) {
-                                detectTapGestures(
-                                    onLongPress = { 
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        phoneNumber = "" 
-                                    },
-                                    onTap = { phoneNumber = phoneNumber.dropLast(1) }
-                                )
-                            }
-                        ) {
-                            Icon(Icons.Default.Clear, contentDescription = "Delete", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(32.dp))
-                        }
+                    // Draw current active stroke
+                    for (i in 0 until currentStrokePoints.size - 1) {
+                        drawLine(color = brightBlue, start = currentStrokePoints[i], end = currentStrokePoints[i + 1], strokeWidth = 20f, cap = paintMode)
                     }
                 }
             }

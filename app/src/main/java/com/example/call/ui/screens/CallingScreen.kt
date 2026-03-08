@@ -48,6 +48,12 @@ import com.example.call.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+import android.graphics.SurfaceTexture
+import android.view.Surface
+import android.view.TextureView
+import android.telecom.VideoProfile
+import androidx.compose.ui.viewinterop.AndroidView
+
 fun getGradientForContact(number: String): List<Color> {
     val hash = number.hashCode()
     return when (kotlin.math.abs(hash) % 4) {
@@ -168,6 +174,12 @@ fun CallingScreen(
         )
     )
 
+
+    val isVideoCall = remember(callState) {
+        val vs = call.details.videoState
+        VideoProfile.isTransmissionEnabled(vs) || VideoProfile.isReceptionEnabled(vs)
+    }
+
     val isIncoming = callState == Call.STATE_RINGING
     val primaryColor = if (isIncoming) CallGradientIncomingStart else CallGradientStart
     val secondaryColor = if (isIncoming) CallGradientIncomingEnd else CallGradientMid
@@ -185,6 +197,25 @@ fun CallingScreen(
         val isSpeakerOn = (audioState?.route ?: 0) == CallAudioState.ROUTE_SPEAKER
         val isHeld = callState == Call.STATE_HOLDING
 
+
+        // Video Call Background
+        if (isVideoCall) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Remote video takes full screen
+                VideoCallSurface(call = call, isLocal = false, modifier = Modifier.fillMaxSize())
+                
+                // Local video is a pip
+                Box(modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 40.dp, end = 20.dp)
+                    .size(120.dp, 160.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Black)
+                ) {
+                    VideoCallSurface(call = call, isLocal = true, modifier = Modifier.fillMaxSize())
+                }
+            }
+        } else {
         // Background Mesh Gradients
         Box(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxSize().background(Color(0xFF0F172A)))
@@ -215,6 +246,7 @@ fun CallingScreen(
                     )
                 )
             )
+        }
         }
 
         Column(
@@ -372,7 +404,7 @@ fun CallingScreen(
                     val canMerge = calls.size >= 2
                     val actions = listOf(
                         listOf(Triple(Icons.Default.Mic, "mute", isMuted), Triple(Icons.Default.Dialpad, "keypad", false), Triple(Icons.Default.VolumeUp, "speaker", isSpeakerOn)),
-                        listOf(Triple(Icons.Default.Add, if (canMerge) "merge" else "add call", false), Triple(Icons.Default.Refresh, "swap", false), Triple(Icons.Default.Pause, "hold", isHeld)),
+                        listOf(Triple(Icons.Default.Add, if (canMerge) "merge" else "add call", false), Triple(Icons.Default.Videocam, "video", isVideoCall), Triple(Icons.Default.Pause, "hold", isHeld)),
                         listOf(Triple(if (isRecording) Icons.Default.StopCircle else Icons.Default.FiberManualRecord, "record", isRecording), Triple(Icons.Default.EditNote, "notes", false), Triple(Icons.Default.MoreHoriz, "more", false))
                     )
 
@@ -384,6 +416,13 @@ fun CallingScreen(
                                         "mute" -> CustomInCallService.instance?.toggleMute(!isMuted)
                                         "speaker" -> CustomInCallService.instance?.toggleSpeaker(!isSpeakerOn)
                                         "keypad" -> showInCallKeypad = true
+                                        "video" -> {
+                                            if (isVideoCall) {
+                                                call.videoCall?.sendSessionModifyRequest(VideoProfile(VideoProfile.STATE_AUDIO_ONLY))
+                                            } else {
+                                                call.videoCall?.sendSessionModifyRequest(VideoProfile(VideoProfile.STATE_BIDIRECTIONAL))
+                                            }
+                                        }
                                         "merge" -> if (calls.size >= 2) calls[0].conference(calls[1])
                                         "add call" -> onMinimize()
                                         "swap" -> { if (calls.size >= 2) { val other = calls.find { it != call }; other?.unhold(); call.hold(); CallManager.updateCall(other) } }
@@ -484,4 +523,36 @@ fun InCallKeypadOverlay(onDismiss: () -> Unit, onKey: (String) -> Unit, contentC
             }
         }
     }
+}
+
+@Composable
+fun VideoCallSurface(call: Call, isLocal: Boolean, modifier: Modifier = Modifier) {
+    AndroidView(
+        factory = { ctx ->
+            TextureView(ctx).apply {
+                surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                    override fun onSurfaceTextureAvailable(st: SurfaceTexture, width: Int, height: Int) {
+                        val surface = Surface(st)
+                        if (isLocal) {
+                            call.videoCall?.setPreviewSurface(surface)
+                            call.videoCall?.setCamera("1") // Front camera
+                        } else {
+                            call.videoCall?.setDisplaySurface(surface)
+                        }
+                    }
+                    override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, width: Int, height: Int) {}
+                    override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
+                        if (isLocal) {
+                            call.videoCall?.setPreviewSurface(null)
+                        } else {
+                            call.videoCall?.setDisplaySurface(null)
+                        }
+                        return true
+                    }
+                    override fun onSurfaceTextureUpdated(st: SurfaceTexture) {}
+                }
+            }
+        },
+        modifier = modifier
+    )
 }

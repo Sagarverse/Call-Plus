@@ -80,14 +80,13 @@ fun RecentsScreen(
             // Header with Banner
             Box(modifier = Modifier.fillMaxWidth().padding(top = 40.dp)) {
                 SagarCallBanner(modifier = Modifier.align(Alignment.TopEnd), color = MaterialTheme.colorScheme.onSurface)
-                
                 if (isSelectionMode) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { 
+                        IconButton(onClick = {
                             isSelectionMode = false
                             selectedIds = emptySet()
                         }) {
@@ -95,14 +94,14 @@ fun RecentsScreen(
                         }
                         Text("${selectedIds.size} Selected", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         Row {
-                            TextButton(onClick = { 
+                            TextButton(onClick = {
                                 if (selectedIds.size == records.size) selectedIds = emptySet()
                                 else selectedIds = records.map { it.id }.toSet()
                             }) {
                                 Text(if (selectedIds.size == records.size) "Deselect All" else "Select All", color = VisionPrimary)
                             }
                             if (selectedIds.isNotEmpty()) {
-                                IconButton(onClick = { 
+                                IconButton(onClick = {
                                     onDeleteMultiple(selectedIds.toList())
                                     isSelectionMode = false
                                     selectedIds = emptySet()
@@ -114,11 +113,11 @@ fun RecentsScreen(
                     }
                 } else {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        Text("Recents", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text("Recents", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         if (records.isNotEmpty()) {
                             TextButton(onClick = { isSelectionMode = true }) {
                                 Text("Edit", color = VisionPrimary, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
@@ -134,7 +133,8 @@ fun RecentsScreen(
                 val context = LocalContext.current
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 140.dp)
+                    contentPadding = PaddingValues(bottom = 120.dp, top = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     val groups = listOf("Today", "Yesterday", "Older")
                     groups.forEach { groupName ->
@@ -155,16 +155,17 @@ fun RecentsScreen(
                                     )
                                 }
                             }
-                            
                             items(groupItems) { record ->
                                 GlassmorphicContainer(
-                                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                                    shape = RoundedCornerShape(24.dp) // More rounded for Vision
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 18.dp),
+                                    shape = RoundedCornerShape(20.dp)
                                 ) {
                                     SwipeableActionItem(
                                         modifier = Modifier.fillMaxWidth(),
                                         onRightSwipe = { onCall(record.number) },
-                                        onLeftSwipe = { 
+                                        onLeftSwipe = {
                                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${record.number}"))
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                             try { context.startActivity(intent) } catch (_: Exception) {}
@@ -173,8 +174,8 @@ fun RecentsScreen(
                                         content = {
                                             val contactName = remember(record.number, contacts) {
                                                 val foundName = contacts.find { it.number.replace(Regex("[^0-9+]"), "").endsWith(record.number.replace(Regex("[^0-9+]"), "").takeLast(7)) }?.name
-                                                if (!foundName.isNullOrBlank()) foundName 
-                                                else if (record.name.isNotBlank()) record.name 
+                                                if (!foundName.isNullOrBlank()) foundName
+                                                else if (record.name.isNotBlank()) record.name
                                                 else "Unknown"
                                             }
                                             ListItem(

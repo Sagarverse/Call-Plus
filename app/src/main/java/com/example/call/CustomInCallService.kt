@@ -115,7 +115,21 @@ class CustomInCallService : InCallService() {
 
         CallManager.addCall(call)
 
-        // Register a callback to keep the service notification in sync
+        val videoCallback = object : android.telecom.InCallService.VideoCall.Callback() {
+            override fun onSessionModifyRequestReceived(videoProfile: android.telecom.VideoProfile?) {
+                Log.d(TAG, "Video modify request received")
+                // Automatically accept video requests for this demo
+                val response = android.telecom.VideoProfile(videoProfile?.videoState ?: android.telecom.VideoProfile.STATE_BIDIRECTIONAL)
+                call.videoCall?.sendSessionModifyResponse(response)
+            }
+            override fun onSessionModifyResponseReceived(status: Int, requestedProfile: android.telecom.VideoProfile?, responseProfile: android.telecom.VideoProfile?) {}
+            override fun onCallSessionEvent(event: Int) {}
+            override fun onPeerDimensionsChanged(width: Int, height: Int) {}
+            override fun onVideoQualityChanged(videoQuality: Int) {}
+            override fun onCallDataUsageChanged(dataUsage: Long) {}
+            override fun onCameraCapabilitiesChanged(cameraCapabilities: android.telecom.VideoProfile.CameraCapabilities?) {}
+        }
+
         val callback = object : Call.Callback() {
             override fun onStateChanged(c: Call?, state: Int) {
                 Log.d(TAG, "Call state changed: $state")
@@ -126,7 +140,11 @@ class CustomInCallService : InCallService() {
                     nm.cancel(INCOMING_NOTIFICATION_ID)
                 }
             }
+            override fun onVideoCallChanged(c: Call?, videoCall: android.telecom.InCallService.VideoCall?) {
+                videoCall?.registerCallback(videoCallback)
+            }
         }
+        call.videoCall?.registerCallback(videoCallback)
         call.registerCallback(callback)
 
         if (call.state == Call.STATE_RINGING) {
@@ -226,7 +244,7 @@ class CustomInCallService : InCallService() {
         val declinePI = createBroadcastPI("ACTION_END_CALL", "decline")
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID_INCOMING)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Incoming Call")
             .setContentText(number)
             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -240,7 +258,11 @@ class CustomInCallService : InCallService() {
             .addAction(0, "Decline", declinePI)
             .build()
 
-        startForeground(INCOMING_NOTIFICATION_ID, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            androidx.core.app.ServiceCompat.startForeground(this, INCOMING_NOTIFICATION_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL)
+        } else {
+            startForeground(INCOMING_NOTIFICATION_ID, notification)
+        }
     }
 
     private fun showCallNotification(call: Call) {
@@ -256,7 +278,7 @@ class CustomInCallService : InCallService() {
         )
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Active Call")
             .setContentText(number)
             .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -268,7 +290,11 @@ class CustomInCallService : InCallService() {
             .addAction(0, "End Call", createBroadcastPI("ACTION_END_CALL", "end"))
             .build()
 
-        startForeground(NOTIFICATION_ID, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            androidx.core.app.ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL)
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
     }
 
     private fun createBroadcastPI(action: String, tag: String): PendingIntent {

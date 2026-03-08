@@ -50,16 +50,16 @@ fun ContactsScreen(
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp)) {
             SagarCallBanner(modifier = Modifier.align(Alignment.End), color = MaterialTheme.colorScheme.onSurface)
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Contacts", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            IconButton(onClick = onSettingsClick) {
-                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VisionPrimary)
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Contacts", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                IconButton(onClick = onSettingsClick) {
+                    Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VisionPrimary)
+                }
             }
-        }
 
         // Vision Search Bar
         Surface(
@@ -102,51 +102,56 @@ fun ContactsScreen(
             CenterText(if (searchQuery.isEmpty()) "No Contacts Found" else "No Results for '$searchQuery'")
         } else {
             val context = LocalContext.current
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(bottom = 120.dp, top = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 items(filteredContacts) { contact ->
                     val isFavorite = favorites.any { it.number == contact.number }
                     com.example.call.ui.components.GlassmorphicContainer(
                         modifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 6.dp),
-                        shape = RoundedCornerShape(24.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 18.dp),
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         SwipeableActionItem(
                             modifier = Modifier.fillMaxWidth(),
-                            onRightSwipe = { 
+                            onRightSwipe = {
                                 keyboardController?.hide()
-                                onCall(contact.number) 
+                                onCall(contact.number)
                             },
-                            onLeftSwipe = { 
+                            onLeftSwipe = {
                                 keyboardController?.hide()
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
                                 context.startActivity(intent)
                             },
                             content = {
                                 ListItem(
-                                    modifier = Modifier.clickable { 
+                                    modifier = Modifier.clickable {
                                         keyboardController?.hide()
-                                        onContactClick(contact) 
+                                        onContactClick(contact)
                                     },
-                                    headlineContent = { 
+                                    headlineContent = {
                                         Text(
-                                            text = contact.name, 
-                                            color = MaterialTheme.colorScheme.onSurface, 
+                                            text = contact.name,
+                                            color = MaterialTheme.colorScheme.onSurface,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 17.sp
-                                        ) 
+                                        )
                                     },
-                                    supportingContent = { 
+                                    supportingContent = {
                                         Text(
-                                            text = contact.number, 
+                                            text = contact.number,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             fontSize = 14.sp
-                                        ) 
+                                        )
                                     },
                                     leadingContent = {
                                         Box(
                                             modifier = Modifier
                                                 .size(44.dp)
-                                                .clip(androidx.compose.foundation.shape.CircleShape)
+                                                .clip(CircleShape)
                                                 .background(MaterialTheme.colorScheme.surface),
                                             contentAlignment = Alignment.Center
                                         ) {
@@ -177,7 +182,6 @@ fun ContactsScreen(
                         )
                     }
                 }
-                item { Spacer(modifier = Modifier.height(140.dp)) }
             }
         }
         }

@@ -291,23 +291,28 @@ fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
         Triple("Voicemail", Icons.Default.Voicemail, 4) // Fixed icon
     )
 
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val surfaceColor = if (isDark) GlassmorphismDark else GlassmorphismLight
+    val borderColor = if (isDark) GlassmorphismOutline else Color.Black.copy(alpha = 0.05f)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(horizontal = 24.dp, vertical = 20.dp), // Reduced horizontal padding to prevent clipping
+            .padding(horizontal = 16.dp, vertical = 24.dp), 
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.95f) // Take most of the width but keep it pill-like
+                .widthIn(max = 400.dp) // Force pill shape even on wide screens
+                .fillMaxWidth(0.95f)
                 .clip(RoundedCornerShape(40.dp))
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+                .background(surfaceColor)
         ) {
             // Premium Blur Background
             Surface(
                 color = Color.Transparent,
-                modifier = Modifier.blur(60.dp),
+                modifier = Modifier.blur(40.dp),
                 shape = RoundedCornerShape(40.dp)
             ) {}
             
@@ -319,9 +324,9 @@ fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                         width = 1.dp,
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.2f),
+                                borderColor,
                                 Color.Transparent,
-                                Color.White.copy(alpha = 0.05f)
+                                borderColor.copy(alpha = borderColor.alpha / 2)
                             )
                         ),
                         shape = RoundedCornerShape(40.dp)
@@ -329,14 +334,14 @@ fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             )
 
             Row(
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly, // Better distribution for 5 items
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 tabs.forEach { (label, icon, index) ->
                     val isSelected = selectedTab == index
                     val backgroundColor by animateColorAsState(
-                        targetValue = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent,
+                        targetValue = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else Color.Transparent,
                         label = "tab_bg"
                     )
                     

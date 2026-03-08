@@ -4,6 +4,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import java.util.Calendar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
@@ -106,14 +107,14 @@ fun SummaryScreen(callLogs: List<CallRecord>, onBack: () -> Unit) {
             ) {
                 listOf("All", "Month", "Today").forEachIndexed { index, label ->
                     val isSelected = filterType == index
-                    Surface(
-                        onClick = { filterType = index },
-                        shape = RoundedCornerShape(20.dp),
-                        color = if (isSelected) VisionPrimary else MaterialTheme.colorScheme.surface,
-                        modifier = Modifier.height(40.dp).weight(1f)
+                    com.example.call.ui.components.GlassmorphicContainer(
+                        modifier = Modifier.height(44.dp).weight(1f).clickable { filterType = index },
+                        shape = RoundedCornerShape(22.dp),
+                        containerColor = if (isSelected) VisionPrimary.copy(alpha = 0.2f) else Color.Transparent,
+                        borderAlpha = if (isSelected) 0.4f else 0.1f
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(label, color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                            Text(label, color = if (isSelected) VisionPrimary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium)
                         }
                     }
                 }

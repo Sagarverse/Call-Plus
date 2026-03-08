@@ -55,23 +55,24 @@ fun VoicemailScreen(
             SagarCallBanner(modifier = Modifier.align(Alignment.End))
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     if (isEditing) "Done" else "Edit",
-                    color = IOSBlue,
-                    fontSize = 18.sp,
+                    color = VisionPrimary,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.clickable { isEditing = !isEditing }
                 )
                 Text(
-                    "Dual View",
+                    "Intelligence",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.width(48.dp)) // Placeholder for balance
+                Spacer(modifier = Modifier.width(48.dp))
             }
 
             // ── Dual View Container ──────────────────────────────────────────
@@ -80,19 +81,20 @@ fun VoicemailScreen(
                 Box(modifier = Modifier.weight(1f)) {
                     Column {
                         Text(
-                            "Voicemail",
-                            fontSize = 24.sp,
+                            "Inbox",
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                         )
                         if (voicemails.isEmpty()) {
                             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                 Text("No voicemails", color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         } else {
-                            LazyColumn {
-                                items(voicemails, key = { it.id }) { entry ->
+                            LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
+                                items(voicemails.size) { index ->
+                                    val entry = voicemails[index]
                                     VoicemailItem(
                                         entry = entry, 
                                         isActive = currentPlayingId == entry.id,
@@ -103,11 +105,14 @@ fun VoicemailScreen(
                                         onCall = onCall, 
                                         onDeleteVoicemail = onDeleteVoicemail
                                     )
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(horizontal = 16.dp),
-                                        thickness = 0.5.dp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
-                                    )
+                                    
+                                    if (index < voicemails.size - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(start = 76.dp, end = 16.dp),
+                                            thickness = 0.5.dp,
+                                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -146,8 +151,9 @@ fun VoicemailScreen(
                             val sortedNotes = remember(notes) {
                                 notes.sortedWith(compareByDescending<Note> { it.isPinned }.thenByDescending { it.date })
                             }
-                            LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-                                items(sortedNotes) { note ->
+                            LazyColumn(contentPadding = PaddingValues(bottom = 80.dp)) {
+                                items(sortedNotes.size) { index ->
+                                    val note = sortedNotes[index]
                                     NoteItem(
                                         note = note,
                                         contacts = contacts,
@@ -163,9 +169,14 @@ fun VoicemailScreen(
                                             onSaveNotes(notes.map { if (it.id == id) it.copy(isPinned = !it.isPinned) else it })
                                         }
                                     )
-                                    Spacer(modifier = Modifier.height(12.dp))
+                                    if (index < sortedNotes.size - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(start = 76.dp, end = 16.dp),
+                                            thickness = 0.5.dp,
+                                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+                                        )
+                                    }
                                 }
-                                item { Spacer(modifier = Modifier.height(80.dp)) }
                             }
                         }
                     }

@@ -102,21 +102,42 @@ fun ContactsScreen(
             CenterText(if (searchQuery.isEmpty()) "No Contacts Found" else "No Results for '$searchQuery'")
         } else {
             val context = LocalContext.current
+            
+            val groupedContacts = remember(filteredContacts) {
+                filteredContacts.groupBy { contact ->
+                    val firstChar = contact.name.firstOrNull()?.uppercase()
+                    if (firstChar != null && firstChar[0].isLetter()) firstChar else "#"
+                }.toSortedMap()
+            }
+
+            @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(bottom = 120.dp, top = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                contentPadding = PaddingValues(bottom = 120.dp, top = 8.dp)
             ) {
-                items(filteredContacts) { contact ->
-                    val isFavorite = favorites.any { it.number == contact.number }
-                    com.example.call.ui.components.GlassmorphicContainer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 18.dp),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        SwipeableActionItem(
+                groupedContacts.forEach { (initial, sublist) ->
+                    stickyHeader {
+                        Surface(
                             modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.background.copy(alpha = 0.85f) // Glassy OLED backing
+                        ) {
+                            Text(
+                                text = initial,
+                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = VisionPrimary,
+                                letterSpacing = 1.sp
+                            )
+                        }
+                    }
+                    
+                    items(sublist.size) { index ->
+                        val contact = sublist[index]
+                        val isFavorite = favorites.any { it.number == contact.number }
+                        
+                        SwipeableActionItem(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                             onRightSwipe = {
                                 keyboardController?.hide()
                                 onCall(contact.number)
@@ -127,57 +148,68 @@ fun ContactsScreen(
                                 context.startActivity(intent)
                             },
                             content = {
-                                ListItem(
-                                    modifier = Modifier.clickable {
-                                        keyboardController?.hide()
-                                        onContactClick(contact)
-                                    },
-                                    headlineContent = {
-                                        Text(
-                                            text = contact.name,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 17.sp
-                                        )
-                                    },
-                                    supportingContent = {
-                                        Text(
-                                            text = contact.number,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            fontSize = 14.sp
-                                        )
-                                    },
-                                    leadingContent = {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(44.dp)
-                                                .clip(CircleShape)
-                                                .background(MaterialTheme.colorScheme.surface),
-                                            contentAlignment = Alignment.Center
-                                        ) {
+                                Column {
+                                    ListItem(
+                                        modifier = Modifier.clickable {
+                                            keyboardController?.hide()
+                                            onContactClick(contact)
+                                        },
+                                        headlineContent = {
                                             Text(
-                                                text = contact.name.firstOrNull()?.toString()?.uppercase() ?: "?",
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 20.sp,
-                                                color = MaterialTheme.colorScheme.primary
+                                                text = contact.name,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                fontWeight = FontWeight.SemiBold,
+                                                fontSize = 17.sp
                                             )
-                                        }
-                                    },
-                                    trailingContent = {
-                                        IconButton(onClick = { onToggleFavorite(contact) }) {
-                                            Icon(
-                                                Icons.Default.Star,
-                                                contentDescription = "Favorite",
-                                                tint = if (isFavorite) VisionPrimary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                                        },
+                                        supportingContent = {
+                                            Text(
+                                                text = contact.number,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                fontSize = 14.sp
                                             )
-                                        }
-                                    },
-                                    colors = ListItemDefaults.colors(
-                                        containerColor = Color.Transparent,
-                                        headlineColor = MaterialTheme.colorScheme.onSurface,
-                                        supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                        },
+                                        leadingContent = {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(44.dp)
+                                                    .clip(CircleShape)
+                                                    .background(MaterialTheme.colorScheme.surface),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(
+                                                    text = contact.name.firstOrNull()?.toString()?.uppercase() ?: "?",
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 20.sp,
+                                                    color = VisionPrimary
+                                                )
+                                            }
+                                        },
+                                        trailingContent = {
+                                            if (isFavorite) {
+                                                Icon(
+                                                    Icons.Default.Star,
+                                                    contentDescription = "Favorite",
+                                                    tint = VisionPrimary,
+                                                    modifier = Modifier.size(20.dp)
+                                                )
+                                            }
+                                        },
+                                        colors = ListItemDefaults.colors(
+                                            containerColor = Color.Transparent,
+                                            headlineColor = MaterialTheme.colorScheme.onSurface,
+                                            supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
                                     )
-                                )
+                                    
+                                    if (index < sublist.size - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(start = 76.dp, end = 16.dp),
+                                            thickness = 0.5.dp,
+                                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+                                        )
+                                    }
+                                }
                             }
                         )
                     }

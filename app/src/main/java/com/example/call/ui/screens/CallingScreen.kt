@@ -402,51 +402,82 @@ fun CallingScreen(
                 } else {
                     val calls by CallManager.calls.collectAsState()
                     val canMerge = calls.size >= 2
-                    val actions = listOf(
-                        listOf(Triple(Icons.Default.Mic, "mute", isMuted), Triple(Icons.Default.Dialpad, "keypad", false), Triple(Icons.Default.VolumeUp, "speaker", isSpeakerOn)),
-                        listOf(Triple(Icons.Default.Add, if (canMerge) "merge" else "add call", false), Triple(Icons.Default.Videocam, "video", isVideoCall), Triple(Icons.Default.Pause, "hold", isHeld)),
-                        listOf(Triple(if (isRecording) Icons.Default.StopCircle else Icons.Default.FiberManualRecord, "record", isRecording), Triple(Icons.Default.EditNote, "notes", false), Triple(Icons.Default.MoreHoriz, "more", false))
-                    )
-
-                    actions.forEach { row ->
-                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.SpaceAround) {
-                            row.forEach { (icon, label, active) ->
-                                CallActionButton(icon = icon, label = label, isActive = active, textColor = contentColor, onClick = {
-                                    when (label) {
-                                        "mute" -> CustomInCallService.instance?.toggleMute(!isMuted)
-                                        "speaker" -> CustomInCallService.instance?.toggleSpeaker(!isSpeakerOn)
-                                        "keypad" -> showInCallKeypad = true
-                                        "video" -> {
-                                            if (isVideoCall) {
-                                                call.videoCall?.sendSessionModifyRequest(VideoProfile(VideoProfile.STATE_AUDIO_ONLY))
-                                            } else {
-                                                call.videoCall?.sendSessionModifyRequest(VideoProfile(VideoProfile.STATE_BIDIRECTIONAL))
-                                            }
-                                        }
-                                        "merge" -> if (calls.size >= 2) calls[0].conference(calls[1])
-                                        "add call" -> onMinimize()
-                                        "swap" -> { if (calls.size >= 2) { val other = calls.find { it != call }; other?.unhold(); call.hold(); CallManager.updateCall(other) } }
-                                        "hold" -> if (isHeld) call.unhold() else call.hold()
-                                        "notes" -> { noteText = ""; showNoteDialog = true }
-                                        "more" -> showMoreSheet = true
-                                        "record" -> {
-                                            if (isRecording) {
-                                                val stopped = callRecorder.stopRecording(); isRecording = false
-                                                if (stopped) Toast.makeText(context, "Recording saved", Toast.LENGTH_LONG).show()
-                                            } else {
-                                                if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                                                    if (callRecorder.startRecording("call_${number}_${System.currentTimeMillis()}")) { isRecording = true; Toast.makeText(context, "Recording started", Toast.LENGTH_SHORT).show() }
-                                                } else recordPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                                            }
-                                        }
-                                    }
-                                })
+                    
+                    val handleAction: (String) -> Unit = { label ->
+                        when (label) {
+                            "mute" -> CustomInCallService.instance?.toggleMute(!isMuted)
+                            "speaker" -> CustomInCallService.instance?.toggleSpeaker(!isSpeakerOn)
+                            "keypad" -> showInCallKeypad = true
+                            "video" -> {
+                                if (isVideoCall) call.videoCall?.sendSessionModifyRequest(VideoProfile(VideoProfile.STATE_AUDIO_ONLY))
+                                else call.videoCall?.sendSessionModifyRequest(VideoProfile(VideoProfile.STATE_BIDIRECTIONAL))
+                                showMoreSheet = false
+                            }
+                            "merge" -> { if (calls.size >= 2) calls[0].conference(calls[1]); showMoreSheet = false }
+                            "add call" -> { onMinimize(); showMoreSheet = false }
+                            "hold" -> { if (isHeld) call.unhold() else call.hold(); showMoreSheet = false }
+                            "notes" -> { noteText = ""; showNoteDialog = true; showMoreSheet = false }
+                            "more" -> showMoreSheet = true
+                            "record" -> {
+                                if (isRecording) {
+                                    val stopped = callRecorder.stopRecording(); isRecording = false
+                                    if (stopped) Toast.makeText(context, "Recording saved", Toast.LENGTH_LONG).show()
+                                } else {
+                                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                                        if (callRecorder.startRecording("call_${number}_${System.currentTimeMillis()}")) { isRecording = true; Toast.makeText(context, "Recording started", Toast.LENGTH_SHORT).show() }
+                                    } else recordPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                }
+                                showMoreSheet = false
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(48.dp))
+
+                    // Elegant 2x2 Core Action Grid
+                    val primaryActions = listOf(
+                        listOf(Triple(if (isMuted) Icons.Default.MicOff else Icons.Default.Mic, "mute", isMuted), Triple(Icons.Default.Dialpad, "keypad", false)),
+                        listOf(Triple(if (isSpeakerOn) Icons.Default.VolumeUp else Icons.Default.VolumeDown, "speaker", isSpeakerOn), Triple(Icons.Default.MoreHoriz, "more", showMoreSheet))
+                    )
+
+                    primaryActions.forEach { row ->
+                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+                            row.forEach { (icon, label, active) ->
+                                CallActionButton(icon = icon, label = label, isActive = active, textColor = contentColor, onClick = { handleAction(label) })
+                            }
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(32.dp))
                     IconButton(onClick = { call.disconnect() }, modifier = Modifier.size(75.dp).align(Alignment.CenterHorizontally).clip(CircleShape).background(IOSRed)) {
                         Icon(Icons.Default.CallEnd, contentDescription = "End Call", tint = Color.White, modifier = Modifier.size(36.dp))
+                    }
+
+                    if (showMoreSheet) {
+                        ModalBottomSheet(onDismissRequest = { showMoreSheet = false }, containerColor = MaterialTheme.colorScheme.surface) {
+                            Column(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)) {
+                                Text("Call Options", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp))
+                                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                                
+                                MoreSheetItem(Icons.Default.Videocam, if (isVideoCall) "Turn Video Off" else "Video Call") { handleAction("video") }
+                                MoreSheetItem(if (isRecording) Icons.Default.StopCircle else Icons.Default.FiberManualRecord, if (isRecording) "Stop Recording" else "Record Call") { handleAction("record") }
+                                MoreSheetItem(Icons.Default.EditNote, "Add Note") { handleAction("notes") }
+                                MoreSheetItem(Icons.Default.Pause, if (isHeld) "Unhold Call" else "Hold Call") { handleAction("hold") }
+                                MoreSheetItem(Icons.Default.Add, if (canMerge) "Merge Calls" else "Add Call") { handleAction(if (canMerge) "merge" else "add call") }
+                                
+                                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), modifier = Modifier.padding(vertical = 8.dp))
+                                
+                                MoreSheetItem(Icons.Default.PersonAdd, "Add to Contacts") {
+                                    showMoreSheet = false; val intent = Intent(Intent.ACTION_INSERT).apply { type = "vnd.android.cursor.dir/contact"; putExtra(android.provider.ContactsContract.Intents.Insert.PHONE, number); addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+                                    try { context.startActivity(intent) } catch (_: Exception) {}
+                                }
+                                MoreSheetItem(Icons.Default.Message, "Send SMS") {
+                                    showMoreSheet = false; val smsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$number")); smsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    try { context.startActivity(smsIntent) } catch (_: Exception) {}
+                                }
+                                MoreSheetItem(Icons.Default.Block, "Block Number") {
+                                    showMoreSheet = false; com.example.call.data.BlacklistRepository(context).blockNumber(number); call.disconnect(); Toast.makeText(context, "$number blocked", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -461,25 +492,6 @@ fun CallingScreen(
             )
         }
 
-        if (showMoreSheet) {
-            ModalBottomSheet(onDismissRequest = { showMoreSheet = false }, containerColor = MaterialTheme.colorScheme.surface) {
-                Column(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)) {
-                    Text("More Options", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp))
-                    HorizontalDivider()
-                    MoreSheetItem(Icons.Default.PersonAdd, "Add to Contacts") {
-                        showMoreSheet = false; val intent = Intent(Intent.ACTION_INSERT).apply { type = "vnd.android.cursor.dir/contact"; putExtra(android.provider.ContactsContract.Intents.Insert.PHONE, number); addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
-                        try { context.startActivity(intent) } catch (_: Exception) {}
-                    }
-                    MoreSheetItem(Icons.Default.Message, "Send SMS") {
-                        showMoreSheet = false; val smsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$number")); smsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        try { context.startActivity(smsIntent) } catch (_: Exception) {}
-                    }
-                    MoreSheetItem(Icons.Default.Block, "Block Number") {
-                        showMoreSheet = false; com.example.call.data.BlacklistRepository(context).blockNumber(number); call.disconnect(); Toast.makeText(context, "$number blocked", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
 
         if (showNoteDialog) {
             AlertDialog(

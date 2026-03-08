@@ -143,41 +143,38 @@ fun RecentsScreen(
                             stickyHeader {
                                 Surface(
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.8f)
+                                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.85f)
                                 ) {
                                     Text(
                                         text = groupName.uppercase(),
-                                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-                                        fontSize = 12.sp,
+                                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                                        fontSize = 15.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        color = VisionPrimary,
                                         letterSpacing = 1.sp
                                     )
                                 }
                             }
-                            items(groupItems) { record ->
-                                GlassmorphicContainer(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 18.dp),
-                                    shape = RoundedCornerShape(20.dp)
-                                ) {
-                                    SwipeableActionItem(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        onRightSwipe = { onCall(record.number) },
-                                        onLeftSwipe = {
-                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${record.number}"))
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            try { context.startActivity(intent) } catch (_: Exception) {}
-                                        },
-                                        onDeleteSwipe = { onDelete(record.id) },
-                                        content = {
-                                            val contactName = remember(record.number, contacts) {
-                                                val foundName = contacts.find { it.number.replace(Regex("[^0-9+]"), "").endsWith(record.number.replace(Regex("[^0-9+]"), "").takeLast(7)) }?.name
-                                                if (!foundName.isNullOrBlank()) foundName
-                                                else if (record.name.isNotBlank()) record.name
-                                                else "Unknown"
-                                            }
+                            items(groupItems.size) { index ->
+                                val record = groupItems[index]
+                                
+                                SwipeableActionItem(
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                                    onRightSwipe = { onCall(record.number) },
+                                    onLeftSwipe = {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${record.number}"))
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        try { context.startActivity(intent) } catch (_: Exception) {}
+                                    },
+                                    onDeleteSwipe = { onDelete(record.id) },
+                                    content = {
+                                        val contactName = remember(record.number, contacts) {
+                                            val foundName = contacts.find { it.number.replace(Regex("[^0-9+]"), "").endsWith(record.number.replace(Regex("[^0-9+]"), "").takeLast(7)) }?.name
+                                            if (!foundName.isNullOrBlank()) foundName
+                                            else if (record.name.isNotBlank()) record.name
+                                            else record.number
+                                        }
+                                        Column {
                                             ListItem(
                                                 modifier = Modifier.combinedClickable(
                                                     onClick = { 
@@ -197,7 +194,7 @@ fun RecentsScreen(
                                                 headlineContent = { 
                                                     Text(
                                                         text = contactName, 
-                                                        fontWeight = FontWeight.Bold,
+                                                        fontWeight = FontWeight.SemiBold,
                                                         fontSize = 17.sp,
                                                         color = if (record.type == "Missed") Color(0xFFEF4444) else MaterialTheme.colorScheme.onSurface
                                                     ) 
@@ -273,9 +270,17 @@ fun RecentsScreen(
                                                     supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
                                             )
+                                            
+                                            if (index < groupItems.size - 1) {
+                                                HorizontalDivider(
+                                                    modifier = Modifier.padding(start = 76.dp, end = 16.dp),
+                                                    thickness = 0.5.dp,
+                                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+                                                )
+                                            }
                                         }
-                                    )
-                                }
+                                    }
+                                )
                             }
                         }
                     }

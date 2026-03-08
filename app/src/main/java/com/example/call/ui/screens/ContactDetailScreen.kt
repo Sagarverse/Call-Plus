@@ -77,42 +77,47 @@ fun ContactDetailScreen(
         } else null
     }
 
+    val backgroundGradient = remember(contact.number) { getGradientForContact(contact.number) }
+
     Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp).background(Color.Transparent),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Immersive Heroic Header
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(340.dp)
+                    .background(androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(backgroundGradient[0], backgroundGradient[1], MaterialTheme.colorScheme.background)
+                    ))
             ) {
-                Text(
-                    "Contacts", 
-                    color = IOSBlue, 
-                    fontSize = 17.sp, 
-                    modifier = Modifier.clickable { onBack() }
-                )
-                Text(
-                    "Edit",
-                    color = IOSBlue,
-                    fontSize = 17.sp,
-                    modifier = Modifier.clickable {
-                        // Open system contact editor
+                // Top Navigation row inside Header
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = innerPadding.calculateTopPadding() + 8.dp, start = 16.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBack, modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.2f))) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                    IconButton(onClick = {
                         val lookupUri = android.net.Uri.withAppendedPath(
                             android.provider.ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
                             android.net.Uri.encode(contact.number)
                         )
                         val cursor = context.contentResolver.query(
-                            lookupUri,
-                            arrayOf(android.provider.ContactsContract.PhoneLookup.LOOKUP_KEY),
-                            null, null, null
+                            lookupUri, arrayOf(android.provider.ContactsContract.PhoneLookup.LOOKUP_KEY), null, null, null
                         )
-                        val lookupKey = cursor?.use {
-                            if (it.moveToFirst()) it.getString(0) else null
-                        }
+                        val lookupKey = cursor?.use { if (it.moveToFirst()) it.getString(0) else null }
                         val editIntent = if (lookupKey != null) {
                             android.content.Intent(android.content.Intent.ACTION_EDIT).apply {
-                                data = android.net.Uri.withAppendedPath(
-                                    android.provider.ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey
-                                )
+                                data = android.net.Uri.withAppendedPath(android.provider.ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey)
                                 putExtra("finishActivityOnSaveCompleted", true)
                                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                             }
@@ -124,78 +129,45 @@ fun ContactDetailScreen(
                             }
                         }
                         try { context.startActivity(editIntent) } catch (_: Exception) {}
+                    }, modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.2f))) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.White)
                     }
-                )
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(VisionPrimary, IOSBlue))),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(contact.name.take(1), fontSize = 40.sp, color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(contact.name, fontSize = 28.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ContactActionItem(Icons.Default.Email, "message", onClick = { onMessage(contact.number) })
-                ContactActionItem(Icons.Default.Call, "call", onClick = { onCall(contact.number) })
-                ContactActionItem(Icons.Default.Videocam, "video", onClick = {
-                    com.example.call.CallManager.makeCall(context, contact.number, isVideo = true)
-                })
-                ContactActionItem(Icons.Default.Email, "mail", onClick = {
-                    val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO,
-                        android.net.Uri.parse("mailto:"))
-                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                    try { context.startActivity(android.content.Intent.createChooser(intent, "Send Email")) } catch (_: Exception) {}
-                })
-                var showReminderMenu by remember { mutableStateOf(false) }
-                ContactActionItem(Icons.Default.Notifications, "remind", onClick = { showReminderMenu = true })
-                
-                if (showReminderMenu) {
-                    AlertDialog(
-                        onDismissRequest = { showReminderMenu = false },
-                        title = { Text("Set Reminder") },
-                        text = {
-                            Column {
-                                listOf("In 1 hour" to 60L, "Tomorrow morning" to 1440L).forEach { (label, mins) ->
-                                    Text(
-                                        text = label,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                android.widget.Toast.makeText(context, "Reminder feature coming to details soon", android.widget.Toast.LENGTH_SHORT).show()
-                                                showReminderMenu = false
-                                            }
-                                            .padding(12.dp)
-                                    )
-                                }
-                            }
-                        },
-                        confirmButton = {}
-                    )
+                }
+
+                // Profile Info
+                Column(
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(110.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(contact.name.take(1), fontSize = 48.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(contact.name, fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(contact.number, fontSize = 16.sp, color = Color.White.copy(alpha = 0.8f))
                 }
             }
             
-            Spacer(modifier = Modifier.height(24.dp))
+            // Floating Action Buttons Row (Overlapping the header)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-28).dp) // Pull up into gradient
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                FloatingActionItem(Icons.Default.Message, "Message", onClick = { onMessage(contact.number) })
+                FloatingActionItem(Icons.Default.Call, "Call", isPrimary = true, onClick = { onCall(contact.number) })
+                FloatingActionItem(Icons.Default.Videocam, "Video", onClick = { com.example.call.CallManager.makeCall(context, contact.number, isVideo = true) })
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Intelligence Section
             com.example.call.ui.components.GlassmorphicContainer(
@@ -380,29 +352,26 @@ fun ContactDetailScreen(
 }
 
 @Composable
-fun ContactActionItem(icon: ImageVector, label: String, enabled: Boolean = true, onClick: () -> Unit = {}) {
-    com.example.call.ui.components.GlassmorphicContainer(
-        modifier = Modifier.width(80.dp).height(60.dp).clickable(enabled = enabled, onClick = onClick),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(4.dp)
+fun FloatingActionItem(icon: ImageVector, label: String, isPrimary: Boolean = false, onClick: () -> Unit = {}) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .size(if (isPrimary) 64.dp else 56.dp)
+                .clip(CircleShape)
+                .background(if (isPrimary) VisionPrimary else MaterialTheme.colorScheme.surfaceVariant)
+                .clickable { onClick() }
+                .padding(if (isPrimary) 12.dp else 16.dp),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
-                icon, 
-                contentDescription = label, 
-                tint = if (enabled) IOSBlue else IOSGray.copy(alpha = 0.5f),
-                modifier = Modifier.size(24.dp)
-            )
-            Text(
-                label, 
-                fontSize = 11.sp, 
-                color = if (enabled) IOSBlue else IOSGray.copy(alpha = 0.5f),
-                modifier = Modifier.padding(top = 4.dp)
+                icon,
+                contentDescription = label,
+                tint = if (isPrimary) Color.White else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(if (isPrimary) 32.dp else 24.dp)
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onBackground)
     }
 }
 

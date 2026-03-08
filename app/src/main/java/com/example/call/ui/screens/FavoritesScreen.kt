@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,48 +42,53 @@ fun FavoritesScreen(
             CenterText("No Favorites")
         } else {
             val context = LocalContext.current
-            LazyColumn {
+            androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+                columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(3),
+                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 120.dp, top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
                 items(favorites) { contact ->
-                    com.example.call.ui.components.GlassmorphicContainer(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 6.dp),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable { onCall(contact.number) }
                     ) {
-                        SwipeableActionItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            onRightSwipe = { onCall(contact.number) },
-                            onLeftSwipe = { 
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:${contact.number}"))
-                                context.startActivity(intent)
-                            },
-                            content = {
-                                ListItem(
-                                    modifier = Modifier.clickable { onCall(contact.number) },
-                                    headlineContent = { Text(contact.name, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, fontSize = 17.sp) },
-                                    supportingContent = { Text(contact.number, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp) },
-                                    leadingContent = {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(44.dp)
-                                                .clip(androidx.compose.foundation.shape.CircleShape)
-                                                .background(MaterialTheme.colorScheme.surface), 
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Text(contact.name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = VisionPrimary, fontSize = 18.sp)
-                                        }
-                                    },
-                                    trailingContent = {
-                                        IconButton(onClick = { onInfoClick(contact) }) {
-                                            Icon(Icons.Default.Info, contentDescription = null, tint = VisionPrimary.copy(alpha = 0.6f))
-                                        }
-                                    },
-                                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-                                )
-                            }
+                        // Large Avatar Box
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape)
+                                .background(androidx.compose.ui.graphics.Brush.linearGradient(
+                                    colors = com.example.call.ui.screens.getGradientForContact(contact.number)
+                                )),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = contact.name.take(1).uppercase(),
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 32.sp
+                            )
+                        }
+                        
+                        Spacer(modifier = Modifier.height(12.dp))
+                        
+                        // Name and optional Subtext
+                        Text(
+                            text = contact.name.substringBefore(" "),
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 15.sp,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "mobile",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f),
+                            fontSize = 11.sp
                         )
                     }
                 }
-                item { Spacer(modifier = Modifier.height(140.dp)) }
             }
         }
         }

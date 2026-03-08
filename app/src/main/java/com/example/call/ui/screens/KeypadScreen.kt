@@ -475,15 +475,15 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
 fun KeypadButton(digit: String, letters: String, onClick: () -> Unit, onLongClick: () -> Unit = {}) {
     com.example.call.ui.components.GlassmorphicContainer(
         modifier = Modifier
-            .padding(6.dp)
-            .size(72.dp)
+            .padding(8.dp)
+            .size(76.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { onClick() },
                     onLongPress = { onLongClick() }
                 )
             },
-        shape = RoundedCornerShape(32.dp)
+        shape = CircleShape
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

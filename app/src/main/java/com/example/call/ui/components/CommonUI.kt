@@ -58,12 +58,19 @@ fun DetailTextItem(text: String, color: Color = IOSBlue, onClick: () -> Unit = {
 fun GlassmorphicContainer(
     modifier: Modifier = Modifier,
     shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(32.dp),
+    containerColor: Color? = null,
+    borderAlpha: Float? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val surfaceColor = containerColor ?: if (isDark) GlassmorphismDark else GlassmorphismLight
+    val borderColor = if (isDark) GlassmorphismOutline else Color.Black.copy(alpha = 0.05f)
+    val finalBorderAlpha = borderAlpha ?: borderColor.alpha
+
     Box(modifier = modifier.clip(shape)) {
         // High Blur Layer
         Surface(
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            color = surfaceColor,
             modifier = Modifier
                 .matchParentSize()
                 .blur(40.dp),
@@ -76,10 +83,9 @@ fun GlassmorphicContainer(
                 .background(
                     Brush.linearGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.2f),
-                            Color.White.copy(alpha = 0.05f),
+                            borderColor.copy(alpha = finalBorderAlpha),
                             Color.Transparent,
-                            Color.White.copy(alpha = 0.05f)
+                            borderColor.copy(alpha = finalBorderAlpha / 2)
                         )
                     )
                 )

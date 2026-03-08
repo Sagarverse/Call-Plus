@@ -232,7 +232,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 80.dp), // Reduced height of bottom bar
+            .padding(bottom = 40.dp), // Reduced to use bottom space
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -395,7 +395,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                         }
                     }
     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
     
                     // Call Button and Delete
                     Box(
@@ -404,7 +404,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                     ) {
                         Surface(
                             modifier = Modifier
-                                .size(80.dp)
+                                .size(100.dp)
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onTap = { if (phoneNumber.isNotEmpty()) onCall(phoneNumber) },
@@ -425,15 +425,15 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                             color = IOSGreen
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(Icons.Default.Call, contentDescription = "Call", tint = Color.White, modifier = Modifier.size(36.dp))
+                                Icon(Icons.Default.Call, contentDescription = "Call", tint = Color.White, modifier = Modifier.size(44.dp))
                             }
                         }
                         
                         if (phoneNumber.isNotEmpty()) {
                             Box(
                                 modifier = Modifier
-                                    .padding(start = 160.dp) // Adjusted for smaller call button
-                                    .size(72.dp)
+                                    .padding(start = 180.dp) // Adjusted for 100dp call button
+                                    .size(80.dp)
                                     .pointerInput(Unit) {
                                         detectTapGestures(
                                             onTap = { phoneNumber = phoneNumber.dropLast(1) },
@@ -445,7 +445,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(Icons.Default.Clear, contentDescription = "Delete", tint = IOSGray, modifier = Modifier.size(40.dp))
+                                Icon(Icons.Default.Clear, contentDescription = "Delete", tint = IOSGray, modifier = Modifier.size(48.dp))
                             }
                         }
                     }
@@ -476,7 +476,7 @@ fun KeypadButton(digit: String, letters: String, onClick: () -> Unit, onLongClic
     com.example.call.ui.components.GlassmorphicContainer(
         modifier = Modifier
             .padding(8.dp)
-            .size(76.dp)
+            .size(82.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { onClick() },

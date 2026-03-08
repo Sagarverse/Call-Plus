@@ -1,6 +1,9 @@
 package com.example.call.ui.components
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -9,12 +12,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -267,3 +273,89 @@ fun SagarCallBanner(modifier: Modifier = Modifier, color: Color = MaterialTheme.
         color = color.copy(alpha = 0.7f)
     )
 }
+
+@Composable
+fun SwipeToAnswer(
+    onAnswer: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var offsetX by remember { mutableStateOf(0f) }
+    val maxOffset = 260f
+    val threshold = 200f
+    
+    val infiniteTransition = rememberInfiniteTransition(label = "glow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.7f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glow_alpha"
+    )
+
+    Box(
+        modifier = modifier
+            .width(300.dp)
+            .height(80.dp)
+            .clip(RoundedCornerShape(40.dp))
+            .background(Color.White.copy(alpha = 0.1f))
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.1f),
+                        IOSGreen.copy(alpha = glowAlpha),
+                        Color.White.copy(alpha = 0.1f)
+                    )
+                ),
+                shape = RoundedCornerShape(40.dp)
+            ),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        // Track text
+        Text(
+            "Slide to answer",
+            modifier = Modifier.fillMaxWidth().offset(x = 40.dp),
+            textAlign = TextAlign.Center,
+            color = Color.White.copy(alpha = 0.5f),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+        
+        // Sliding Pill
+        Box(
+            modifier = Modifier
+                .offset { IntOffset(offsetX.roundToInt(), 0) }
+                .padding(6.dp)
+                .size(68.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(IOSGreen, Color(0xFF2ECC71))
+                    )
+                )
+                .draggable(
+                    orientation = Orientation.Horizontal,
+                    state = rememberDraggableState { delta ->
+                        offsetX = (offsetX + delta).coerceIn(0f, maxOffset)
+                    },
+                    onDragStopped = {
+                        if (offsetX >= threshold) {
+                            onAnswer()
+                        }
+                        offsetX = 0f
+                    }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.Call,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    }
+}
+

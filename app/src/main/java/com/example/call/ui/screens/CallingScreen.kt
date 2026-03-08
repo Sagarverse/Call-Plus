@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -335,7 +336,7 @@ fun CallingScreen(
 
             Column(modifier = Modifier.padding(bottom = 60.dp)) {
                 if (callState == Call.STATE_RINGING) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(bottom = 20.dp)) {
                         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable { showReminderMenu = true }) {
                                 Icon(Icons.Default.Notifications, contentDescription = null, tint = contentColor, modifier = Modifier.size(28.dp))
@@ -390,20 +391,38 @@ fun CallingScreen(
                             }
                         }
 
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                            IconButton(onClick = { call.disconnect() }, modifier = Modifier.size(75.dp).clip(CircleShape).background(IOSRed)) {
-                                Icon(Icons.Default.CallEnd, contentDescription = "Decline", tint = Color.White, modifier = Modifier.size(36.dp))
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { call.disconnect() }, modifier = Modifier.size(72.dp).clip(CircleShape).background(IOSRed)) {
+                                Icon(Icons.Default.CallEnd, contentDescription = "Decline", tint = Color.White, modifier = Modifier.size(32.dp))
                             }
-                            IconButton(onClick = { call.answer(0) }, modifier = Modifier.size(75.dp).clip(CircleShape).background(IOSGreen)) {
-                                Icon(Icons.Default.Call, contentDescription = "Accept", tint = Color.White, modifier = Modifier.size(36.dp))
-                            }
+                            
+                            com.example.call.ui.components.SwipeToAnswer(
+                                onAnswer = { call.answer(0) },
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
                         }
                     }
                 } else {
                     val calls by CallManager.calls.collectAsState()
                     val canMerge = calls.size >= 2
                     
+                    var lastInteractionTime by remember { mutableStateOf(System.currentTimeMillis()) }
+                    var isMinimalist by remember { mutableStateOf(false) }
+                    
+                    LaunchedEffect(lastInteractionTime) {
+                        isMinimalist = false
+                        delay(5000) // 5 seconds of inactivity
+                        isMinimalist = true
+                    }
+                    
+                    val controlAlpha by androidx.compose.animation.core.animateFloatAsState(
+                        targetValue = if (isMinimalist) 0.2f else 1f,
+                        animationSpec = tween(1000),
+                        label = "minimalist_alpha"
+                    )
+
                     val handleAction: (String) -> Unit = { label ->
+                        lastInteractionTime = System.currentTimeMillis()
                         when (label) {
                             "mute" -> CustomInCallService.instance?.toggleMute(!isMuted)
                             "speaker" -> CustomInCallService.instance?.toggleSpeaker(!isSpeakerOn)
@@ -438,17 +457,19 @@ fun CallingScreen(
                         listOf(Triple(if (isSpeakerOn) Icons.Default.VolumeUp else Icons.Default.VolumeDown, "speaker", isSpeakerOn), Triple(Icons.Default.MoreHoriz, "more", showMoreSheet))
                     )
 
-                    primaryActions.forEach { row ->
-                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            row.forEach { (icon, label, active) ->
-                                CallActionButton(icon = icon, label = label, isActive = active, textColor = contentColor, onClick = { handleAction(label) })
+                    Column(modifier = Modifier.graphicsLayer(alpha = controlAlpha).clickable(interactionSource = null, indication = null) { lastInteractionTime = System.currentTimeMillis() }) {
+                        primaryActions.forEach { row ->
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                row.forEach { (icon, label, active) ->
+                                    CallActionButton(icon = icon, label = label, isActive = active, textColor = contentColor, onClick = { handleAction(label) })
+                                }
                             }
                         }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(32.dp))
-                    IconButton(onClick = { call.disconnect() }, modifier = Modifier.size(75.dp).align(Alignment.CenterHorizontally).clip(CircleShape).background(IOSRed)) {
-                        Icon(Icons.Default.CallEnd, contentDescription = "End Call", tint = Color.White, modifier = Modifier.size(36.dp))
+                        
+                        Spacer(modifier = Modifier.height(32.dp))
+                        IconButton(onClick = { call.disconnect() }, modifier = Modifier.size(75.dp).align(Alignment.CenterHorizontally).clip(CircleShape).background(IOSRed)) {
+                            Icon(Icons.Default.CallEnd, contentDescription = "End Call", tint = Color.White, modifier = Modifier.size(36.dp))
+                        }
                     }
 
                     if (showMoreSheet) {

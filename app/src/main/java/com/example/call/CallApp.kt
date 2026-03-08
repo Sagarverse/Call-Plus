@@ -132,9 +132,32 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            // Main content based on tab
-            Crossfade(targetState = selectedTab, label = "") { tab ->
-                when (tab) {
+            // Main content based on tab - Swipeable Pager
+            val pagerState = androidx.compose.foundation.pager.rememberPagerState(
+                initialPage = selectedTab,
+                pageCount = { 5 }
+            )
+            
+            // Sync Pager -> Tab
+            LaunchedEffect(pagerState.currentPage) {
+                selectedTab = pagerState.currentPage
+            }
+            
+            // Sync Tab -> Pager (when clicking bottom bar)
+            LaunchedEffect(selectedTab) {
+                if (pagerState.currentPage != selectedTab) {
+                    pagerState.animateScrollToPage(selectedTab)
+                }
+            }
+
+            androidx.compose.foundation.pager.HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+                beyondViewportPageCount = 1,
+                // We don't disable userScrollEnabled here; 
+                // nested swipeable items like contact rows will consume their own drag first.
+            ) { page ->
+                when (page) {
                     0 -> FavoritesScreen(favorites, onCall = { CallManager.makeCall(context, it) }, onInfoClick = { selectedContact = it })
                     1 -> RecentsScreen(
                         records = callLogs, 

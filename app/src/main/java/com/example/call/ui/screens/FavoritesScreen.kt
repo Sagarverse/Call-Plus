@@ -59,7 +59,7 @@ fun FavoritesScreen(
                                 .size(80.dp)
                                 .clip(CircleShape)
                                 .background(androidx.compose.ui.graphics.Brush.linearGradient(
-                                    colors = com.example.call.ui.screens.getGradientForContact(contact.number)
+                                    colors = com.example.call.ui.screens.getGradientForContact(contact.number, contact.photoUri, context)
                                 )),
                             contentAlignment = Alignment.Center
                         ) {

@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         requestDefaultDialer()
+        com.example.call.data.GeminiService.init(this)
 
         setContent {
             val prefs = remember { getSharedPreferences("call_prefs", Context.MODE_PRIVATE) }
@@ -90,10 +91,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                CallApp(themePreference = themePreference, onThemeChange = {
-                    themePreference = it
-                    prefs.edit().putString("theme_preference", it).apply()
-                })
+                CallApp(
+                    themePreference = themePreference, 
+                    onThemeChange = {
+                        themePreference = it
+                        prefs.edit().putString("theme_preference", it).apply()
+                    },
+                    isPipMode = isPipMode.value
+                )
             }
         }
     }
@@ -111,6 +116,8 @@ class MainActivity : ComponentActivity() {
         // so nothing extra is needed here — the incoming call notification from
         // CustomInCallService will have already updated CallManager before we get called.
     }
+
+    private var isPipMode = mutableStateOf(false)
 
     @android.annotation.SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
@@ -138,6 +145,24 @@ class MainActivity : ComponentActivity() {
             }
         }
         return super.dispatchKeyEvent(event)
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (CallManager.activeCall.value != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                enterPictureInPictureMode(
+                    android.app.PictureInPictureParams.Builder()
+                        .setAspectRatio(android.util.Rational(9, 16))
+                        .build()
+                )
+            }
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: android.content.res.Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        isPipMode.value = isInPictureInPictureMode
     }
 
     private fun handleVolumeAction(isUp: Boolean) {

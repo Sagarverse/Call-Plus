@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.call.ui.theme.*
 import com.example.call.data.*
@@ -38,7 +39,11 @@ import com.example.call.ui.components.*
 import androidx.compose.ui.draw.scale
 
 @Composable
-fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit = {}) {
+fun CallApp(
+    themePreference: String = "System", 
+    onThemeChange: (String) -> Unit = {},
+    isPipMode: Boolean = false
+) {
     val context = LocalContext.current
     val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
     
@@ -62,6 +67,11 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
     // Reactive data collection
     val contacts by repository.contacts.collectAsState()
     val callLogs by repository.callLogs.collectAsState()
+
+    if (isPipMode && activeCall != null) {
+        PipCallUI(activeCall!!, contacts)
+        return
+    }
     val voicemails by voicemailRepository.voicemails.collectAsState()
     val notes by notesRepository.notes.collectAsState()
     
@@ -79,6 +89,11 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
     var shakeEnabled by remember { mutableStateOf(prefs.getBoolean("shake_enabled", false)) }
     val coroutineScope = rememberCoroutineScope()
 
+    var showSearchDashboard by remember { mutableStateOf(false) }
+    var lastCallNumber by remember { mutableStateOf<String?>(null) }
+    var lastCallContact by remember { mutableStateOf<Contact?>(null) }
+    var suggestedAction by remember { mutableStateOf<String?>(null) }
+
     // Initial Data Load
     LaunchedEffect(Unit) {
         repository.refreshContacts()
@@ -92,6 +107,16 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
         if (activeCall == null) {
             repository.refreshCallLogs()
             voicemailRepository.refresh()
+            
+            // Refresh repositories when call ends
+            if (activeCall == null) {
+                repository.refreshCallLogs()
+                voicemailRepository.refresh()
+            }
+        } else {
+            // Store details for post-call use
+            lastCallNumber = activeCall!!.details.handle.schemeSpecificPart
+            lastCallContact = contacts.findContactFlexible(lastCallNumber ?: "")
         }
     }
 
@@ -106,8 +131,9 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
         favoritesUpdateTrigger++
     }
 
-    BackHandler(enabled = selectedContact != null || isCallMinimized || showSummary || showSettings || showNotes) {
+    BackHandler(enabled = selectedContact != null || isCallMinimized || showSummary || showSettings || showNotes || showSearchDashboard) {
         when {
+            showSearchDashboard -> showSearchDashboard = false
             selectedContact != null -> selectedContact = null
             showSummary -> showSummary = false
             showSettings -> showSettings = false
@@ -138,14 +164,14 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                 pageCount = { 5 }
             )
             
-            // Sync Pager -> Tab
-            LaunchedEffect(pagerState.currentPage) {
-                selectedTab = pagerState.currentPage
+            // Sync Pager -> Tab (only when scrolling has settled)
+            LaunchedEffect(pagerState.settledPage) {
+                selectedTab = pagerState.settledPage
             }
             
             // Sync Tab -> Pager (when clicking bottom bar)
             LaunchedEffect(selectedTab) {
-                if (pagerState.currentPage != selectedTab) {
+                if (pagerState.currentPage != selectedTab && !pagerState.isScrollInProgress) {
                     pagerState.animateScrollToPage(selectedTab)
                 }
             }
@@ -207,6 +233,19 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                     )
                 }
             }
+            
+            // Search Trigger (Floating) - Only on Keypad (Dial) Page
+            if (activeCall == null && !showSearchDashboard && !showSummary && !showSettings && selectedContact == null && selectedTab == 3) {
+                FloatingActionButton(
+                    onClick = { showSearchDashboard = true },
+                    modifier = Modifier.align(Alignment.TopEnd).padding(top = 80.dp, end = 24.dp),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = VisionPrimary,
+                    shape = CircleShape
+                ) {
+                    Icon(Icons.Default.Search, contentDescription = "Search")
+                }
+            }
 
             // Overlays
             if (selectedContact != null) {
@@ -241,7 +280,7 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
             }
 
             if (showSummary) {
-                SummaryScreen(callLogs, onBack = { showSummary = false })
+                SummaryScreen(callLogs, notes, contacts, onBack = { showSummary = false })
             }
 
             if (showSettings) {
@@ -256,6 +295,23 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                 )
             }
 
+            if (showSearchDashboard) {
+                GlobalSearchDashboard(
+                    contacts = contacts,
+                    callLogs = callLogs,
+                    notes = notes,
+                    onContactClick = { 
+                        selectedContact = it
+                        showSearchDashboard = false
+                    },
+                    onCallClick = { 
+                        CallManager.makeCall(context, it)
+                        showSearchDashboard = false
+                    },
+                    onClose = { showSearchDashboard = false }
+                )
+            }
+
             activeCall?.let { call ->
                 if (!isCallMinimized) {
                     CallingScreen(
@@ -266,17 +322,21 @@ fun CallApp(themePreference: String = "System", onThemeChange: (String) -> Unit 
                         onMinimize = { isCallMinimized = true }
                     )
                 } else {
-                    ActiveCallMinimizedBar(call) { isCallMinimized = false }
+                    ActiveCallMinimizedBar(call, contacts) { isCallMinimized = false }
                 }
             }
+
+
         }
     }
 }
 
 @Composable
-fun ActiveCallMinimizedBar(call: Call, onClick: () -> Unit) {
+fun ActiveCallMinimizedBar(call: Call, contacts: List<Contact>, onClick: () -> Unit) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val number = call.details.handle?.schemeSpecificPart ?: "Unknown"
-    val contactGradient = remember(number) { getGradientForContact(number) }
+    val contact = remember(number, contacts) { contacts.findContactFlexible(number) }
+    val contactGradient = remember(number, contact, context) { getGradientForContact(number, contact?.photoUri, context) }
     val contentColor = adaptiveTextColor(contactGradient.first())
 
     Surface(
@@ -395,6 +455,45 @@ fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PipCallUI(call: Call, contacts: List<Contact>) {
+    val number = call.details.handle?.schemeSpecificPart ?: "Unknown"
+    val contact = remember(number, contacts) { contacts.findContactFlexible(number) }
+    val name = contact?.name ?: number
+    val context = androidx.compose.ui.platform.LocalContext.current
+    
+    val contactGradient = remember(number, contact, context) { 
+        getGradientForContact(number, contact?.photoUri, context) 
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(contactGradient.first()),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = name,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                IconButton(
+                    onClick = { call.disconnect() },
+                    modifier = Modifier.size(36.dp).background(Color.Red.copy(alpha = 0.8f), CircleShape)
+                ) {
+                    Icon(Icons.Default.CallEnd, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
                 }
             }
         }

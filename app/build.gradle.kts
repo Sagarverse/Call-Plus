@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.google.mlkit.barcode.scanning)
     implementation(libs.zxing.core)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.google.generativeai)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

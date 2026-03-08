@@ -24,6 +24,11 @@ import androidx.compose.ui.unit.sp
 import com.example.call.ui.components.SagarCallBanner
 import com.example.call.ui.theme.*
 import java.io.File
+import androidx.compose.runtime.*
+import com.google.ai.client.generativeai.GenerativeModel
+import kotlinx.coroutines.launch
+import androidx.compose.animation.*
+import com.example.call.data.GeminiService
 
 @Composable
 fun SettingsScreen(
@@ -33,6 +38,40 @@ fun SettingsScreen(
     onThemeChange: (String) -> Unit
 ) {
     val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("call_prefs", Context.MODE_PRIVATE) }
+    
+    var apiKey by remember { mutableStateOf(prefs.getString("gemini_api_key", "") ?: "") }
+    var selectedModel by remember { mutableStateOf(prefs.getString("gemini_model", "gemini-1.5-flash") ?: "gemini-1.5-flash") }
+    var isTestingConnection by remember { mutableStateOf(false) }
+    var testResult by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
+    val models = listOf(
+        "gemini-2.0-flash-exp",
+        "gemini-2.0-flash-thinking-exp-01-21",
+        "gemini-2.0-pro-exp-02-05",
+        "gemini-1.5-pro",
+        "gemini-1.5-pro-latest",
+        "gemini-1.5-pro-002",
+        "gemini-1.5-flash",
+        "gemini-1.5-flash-latest",
+        "gemini-1.5-flash-002",
+        "gemini-1.5-flash-8b",
+        "gemini-1.5-flash-8b-latest",
+        "gemini-1.0-pro",
+        "gemini-pro",
+        "Custom"
+    )
+    var customModelName by remember { mutableStateOf(if (models.contains(selectedModel) && selectedModel != "Custom") "" else selectedModel) }
+    val isCustomModel = !models.contains(selectedModel) || selectedModel == "Custom"
+    var showModelDropdown by remember { mutableStateOf(false) }
+
+    // Initialize custom model if needed
+    LaunchedEffect(selectedModel) {
+        if (selectedModel == "Custom" && customModelName.isEmpty()) {
+            customModelName = prefs.getString("gemini_model", "") ?: ""
+        }
+    }
     
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(
@@ -149,6 +188,145 @@ fun SettingsScreen(
                         }
                     }
                 )
+            }
+        }
+
+        Text("AI Intelligence", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 8.dp))
+        
+        Surface(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Gemini API Key", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedTextField(
+                    value = apiKey,
+                    onValueChange = { 
+                        apiKey = it
+                        prefs.edit().putString("gemini_api_key", it).apply()
+                        GeminiService.init(context)
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    placeholder = { Text("Paste your API key here", fontSize = 14.sp) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = IOSBlue,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text("Model Selection", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().clickable { showModelDropdown = true },
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        border = androidx.compose.foundation.BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(selectedModel, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = IOSBlue)
+                        }
+                    }
+                    DropdownMenu(
+                        expanded = showModelDropdown,
+                        onDismissRequest = { showModelDropdown = false },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        models.forEach { model ->
+                            DropdownMenuItem(
+                                text = { Text(model) },
+                                onClick = {
+                                    if (model == "Custom") {
+                                        selectedModel = "Custom"
+                                    } else {
+                                        selectedModel = model
+                                        prefs.edit().putString("gemini_model", model).apply()
+                                        GeminiService.init(context)
+                                    }
+                                    showModelDropdown = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                if (selectedModel == "Custom") {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = customModelName,
+                        onValueChange = { 
+                            customModelName = it
+                            prefs.edit().putString("gemini_model", it).apply()
+                            GeminiService.init(context)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text("Enter custom model ID (e.g. gemini-1.0-pro-001)", fontSize = 14.sp) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        if (apiKey.isBlank()) {
+                            testResult = "Error: API Key is empty"
+                            return@Button
+                        }
+                        isTestingConnection = true
+                        testResult = null
+                        coroutineScope.launch {
+                            try {
+                                val actualModelId = if (selectedModel == "Custom") customModelName.trim() else selectedModel.trim()
+                                val model = GenerativeModel(
+                                    modelName = actualModelId,
+                                    apiKey = apiKey.trim()
+                                )
+                                val response = model.generateContent("Hello, respond with 'Success' if you can read this.")
+                                testResult = if (response.text?.contains("Success", ignoreCase = true) == true) {
+                                    "Connected Successfully!"
+                                } else {
+                                    "Connection failed: Unexpected response"
+                                }
+                            } catch (e: Exception) {
+                                testResult = "Error: ${e.message}"
+                            } finally {
+                                isTestingConnection = false
+                            }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = IOSBlue),
+                    enabled = !isTestingConnection
+                ) {
+                    if (isTestingConnection) {
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp), color = androidx.compose.ui.graphics.Color.White, strokeWidth = 2.dp)
+                    } else {
+                        Text("Test Connection", fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                testResult?.let {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        it, 
+                        fontSize = 13.sp, 
+                        color = if (it.contains("Success")) IOSGreen else IOSRed,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
         

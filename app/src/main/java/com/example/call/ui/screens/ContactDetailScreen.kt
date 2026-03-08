@@ -28,6 +28,18 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.Image
 import android.graphics.Bitmap
 
+data class TimelineItem(
+    val title: String,
+    val subtitle: String,
+    val timestamp: Long,
+    val type: TimelineType,
+    val icon: ImageVector,
+    val color: Color,
+    val content: String = ""
+)
+
+enum class TimelineType { CALL, NOTE, REMINDER }
+
 @Composable
 fun ContactDetailScreen(
     contact: Contact,
@@ -50,6 +62,44 @@ fun ContactDetailScreen(
 
     val contactLogs = remember(allCallLogs, contact.number) {
         allCallLogs.filter { it.number == contact.number || contact.number.endsWith(it.number) || it.number.endsWith(contact.number) }
+    }
+    
+    val timelineItems = remember(contactLogs, notes) {
+        val items = mutableListOf<TimelineItem>()
+        
+        // Add Call Logs
+        contactLogs.forEach { log ->
+            val icon = when (log.type) {
+                "Incoming" -> Icons.Default.CallReceived
+                "Outgoing" -> Icons.Default.CallMade
+                "Missed" -> Icons.Default.CallMissed
+                else -> Icons.Default.Call
+            }
+            val color = if (log.type == "Missed") IOSRed else IOSGreen
+            items.add(TimelineItem(
+                title = log.type,
+                subtitle = log.time,
+                timestamp = log.timestamp,
+                type = TimelineType.CALL,
+                icon = icon,
+                color = color
+            ))
+        }
+        
+        // Add Notes
+        notes.forEach { note ->
+            items.add(TimelineItem(
+                title = "Note",
+                subtitle = android.text.format.DateFormat.format("MMM d, h:mm a", note.date).toString(),
+                timestamp = note.date,
+                type = TimelineType.NOTE,
+                icon = Icons.Default.Notes,
+                color = IOSBlue,
+                content = note.content
+            ))
+        }
+        
+        items.sortedByDescending { it.timestamp }
     }
     
     val intel = remember(contactLogs) {
@@ -77,7 +127,7 @@ fun ContactDetailScreen(
         } else null
     }
 
-    val backgroundGradient = remember(contact.number) { getGradientForContact(contact.number) }
+    val backgroundGradient = remember(contact.number, contact.photoUri, context) { getGradientForContact(contact.number, contact.photoUri, context) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -217,7 +267,15 @@ fun ContactDetailScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Notes Section
+            // Interaction Timeline Section
+            Text(
+                "Activity History", 
+                fontSize = 17.sp, 
+                fontWeight = FontWeight.Bold, 
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp)
+            )
+
             com.example.call.ui.components.GlassmorphicContainer(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(24.dp)
@@ -228,29 +286,52 @@ fun ContactDetailScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("notes", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("timeline", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Icon(
                             Icons.Default.Add, 
                             contentDescription = "Add Note", 
                             tint = IOSBlue,
-                            modifier = Modifier.size(18.dp).clickable { 
+                            modifier = Modifier.size(20.dp).clickable { 
                                 noteText = ""
                                 showAddNoteDialog = true 
                             }
                         )
                     }
                     
-                    if (notes.isEmpty()) {
-                        Text("No notes for this contact", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.5f), modifier = Modifier.padding(top = 8.dp))
+                    if (timelineItems.isEmpty()) {
+                        Text("No recent activity", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.5f), modifier = Modifier.padding(top = 8.dp))
                     } else {
-                        notes.reversed().forEach { note ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(note.content, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
-                            Text(
-                                android.text.format.DateFormat.format("MMM d, yyyy", note.date).toString(),
-                                fontSize = 11.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f)
-                            )
+                        timelineItems.forEachIndexed { index, item ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                // Timeline Line and Icon
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Box(
+                                        modifier = Modifier.size(32.dp).clip(CircleShape).background(item.color.copy(alpha = 0.15f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(item.icon, contentDescription = null, tint = item.color, modifier = Modifier.size(16.dp))
+                                    }
+                                    if (index < timelineItems.size - 1) {
+                                        Box(
+                                            modifier = Modifier.width(1.dp).height(40.dp).background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                                        )
+                                    }
+                                }
+                                
+                                Spacer(modifier = Modifier.width(16.dp))
+                                
+                                // Content
+                                Column {
+                                    Text(item.title, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                                    if (item.content.isNotEmpty()) {
+                                        Text(item.content, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(vertical = 4.dp))
+                                    }
+                                    Text(item.subtitle, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+                                }
+                            }
                         }
                     }
                 }

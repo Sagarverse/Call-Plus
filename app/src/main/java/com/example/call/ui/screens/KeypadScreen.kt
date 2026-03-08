@@ -85,6 +85,7 @@ import java.util.Locale
 
 @Composable
 fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick: () -> Unit) {
+    var dialerTheme by remember { mutableStateOf("Glass") }
     var phoneNumber by remember { mutableStateOf("") }
     var isScanning by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -252,11 +253,19 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                IconButton(
-                    onClick = { cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) },
-                    modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    Icon(Icons.Default.CameraAlt, contentDescription = "Scan Number", tint = IOSBlue, modifier = Modifier.size(28.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    androidx.compose.material3.TextButton(
+                        onClick = { dialerTheme = if (dialerTheme == "Glass") "OLED" else "Glass" },
+                        modifier = Modifier.padding(end = 4.dp)
+                    ) {
+                        Text(dialerTheme, color = IOSBlue, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    IconButton(
+                        onClick = { cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Icon(Icons.Default.CameraAlt, contentDescription = "Scan Number", tint = IOSBlue, modifier = Modifier.size(28.dp))
+                    }
                 }
             }
             
@@ -352,9 +361,15 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                                 currentStrokePoints = listOf(offset)
                             },
                             onDrag = { change, dragAmount ->
-                                change.consume()
-                                strokeBuilder.addPoint(Ink.Point.create(change.position.x, change.position.y))
-                                currentStrokePoints = currentStrokePoints + change.position
+                                // If drag is primarily horizontal, don't consume it so the pager can handle navigation
+                                val isHorizontal = kotlin.math.abs(dragAmount.x) > kotlin.math.abs(dragAmount.y)
+                                if (isHorizontal && kotlin.math.abs(dragAmount.x) > 10) {
+                                    // Let it propagate to parent (Pager)
+                                } else {
+                                    change.consume()
+                                    strokeBuilder.addPoint(Ink.Point.create(change.position.x, change.position.y))
+                                    currentStrokePoints = currentStrokePoints + change.position
+                                }
                             },
                             onDragEnd = {
                                 inkBuilder.addStroke(strokeBuilder.build())
@@ -379,6 +394,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                                 KeypadButton(
                                     digit = digit, 
                                     letters = letters, 
+                                    theme = dialerTheme,
                                     onClick = {
                                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                         phoneNumber += digit
@@ -472,40 +488,64 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
 }
 
 @Composable
-fun KeypadButton(digit: String, letters: String, onClick: () -> Unit, onLongClick: () -> Unit = {}) {
-    com.example.call.ui.components.GlassmorphicContainer(
-        modifier = Modifier
-            .padding(8.dp)
-            .size(82.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { onClick() },
-                    onLongPress = { onLongClick() }
-                )
-            },
-        shape = CircleShape
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+fun KeypadButton(digit: String, letters: String, theme: String, onClick: () -> Unit, onLongClick: () -> Unit = {}) {
+    if (theme == "OLED") {
+        Surface(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(82.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = { onClick() },
+                        onLongPress = { onLongClick() }
+                    )
+                },
+            shape = CircleShape,
+            color = Color.Black,
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.15f))
         ) {
+            KeypadButtonContent(digit, letters)
+        }
+    } else {
+        com.example.call.ui.components.GlassmorphicContainer(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(82.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = { onClick() },
+                        onLongPress = { onLongClick() }
+                    )
+                },
+            shape = CircleShape
+        ) {
+            KeypadButtonContent(digit, letters)
+        }
+    }
+}
+
+@Composable
+private fun KeypadButtonContent(digit: String, letters: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            digit, 
+            fontSize = 32.sp, 
+            fontWeight = FontWeight.Light, 
+            color = Color.White,
+            fontFamily = FontFamily.SansSerif
+        )
+        if (letters.isNotEmpty()) {
             Text(
-                digit, 
-                fontSize = 32.sp, 
-                fontWeight = FontWeight.Light, 
-                color = MaterialTheme.colorScheme.onSurface,
-                fontFamily = FontFamily.SansSerif
+                letters, 
+                fontSize = 10.sp, 
+                fontWeight = FontWeight.Bold, 
+                color = Color.White.copy(alpha = 0.6f), 
+                letterSpacing = 1.sp
             )
-            if (letters.isNotEmpty()) {
-                Text(
-                    letters, 
-                    fontSize = 10.sp, 
-                    fontWeight = FontWeight.Bold, 
-                    color = MaterialTheme.colorScheme.onSurfaceVariant, 
-                    letterSpacing = 1.sp
-                )
-            }
         }
     }
 }

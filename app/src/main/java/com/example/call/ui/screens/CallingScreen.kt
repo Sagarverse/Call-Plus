@@ -55,7 +55,22 @@ import android.view.TextureView
 import android.telecom.VideoProfile
 import androidx.compose.ui.viewinterop.AndroidView
 
-fun getGradientForContact(number: String): List<Color> {
+fun getGradientForContact(number: String, photoUri: String?, context: android.content.Context): List<Color> {
+    if (photoUri != null) {
+        try {
+            val inputStream = context.contentResolver.openInputStream(Uri.parse(photoUri))
+            val bitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
+            if (bitmap != null) {
+                // Extract two distinct colors from the bitmap
+                val p1 = bitmap.getPixel(bitmap.width / 4, bitmap.height / 4)
+                val p2 = bitmap.getPixel(3 * bitmap.width / 4, 3 * bitmap.height / 4)
+                return listOf(Color(p1), Color(p2))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    
     val hash = number.hashCode()
     return when (kotlin.math.abs(hash) % 4) {
         0 -> listOf(Color(0xFF007AFF), Color(0xFF5856D6))
@@ -181,10 +196,27 @@ fun CallingScreen(
         VideoProfile.isTransmissionEnabled(vs) || VideoProfile.isReceptionEnabled(vs)
     }
 
+    // Dynamic Aura Colors based on Contact Photo
+    val activeContact = remember(number, contacts) { contacts.findContactFlexible(number) }
+    val auraColors = remember(activeContact, number, context) {
+        getGradientForContact(number, activeContact?.photoUri, context)
+    }
+
+    val spamRepository = remember { com.example.call.data.SpamRepository(context) }
+    val isSpam = remember(number) { spamRepository.checkIfSpam(number) }
+    var aiResearchResult by remember { mutableStateOf<String?>(null) }
+
     val isIncoming = callState == Call.STATE_RINGING
-    val primaryColor = if (isIncoming) CallGradientIncomingStart else CallGradientStart
-    val secondaryColor = if (isIncoming) CallGradientIncomingEnd else CallGradientMid
-    val tertiaryColor = if (isIncoming) Color(0xFFC31432) else CallGradientEnd
+
+    LaunchedEffect(number, isIncoming) {
+        if (isIncoming && activeContact == null) {
+            aiResearchResult = spamRepository.researchUnknownCaller(number)
+        }
+    }
+
+    val primaryColor = if (isIncoming && (isSpam || aiResearchResult?.contains("Fraud", ignoreCase = true) == true)) Color(0xFFC31432) else (if (isIncoming) CallGradientIncomingStart else auraColors.getOrElse(0) { CallGradientStart })
+    val secondaryColor = if (isIncoming) CallGradientIncomingEnd else auraColors.getOrElse(1) { CallGradientMid }
+    val tertiaryColor = if (isIncoming && (isSpam || aiResearchResult != null)) Color(0xFFC31432) else (if (auraColors.size > 2) auraColors[2] else auraColors.getOrNull(0) ?: CallGradientEnd)
     val contentColor = Color.White
 
     Box(
@@ -278,6 +310,42 @@ fun CallingScreen(
                     },
                     color = contentColor.copy(alpha = 0.8f), fontSize = 18.sp, fontWeight = FontWeight.Medium
                 )
+
+                if ((isSpam || aiResearchResult != null) && isIncoming) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    com.example.call.ui.components.GlassmorphicContainer(
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                        shape = RoundedCornerShape(16.dp),
+                        borderAlpha = 0.4f,
+                        containerColor = Color.Red.copy(alpha = 0.15f)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Security, contentDescription = null, tint = Color.Red, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    if (isSpam) "SECURITY ALERT: LIKELY SPAM" else "AI CALLER RESEARCH",
+                                    color = Color.Red, fontSize = 13.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp
+                                )
+                            }
+                            if (aiResearchResult != null) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    aiResearchResult!!,
+                                    color = Color.White.copy(alpha = 0.95f),
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    }
+                }
+
                 if (isRecording) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {

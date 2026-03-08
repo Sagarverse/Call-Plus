@@ -17,7 +17,8 @@ data class Contact(
     val number: String, 
     val id: Long? = null, 
     val lookupKey: String? = null,
-    val t9Name: String = ""
+    val t9Name: String = "",
+    val photoUri: String? = null
 )
 
 fun List<Contact>.findContactFlexible(number: String): Contact? {
@@ -67,6 +68,7 @@ class ContactRepository(private val context: Context) {
                 val lookupIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)
                 val nameIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
                 val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                val photoIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)
                 
                 if (nameIndex != -1 && numberIndex != -1) {
                     while (it.moveToNext()) {
@@ -74,7 +76,8 @@ class ContactRepository(private val context: Context) {
                         val lookup = if (lookupIndex != -1) it.getString(lookupIndex) else null
                         val name = it.getString(nameIndex) ?: "Unknown"
                         val number = it.getString(numberIndex) ?: ""
-                        contactsList.add(Contact(name, number, id, lookup, generateT9Name(name)))
+                        val photoUri = if (photoIndex != -1) it.getString(photoIndex) else null
+                        contactsList.add(Contact(name, number, id, lookup, generateT9Name(name), photoUri))
                     }
                 }
             }

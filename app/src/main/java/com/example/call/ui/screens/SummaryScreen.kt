@@ -26,9 +26,17 @@ import androidx.compose.ui.graphics.Brush
 import com.example.call.ui.components.AnalyticsCard
 import com.example.call.ui.components.SagarCallBanner
 import com.example.call.ui.theme.*
+import com.example.call.data.Note
+import com.example.call.data.Contact
+import com.example.call.data.GeminiService
 
 @Composable
-fun SummaryScreen(callLogs: List<CallRecord>, onBack: () -> Unit) {
+fun SummaryScreen(
+    callLogs: List<CallRecord>, 
+    notes: List<Note>,
+    contacts: List<Contact>,
+    onBack: () -> Unit
+) {
     var filterType by remember { mutableIntStateOf(0) }
 
     val filteredLogs = remember(callLogs, filterType) {
@@ -78,6 +86,21 @@ fun SummaryScreen(callLogs: List<CallRecord>, onBack: () -> Unit) {
                 peakHour = peakHour,
                 hourlyDistribution = hourlyDist
             )
+        }
+    }
+
+    var aiSummary by remember { mutableStateOf<String?>(null) }
+    val isAiReady by GeminiService.isReady.collectAsState()
+
+    LaunchedEffect(analytics, isAiReady) {
+        val stats = analytics
+        if (isAiReady && stats != null && stats.top != "N/A") {
+            val topContact = contacts.find { it.name == stats.top }
+            if (topContact != null) {
+                val contactLogs = callLogs.filter { it.number == topContact.number }
+                val contactNotes = notes.filter { it.contactNumber == topContact.number }
+                aiSummary = GeminiService.generateCallSummary(topContact, contactLogs, contactNotes)
+            }
         }
     }
 
@@ -135,6 +158,38 @@ fun SummaryScreen(callLogs: List<CallRecord>, onBack: () -> Unit) {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         DurationTrendChart(filteredLogs)
+                    }
+                }
+
+                if (aiSummary != null) {
+                    com.example.call.ui.components.GlassmorphicContainer(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        borderAlpha = 0.3f
+                    ) {
+                        Column(modifier = Modifier.padding(24.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .background(VisionPrimary.copy(alpha = 0.15f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = VisionPrimary, modifier = Modifier.size(16.dp))
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text("INTELLIGENCE: ${stats.top.uppercase()}", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = VisionPrimary, letterSpacing = 1.2.sp)
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                aiSummary!!, 
+                                color = MaterialTheme.colorScheme.onSurface, 
+                                fontSize = 15.sp, 
+                                lineHeight = 22.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                 }
 

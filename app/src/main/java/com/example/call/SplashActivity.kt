@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import android.content.Context
 import com.example.call.ui.theme.CallTheme
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
 
 /**
  * SplashActivity — shows "Sagar Call" in white cursive on a black background for 1.5 seconds,
@@ -64,7 +66,7 @@ class SplashActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Sagar Call",
+                        text = stringResource(R.string.app_name),
                         fontFamily = FontFamily.Cursive,
                         fontSize = 48.sp,
                         fontWeight = FontWeight.Medium,

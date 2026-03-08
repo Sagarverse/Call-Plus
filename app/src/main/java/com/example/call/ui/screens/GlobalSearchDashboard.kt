@@ -22,6 +22,8 @@ import com.example.call.data.Contact
 import com.example.call.data.CallRecord
 import com.example.call.data.Note
 import com.example.call.ui.theme.*
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
 import com.example.call.ui.components.*
 
 @Composable
@@ -34,15 +36,25 @@ fun GlobalSearchDashboard(
     onClose: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    var debouncedQuery by remember { mutableStateOf("") }
     
-    val filteredContacts = remember(searchQuery, contacts) {
-        if (searchQuery.isBlank()) emptyList()
-        else contacts.filter { it.name.contains(searchQuery, true) || it.number.contains(searchQuery) }
+    LaunchedEffect(searchQuery) {
+        kotlinx.coroutines.delay(300)
+        debouncedQuery = searchQuery
     }
     
-    val filteredNotes = remember(searchQuery, notes) {
-        if (searchQuery.isBlank()) emptyList()
-        else notes.filter { it.content.contains(searchQuery, true) }
+    val filteredContacts by remember(debouncedQuery, contacts) {
+        derivedStateOf {
+            if (debouncedQuery.isBlank()) emptyList()
+            else contacts.filter { it.name.contains(debouncedQuery, true) || it.number.contains(debouncedQuery) }
+        }
+    }
+    
+    val filteredNotes by remember(debouncedQuery, notes) {
+        derivedStateOf {
+            if (debouncedQuery.isBlank()) emptyList()
+            else notes.filter { it.content.contains(debouncedQuery, true) }
+        }
     }
 
     Surface(
@@ -79,7 +91,7 @@ fun GlobalSearchDashboard(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
                             modifier = Modifier.weight(1f),
-                            placeholder = { Text("Search your world...", color = IOSGray, fontSize = 16.sp) },
+                            placeholder = { Text(stringResource(R.string.search_global_placeholder), color = IOSGray, fontSize = 16.sp) },
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,
@@ -130,13 +142,13 @@ fun GlobalSearchDashboard(
                         }
                     }
                     
-                    if (searchQuery.isNotEmpty() && filteredContacts.isEmpty() && filteredNotes.isEmpty()) {
+                    if (debouncedQuery.isNotEmpty() && filteredContacts.isEmpty() && filteredNotes.isEmpty()) {
                         item {
                             Box(modifier = Modifier.fillMaxWidth().padding(top = 60.dp), contentAlignment = Alignment.Center) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Icon(Icons.Default.SearchOff, contentDescription = null, tint = IOSGray.copy(alpha = 0.3f), modifier = Modifier.size(64.dp))
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    Text("No discoveries for '$searchQuery'", color = IOSGray, fontSize = 16.sp)
+                                    Text("No discoveries for '$debouncedQuery'", color = IOSGray, fontSize = 16.sp)
                                 }
                             }
                         }

@@ -10,8 +10,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
+import com.example.call.ui.components.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,11 +70,13 @@ fun RecentsScreen(
         }.timeInMillis
         val yesterday = today - 86400000L
 
+        val olderDateFormat = java.text.SimpleDateFormat("MMMM dd, yyyy", java.util.Locale.getDefault())
+
         records.groupBy { record ->
             when {
                 record.timestamp >= today -> "Today"
                 record.timestamp >= yesterday -> "Yesterday"
-                else -> "Older"
+                else -> olderDateFormat.format(java.util.Date(record.timestamp))
             }
         }
     }
@@ -117,7 +123,7 @@ fun RecentsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        Text("Recents", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text(stringResource(R.string.tab_recents), fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         if (records.isNotEmpty()) {
                             TextButton(onClick = { isSelectionMode = true }) {
                                 Text("Edit", color = VisionPrimary, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
@@ -128,7 +134,11 @@ fun RecentsScreen(
             }
 
             if (records.isEmpty()) {
-                CenterText("No Recent Calls")
+                EmptyState(
+                    icon = Icons.Default.History,
+                    title = stringResource(R.string.empty_recents_title),
+                    description = stringResource(R.string.empty_recents_desc)
+                )
             } else {
                 val context = LocalContext.current
                 LazyColumn(

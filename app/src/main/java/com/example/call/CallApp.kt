@@ -1,5 +1,8 @@
 package com.example.call
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -36,7 +39,16 @@ import com.example.call.ui.theme.*
 import com.example.call.data.*
 import com.example.call.ui.screens.*
 import com.example.call.ui.components.*
+import com.example.call.util.*
 import androidx.compose.ui.draw.scale
+
+sealed class OverlayType {
+    object None : OverlayType()
+    data class Contact(val contact: com.example.call.data.Contact) : OverlayType()
+    object Summary : OverlayType()
+    object Settings : OverlayType()
+    object Search : OverlayType()
+}
 
 @Composable
 fun CallApp(
@@ -247,69 +259,82 @@ fun CallApp(
                 }
             }
 
-            // Overlays
-            if (selectedContact != null) {
-                var isBlocked by remember(selectedContact) {
-                    mutableStateOf(blacklistRepository.isBlocked(selectedContact!!.number))
-                }
-                ContactDetailScreen(
-                    contact = selectedContact!!,
-                    isFavorite = favorites.any { it.number == selectedContact!!.number },
-                    onToggleFavorite = { toggleFavorite(selectedContact!!) },
-                    onBack = { selectedContact = null },
-                    onCall = { CallManager.makeCall(context, it) },
-                    onMessage = { 
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$it"))
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(intent)
-                    },
-                    isBlocked = isBlocked,
-                    onToggleBlock = {
-                        if (isBlocked) blacklistRepository.unblockNumber(selectedContact!!.number)
-                        else blacklistRepository.blockNumber(selectedContact!!.number)
-                        isBlocked = !isBlocked
-                    },
-                    notes = notes.filter { it.contactNumber == selectedContact!!.number || (it.contactNumber != null && selectedContact!!.number.endsWith(it.contactNumber!!)) },
-                    onAddNote = { content ->
-                        coroutineScope.launch {
-                            notesRepository.addNoteForContact(selectedContact!!.number, content)
+            // Overlays with AnimatedContent for smooth transitions
+            val overlayState = when {
+                selectedContact != null -> OverlayType.Contact(selectedContact!!)
+                showSummary -> OverlayType.Summary
+                showSettings -> OverlayType.Settings
+                showSearchDashboard -> OverlayType.Search
+                else -> OverlayType.None
+            }
+
+            AnimatedContent(
+                targetState = overlayState,
+                transitionSpec = {
+                    (fadeIn(animationSpec = tween(400, easing = EaseInOutQuart)) + 
+                     scaleIn(initialScale = 0.92f, animationSpec = tween(400, easing = EaseOutQuart)))
+                    .togetherWith(fadeOut(animationSpec = tween(300, easing = EaseInOutQuart)))
+                },
+                label = "overlay_transition"
+            ) { targetOverlay ->
+                when (targetOverlay) {
+                    is OverlayType.Contact -> {
+                        val contact = targetOverlay.contact
+                        var isBlocked by remember(contact) {
+                            mutableStateOf(blacklistRepository.isBlocked(contact.number))
                         }
-                    },
-                    allCallLogs = callLogs
-                )
-            }
-
-            if (showSummary) {
-                SummaryScreen(callLogs, notes, contacts, onBack = { showSummary = false })
-            }
-
-            if (showSettings) {
-                SettingsScreen(
-                    shakeEnabled = shakeEnabled, 
-                    onShakeToggle = {
-                        shakeEnabled = it
-                        prefs.edit().putBoolean("shake_enabled", it).apply()
-                    },
-                    themePreference = themePreference,
-                    onThemeChange = onThemeChange
-                )
-            }
-
-            if (showSearchDashboard) {
-                GlobalSearchDashboard(
-                    contacts = contacts,
-                    callLogs = callLogs,
-                    notes = notes,
-                    onContactClick = { 
-                        selectedContact = it
-                        showSearchDashboard = false
-                    },
-                    onCallClick = { 
-                        CallManager.makeCall(context, it)
-                        showSearchDashboard = false
-                    },
-                    onClose = { showSearchDashboard = false }
-                )
+                        ContactDetailScreen(
+                            contact = contact,
+                            isFavorite = favorites.any { it.number == contact.number },
+                            onToggleFavorite = { toggleFavorite(contact) },
+                            onBack = { selectedContact = null },
+                            onCall = { CallManager.makeCall(context, it) },
+                            onMessage = { 
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$it"))
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
+                            },
+                            isBlocked = isBlocked,
+                            onToggleBlock = {
+                                if (isBlocked) blacklistRepository.unblockNumber(contact.number)
+                                else blacklistRepository.blockNumber(contact.number)
+                                isBlocked = !isBlocked
+                            },
+                            notes = notes.filter { it.contactNumber == contact.number || (it.contactNumber != null && contact.number.endsWith(it.contactNumber!!)) },
+                            onAddNote = { content ->
+                                coroutineScope.launch {
+                                    notesRepository.addNoteForContact(contact.number, content)
+                                }
+                            },
+                            allCallLogs = callLogs
+                        )
+                    }
+                    OverlayType.Summary -> SummaryScreen(callLogs, notes, contacts, onBack = { showSummary = false })
+                    OverlayType.Settings -> SettingsScreen(
+                        shakeEnabled = shakeEnabled, 
+                        onShakeToggle = {
+                            shakeEnabled = it
+                            prefs.edit().putBoolean("shake_enabled", it).apply()
+                        },
+                        themePreference = themePreference,
+                        onThemeChange = onThemeChange
+                    )
+                    OverlayType.Search -> GlobalSearchDashboard(
+                        contacts = contacts,
+                        callLogs = callLogs,
+                        notes = notes,
+                        onContactClick = { 
+                            selectedContact = it
+                            showSearchDashboard = false
+                        },
+                        onCallClick = { 
+                            CallManager.makeCall(context, it)
+                            showSearchDashboard = false
+                        },
+                        onClose = { showSearchDashboard = false }
+                    )
+                    OverlayType.None -> {}
+                }
             }
 
             activeCall?.let { call ->
@@ -423,6 +448,7 @@ fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             ) {
                 tabs.forEach { (label, icon, index) ->
                     val isSelected = selectedTab == index
+                    val context = androidx.compose.ui.platform.LocalContext.current
                     val backgroundColor by animateColorAsState(
                         targetValue = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else Color.Transparent,
                         label = "tab_bg"
@@ -433,7 +459,10 @@ fun GlassmorphicBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                             .weight(1f) // Ensure equal width for all tabs
                             .clip(RoundedCornerShape(32.dp))
                             .background(backgroundColor)
-                            .clickable { onTabSelected(index) }
+                            .clickable { 
+                                HapticUtils.playClick(context)
+                                onTabSelected(index) 
+                            }
                             .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
                     ) {

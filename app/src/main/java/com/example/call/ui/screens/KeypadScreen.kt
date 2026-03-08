@@ -73,6 +73,7 @@ import com.example.call.CallManager
 import com.example.call.ui.theme.*
 import com.example.call.ui.components.CameraScannerView
 import com.example.call.ui.components.SagarCallBanner
+import com.example.call.util.*
 import com.google.mlkit.vision.digitalink.DigitalInkRecognition
 import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModel
 import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
@@ -396,7 +397,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                                     letters = letters, 
                                     theme = dialerTheme,
                                     onClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        HapticUtils.playClick(context)
                                         phoneNumber += digit
                                     },
                                     onLongClick = {
@@ -454,7 +455,7 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                                         detectTapGestures(
                                             onTap = { phoneNumber = phoneNumber.dropLast(1) },
                                             onLongPress = { 
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                HapticUtils.playClick(context)
                                                 phoneNumber = "" 
                                             }
                                         )
@@ -467,22 +468,32 @@ fun KeypadScreen(contacts: List<Contact>, onCall: (String) -> Unit, onCallClick:
                     }
                 }
                 
-                // Canvas layer overlaid on top for handwriting
-                val brightBlue = Color(0xFF00A8FF)
-                androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
-                    val paintMode = androidx.compose.ui.graphics.StrokeCap.Round
-                    // Draw previous strokes
-                    for (stroke in currentStrokes) {
-                        for (i in 0 until stroke.size - 1) {
-                            drawLine(color = brightBlue, start = stroke[i], end = stroke[i + 1], strokeWidth = 20f, cap = paintMode)
-                        }
-                    }
-                    // Draw current active stroke
-                    for (i in 0 until currentStrokePoints.size - 1) {
-                        drawLine(color = brightBlue, start = currentStrokePoints[i], end = currentStrokePoints[i + 1], strokeWidth = 20f, cap = paintMode)
-                    }
-                }
+                HandwritingOverlay(
+                    currentStrokes = currentStrokes,
+                    currentStrokePoints = currentStrokePoints
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun HandwritingOverlay(
+    currentStrokes: List<List<androidx.compose.ui.geometry.Offset>>,
+    currentStrokePoints: List<androidx.compose.ui.geometry.Offset>
+) {
+    val brightBlue = Color(0xFF00A8FF)
+    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+        val paintMode = androidx.compose.ui.graphics.StrokeCap.Round
+        // Draw previous strokes
+        for (stroke in currentStrokes) {
+            for (i in 0 until stroke.size - 1) {
+                drawLine(color = brightBlue, start = stroke[i], end = stroke[i + 1], strokeWidth = 20f, cap = paintMode)
+            }
+        }
+        // Draw current active stroke
+        for (i in 0 until currentStrokePoints.size - 1) {
+            drawLine(color = brightBlue, start = currentStrokePoints[i], end = currentStrokePoints[i + 1], strokeWidth = 20f, cap = paintMode)
         }
     }
 }

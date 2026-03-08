@@ -10,9 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,10 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
 import com.example.call.data.Contact
-import com.example.call.ui.components.CenterText
-import com.example.call.ui.components.SagarCallBanner
-import com.example.call.ui.components.SwipeableActionItem
+import com.example.call.ui.components.*
 import com.example.call.ui.theme.*
 
 @Composable
@@ -37,9 +37,13 @@ fun FavoritesScreen(
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp)) {
             SagarCallBanner(modifier = Modifier.align(Alignment.End), color = MaterialTheme.colorScheme.onSurface)
-        Text("Favorites", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp))
+        Text(stringResource(R.string.tab_favorites), fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp))
         if (favorites.isEmpty()) {
-            CenterText("No Favorites")
+            EmptyState(
+                icon = Icons.Default.Star,
+                title = stringResource(R.string.empty_favorites_title),
+                description = stringResource(R.string.empty_favorites_desc)
+            )
         } else {
             val context = LocalContext.current
             androidx.compose.foundation.lazy.grid.LazyVerticalGrid(

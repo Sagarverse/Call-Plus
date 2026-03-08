@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">call</string>
+    <string name="app_name">Call-Plus</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="tab_recents">Recents</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_keypad">Keypad</string>
+    <string name="tab_intelligence">Intelligence</string>
+    
+    <string name="search_placeholder">Search contacts…</string>
+    <string name="search_global_placeholder">Search your world…</string>
+    
+    <string name="empty_recents_title">No Recent Calls</string>
+    <string name="empty_recents_desc">Your call history will appear here. Start by making a call!</string>
+    
+    <string name="empty_contacts_title">No Contacts Found</string>
+    <string name="empty_contacts_desc">It looks like your contact list is empty. Sync your contacts to get started!</string>
+    
+    <string name="empty_favorites_title">No Favorites Yet</string>
+    <string name="empty_favorites_desc">Keep your most important contacts just one tap away.</string>
+    
+    <string name="settings_title">Settings</string>
+    <string name="settings_ai_config">AI Configuration</string>
+    <string name="settings_api_key">Gemini API Key</string>
+    <string name="settings_model_selection">AI Model</string>
+    <string name="settings_test_connection">Test Connection</string>
+    
+    <string name="call_add_number">Add Number</string>
+    <string name="call_slide_to_answer">Slide to answer</string>
 </resources>

@@ -29,6 +29,8 @@ import com.example.call.ui.theme.*
 import com.example.call.data.Note
 import com.example.call.data.Contact
 import com.example.call.data.GeminiService
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
 
 @Composable
 fun SummaryScreen(
@@ -118,7 +120,7 @@ fun SummaryScreen(
                 IconButton(onClick = onBack) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = VisionPrimary)
                 }
-                Text("Intelligence", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.tab_intelligence), fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             }
             
             Spacer(modifier = Modifier.height(24.dp))

@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -25,9 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.call.data.Contact
-import com.example.call.ui.components.CenterText
-import com.example.call.ui.components.SagarCallBanner
-import com.example.call.ui.components.SwipeableActionItem
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
+import com.example.call.ui.components.*
 import com.example.call.ui.theme.*
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
@@ -55,7 +56,7 @@ fun ContactsScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Contacts", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.tab_contacts), fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                 IconButton(onClick = onSettingsClick) {
                     Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VisionPrimary)
                 }
@@ -99,7 +100,11 @@ fun ContactsScreen(
         }
 
         if (filteredContacts.isEmpty()) {
-            CenterText(if (searchQuery.isEmpty()) "No Contacts Found" else "No Results for '$searchQuery'")
+            EmptyState(
+                icon = Icons.Default.Person,
+                title = if (searchQuery.isEmpty()) stringResource(R.string.empty_contacts_title) else "No Results",
+                description = if (searchQuery.isEmpty()) stringResource(R.string.empty_contacts_desc) else "We couldn't find any contacts matching '$searchQuery'."
+            )
         } else {
             val context = LocalContext.current
             

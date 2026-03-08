@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.call.ui.components.SagarCallBanner
 import com.example.call.ui.theme.*
+import androidx.compose.ui.res.stringResource
+import com.example.call.R
 import java.io.File
 import androidx.compose.runtime.*
 import com.google.ai.client.generativeai.GenerativeModel
@@ -81,7 +83,7 @@ fun SettingsScreen(
                 .padding(bottom = 100.dp)
         ) {
             SagarCallBanner(modifier = Modifier.align(Alignment.End))
-        Text("Settings", fontSize = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(16.dp))
+        Text(stringResource(R.string.settings_title), fontSize = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(16.dp))
         
         Surface(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -191,7 +193,7 @@ fun SettingsScreen(
             }
         }
 
-        Text("AI Intelligence", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 8.dp))
+        Text(stringResource(R.string.settings_ai_config), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 8.dp))
         
         Surface(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -199,7 +201,7 @@ fun SettingsScreen(
             color = MaterialTheme.colorScheme.surface
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Gemini API Key", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.settings_api_key), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 OutlinedTextField(
                     value = apiKey,
                     onValueChange = { 
@@ -208,7 +210,7 @@ fun SettingsScreen(
                         GeminiService.init(context)
                     },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    placeholder = { Text("Paste your API key here", fontSize = 14.sp) },
+                    placeholder = { Text(stringResource(R.string.settings_api_key), fontSize = 14.sp) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -219,7 +221,7 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("Model Selection", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.settings_model_selection), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                     Surface(
                         modifier = Modifier.fillMaxWidth().clickable { showModelDropdown = true },
@@ -313,7 +315,7 @@ fun SettingsScreen(
                     if (isTestingConnection) {
                         CircularProgressIndicator(modifier = Modifier.size(20.dp), color = androidx.compose.ui.graphics.Color.White, strokeWidth = 2.dp)
                     } else {
-                        Text("Test Connection", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.settings_test_connection), fontWeight = FontWeight.Bold)
                     }
                 }
 

@@ -5,8 +5,10 @@ import com.example.call.data.Contact
 import com.example.call.data.Note
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import android.util.Log
 
 object GeminiService {
     private var model: GenerativeModel? = null
@@ -30,8 +32,34 @@ object GeminiService {
         }
     }
 
+    private suspend fun <T> retryIO(
+        times: Int = 3,
+        initialDelay: Long = 1000,
+        maxDelay: Long = 4000,
+        factor: Double = 2.0,
+        block: suspend () -> T
+    ): T? {
+        var currentDelay = initialDelay
+        repeat(times - 1) {
+            try {
+                return block()
+            } catch (e: Exception) {
+                Log.e("GeminiService", "Error in AI operation, retrying...", e)
+            }
+            delay(currentDelay)
+            currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+        }
+        return try {
+            block()
+        } catch (e: Exception) {
+            Log.e("GeminiService", "Final AI operation failed", e)
+            null
+        }
+    }
+
     suspend fun generateCallSummary(contact: Contact, logs: List<CallRecord>, notes: List<Note>): String? {
         val generativeModel = model ?: return null
+        if (logs.isEmpty() && notes.isEmpty()) return "New contact. No interactions recorded yet."
         
         val prompt = """
             Analyze the following call history and notes for contact '${contact.name}' (${contact.number}).
@@ -40,18 +68,18 @@ object GeminiService {
             
             Provide a concise, 2-sentence summary of the relationship and recent interactions. 
             Format: "Relationship status. Recent highlight."
+            If no historical data, mention they are a new contact.
         """.trimIndent()
 
-        return try {
+        return retryIO {
             val response = generativeModel.generateContent(prompt)
             response.text
-        } catch (e: Exception) {
-            null
         }
     }
 
     suspend fun suggestSmartAction(noteContent: String): String? {
         val generativeModel = model ?: return null
+        if (noteContent.isBlank()) return null
 
         val prompt = """
             Given this note content: "$noteContent"
@@ -60,21 +88,20 @@ object GeminiService {
             If no clear action, return "No action".
         """.trimIndent()
 
-        return try {
+        return retryIO {
             val response = generativeModel.generateContent(prompt)
             val text = response.text?.trim()
             if (text?.contains("No action", ignoreCase = true) == true) null else text
-        } catch (e: Exception) {
-            null
         }
     }
 
     suspend fun researchCaller(number: String): String? {
         val generativeModel = model ?: return null
+        if (number.isBlank()) return null
 
         val prompt = """
             Research or analyze the caller metadata for the number: "$number".
-            Based on common patterns or known data for this region, determines if this is likely a:
+            Based on common patterns or known data for this region (likely India/US based on number format), determines if this is likely a:
             - Safe/Personal Number
             - Telemarketer
             - Fraud/Scam
@@ -84,11 +111,9 @@ object GeminiService {
             Example: "Likely Telemarketer - Known robocall pattern in this area code."
         """.trimIndent()
 
-        return try {
+        return retryIO {
             val response = generativeModel.generateContent(prompt)
             response.text?.trim()
-        } catch (e: Exception) {
-            null
         }
     }
 }
